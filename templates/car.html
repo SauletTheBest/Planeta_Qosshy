@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.car.Brand}} {{.car.Model}} - Car Details</title>
+</head>
+<body>
+<h1>{{.car.Brand}} {{.car.Model}}</h1>
+
+<!-- Car Image -->
+{{if .car.ImageURL}}
+<img src="{{.car.ImageURL}}" alt="{{.car.Brand}} {{.car.Model}}" style="max-width: 100%; height: auto;">
+{{else}}
+<p>No image available</p>
+{{end}}
+
+<!-- Car Details -->
+<table border="1">
+  <tr>
+    <th>Brand</th>
+    <td>{{.car.Brand}}</td>
+  </tr>
+  <tr>
+    <th>Model</th>
+    <td>{{.car.Model}}</td>
+  </tr>
+  <tr>
+    <th>Year</th>
+    <td>{{.car.Year}}</td>
+  </tr>
+  <tr>
+    <th>Price</th>
+    <td>${{printf "%.2f" .car.Price}}</td>
+  </tr>
+  <tr>
+    <th>Mileage</th>
+    <td>{{.car.Mileage}} miles</td>
+  </tr>
+</table>
+<a href="/payment/{{.car.ID}}">Buy this car</a>
+</form>
+
+<!-- Back to List -->
+<p><a href="/cars">Back to Car List</a></p>
+</body>
+</html>

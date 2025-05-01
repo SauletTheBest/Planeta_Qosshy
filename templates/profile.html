@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+<h1>Welcome, {{.user.Username}}</h1>
+<p>Email: {{.user.Email}}</p>
+<p>Role: {{.user.Role}}</p>
+<p>Account Verified: {{if .user.Verified}} ✅ Yes {{else}} ❌ No {{end}}</p>
+
+<a href="/profile/edit">
+    <button>Edit Profile</button>
+</a>
+
+<h2>Your Purchase History</h2>
+{{if .purchasedCars}}
+<ul>
+    {{range .purchasedCars}}
+    <li>
+        <img src="{{.ImageURL}}" alt="{{.Brand}} {{.Model}}" style="width: 100px;"><br>
+        <strong>{{.Brand}} {{.Model}} ({{.Year}})</strong> - ${{.Price}}<br>
+        Mileage: {{.Mileage}} miles<br>
+        <p>Status: {{if .Sold}} Sold {{else}} Available {{end}}</p>
+    </li>
+    <hr>
+    {{end}}
+</ul>
+{{else}}
+<p>You haven't purchased any cars yet.</p>
+{{end}}
+
+<a href="/cars">
+    <button>Return to Cars</button>
+</a>
+
+<h2>Helpdesk</h2>
+<p>If you need support, click the button below:</p>
+<a href="/helpdesk">
+    <button>Contact Support</button>
+</a>
+
+<h2>Live Support Chat</h2>
+{{if .chatActive}}
+<p><a href="/chat/{{.chatID}}"><button>Go to Active Chat</button></a></p>
+{{else}}
+<form action="/chat/start/{{.user.ID}}" method="POST">
+    <button type="submit">Start a New Chat</button>
+</form>
+{{end}}
+
+<br><br>
+<a href="/logout"><button>Logout</button></a>
+</body>
+</html>
