@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"carSell/database"
-	"carSell/models"
+	"planeta_qosshy/database"
+	"planeta_qosshy/models"
 	"fmt"
 	"log"
 	"net/http"

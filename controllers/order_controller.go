@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"carSell/database"
-	"carSell/models"
+	"planeta_qosshy/database"
+	"planeta_qosshy/models"
 	"github.com/gin-gonic/gin"
 	_ "github.com/gorilla/sessions"
 )

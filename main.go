@@ -1,9 +1,9 @@
 package main
 
 import (
-	"carSell/database"
-	"carSell/middleware"
-	"carSell/routes"
+	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
+	"planeta_qosshy/routes"
 	_ "github.com/gin-gonic/gin"
 )
 

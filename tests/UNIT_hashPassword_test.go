@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"carSell/util"
+	"planeta_qosshy/util"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

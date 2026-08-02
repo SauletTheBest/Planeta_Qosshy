@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"carSell/controllers"
-	"carSell/middleware"
+	"planeta_qosshy/controllers"
+	"planeta_qosshy/middleware"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"math"

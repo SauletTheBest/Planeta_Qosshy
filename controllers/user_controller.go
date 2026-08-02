@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"carSell/database"
-	"carSell/models"
-	"carSell/util"
+	"planeta_qosshy/database"
+	"planeta_qosshy/models"
+	"planeta_qosshy/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"

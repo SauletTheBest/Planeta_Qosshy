@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"carSell/models"
+	"planeta_qosshy/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"carSell/controllers"
+	"planeta_qosshy/controllers"
 	"html/template"
 	"math"
 	"net/http"
