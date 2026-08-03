@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS payments (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    clothes_id INT REFERENCES clothes(id) ON DELETE SET NULL,
+    amount NUMERIC(10, 2) NOT NULL CHECK (amount >= 0),
+    status VARCHAR(50) DEFAULT 'pending',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);

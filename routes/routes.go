@@ -1,12 +1,14 @@
 package routes
 
 import (
-	"planeta_qosshy/controllers"
-	"planeta_qosshy/middleware"
-	"github.com/gin-gonic/gin"
 	"html/template"
 	"math"
 	"net/http"
+
+	"planeta_qosshy/controllers"
+	"planeta_qosshy/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
@@ -16,6 +18,9 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.RateLimit())
 	r.Use(middleware.Logger())
 
+	r.Static("/static", "./templates/static")
+
+	// Template helper math functions
 	r.SetFuncMap(template.FuncMap{
 		"add":  func(a, b int) int { return a + b },
 		"sub":  func(a, b int) int { return a - b },
@@ -26,17 +31,19 @@ func SetupRouter() *gin.Engine {
 
 	r.LoadHTMLGlob("templates/*")
 
+	// Redirect root homepage to clothes catalog
 	r.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusFound, "/cars")
+		c.Redirect(http.StatusFound, "/clothes")
 	})
 
-	//// WebSocket routes
+	// WebSocket routes for support chat
 	r.GET("/wss", controllers.HandleConnections)
 	go controllers.HandleMessages()
 	r.POST("/chat/start/:id", controllers.StartChat)
 	r.GET("/chat/:chatID", controllers.ChatPage)
 	r.POST("/chat/:chatID/send", controllers.SendMessage)
 
+	// Auth routes
 	auth := r.Group("/auth")
 	{
 		auth.POST("/register", controllers.Register)
@@ -47,42 +54,45 @@ func SetupRouter() *gin.Engine {
 		auth.GET("/login", func(c *gin.Context) { c.HTML(http.StatusOK, "login.html", gin.H{}) })
 	}
 
-	cars := r.Group("/cars")
-	cars.Use(middleware.AuthRequired)
+	// Public Clothes catalog routes
+	clothes := r.Group("/clothes")
+	clothes.Use(middleware.AuthRequired)
 	{
-		cars.GET("/", controllers.GetCars)
-		cars.GET("/:id", controllers.GetCarByID)
+		clothes.GET("/", controllers.GetClothes)
+		clothes.GET("/:id", controllers.GetClothesByID)
 	}
 
+	// Orders routes
 	orders := r.Group("/orders")
 	orders.Use(middleware.AuthRequired)
 	{
 		orders.POST("/:id", controllers.ProcessPayment)
 		orders.GET("/", controllers.GetUserOrders)
 	}
+
 	r.GET("/execute-query", controllers.ExecuteQueryHTML)
 	r.POST("/execute-query", controllers.ExecuteQuery)
+
+	// Admin control panel routes
 	admin := r.Group("/admin")
 	admin.Use(middleware.RequireAdmin)
 	admin.Use(middleware.AuthRequired)
 	{
-		admin.GET("/cars", controllers.AdminListCars)
-		admin.GET("/cars/new", controllers.AdminNewCar)
-		admin.POST("/cars", controllers.AdminCreateCar)
-		admin.GET("/cars/:id/edit", controllers.AdminEditCar)
-		admin.POST("/cars/:id", controllers.AdminUpdateCar)
-		admin.POST("/cars/:id/delete", controllers.AdminDeleteCar)
+		admin.GET("/clothes", controllers.AdminListClothes)
+		admin.GET("/clothes/new", controllers.AdminNewClothes)
+		admin.POST("/clothes", controllers.AdminCreateClothes)
+		admin.GET("/clothes/:id/edit", controllers.AdminEditClothes)
+		admin.POST("/clothes/:id", controllers.AdminUpdateClothes)
+		admin.POST("/clothes/:id/delete", controllers.AdminDeleteClothes)
 		admin.GET("/chats", controllers.AdminChatList)
 		admin.GET("/chat/:chatID", controllers.AdminChat)
 		admin.POST("/chat/:chatID/close", controllers.AdminCloseChat)
 		admin.POST("/chat/:chatID/send", controllers.AdminSendMessage)
 
 		admin.GET("/", controllers.AdminDashboard)
-		//admin.GET("/execute-query", controllers.ExecuteQueryHTML)
-		//admin.POST("/execute-query", controllers.ExecuteQuery)
-
 	}
 
+	// Helpdesk contact routes
 	helpdesk := r.Group("/helpdesk")
 	helpdesk.Use(middleware.AuthRequired)
 	{
@@ -90,13 +100,15 @@ func SetupRouter() *gin.Engine {
 		helpdesk.GET("/", func(c *gin.Context) { c.HTML(http.StatusOK, "helpdesk.html", nil) })
 	}
 
+	// Checkout & Payment routes
 	payment := r.Group("/payment")
 	payment.Use(middleware.AuthRequired)
 	{
-		payment.GET("/:car_id", controllers.PaymentPage)
-		payment.POST("/", controllers.Payment)
+		payment.GET("/:clothes_id", controllers.PaymentPage)
+		payment.POST("/", controllers.ProcessPayment)
 	}
 
+	// User Profile routes
 	profile := r.Group("/profile")
 	profile.Use(middleware.AuthRequired)
 	{

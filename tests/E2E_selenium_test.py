@@ -15,16 +15,16 @@ try:
     time.sleep(2)
 
 
-    driver.find_element(By.NAME, "email").send_keys("@gmail.com")
-    driver.find_element(By.NAME, "password").send_keys("")
+    driver.find_element(By.NAME, "email").send_keys("admin@example.com")
+    driver.find_element(By.NAME, "password").send_keys("admin")
     driver.find_element(By.ID, "login_button").click()
 
-    driver.get(f"{BASE_URL}/admin/cars/new")
-
+    driver.get(f"{BASE_URL}/admin/clothes/new")
     time.sleep(2)
-    assert "Car" in driver.page_source
 
-    print("All tests passed!")
+    assert "Add New Clothes" in driver.page_source
+
+    print("All E2E tests passed successfully!")
 
 except Exception as e:
     print(f"Test failed: {e}")

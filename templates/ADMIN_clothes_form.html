@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{if .item}}Edit Clothing Item{{else}}Add New Clothes{{end}}</title>
+</head>
+<body>
+<h1>{{if .item}}Edit Clothing Item{{else}}Add New Clothes{{end}}</h1>
+
+{{if .error}}<p style="color: red;">{{.error}}</p>{{end}}
+
+<form action="{{.action}}" method="POST">
+    <label for="Title">Title:</label>
+    <input type="text" id="title" name="Title" value="{{if .item}}{{.item.Title}}{{end}}" required><br><br>
+
+    <label for="Brand">Brand:</label>
+    <input type="text" id="brand" name="Brand" value="{{if .item}}{{.item.Brand}}{{end}}" required><br><br>
+
+    <label for="Category">Category:</label>
+    <input type="text" id="category" name="Category" value="{{if .item}}{{.item.Category}}{{end}}" placeholder="e.g. Hoodies, T-Shirts" required><br><br>
+
+    <label for="Size">Size:</label>
+    <input type="text" id="size" name="Size" value="{{if .item}}{{.item.Size}}{{end}}" placeholder="e.g. S, M, L, XL" required><br><br>
+
+    <label for="Color">Color:</label>
+    <input type="text" id="color" name="Color" value="{{if .item}}{{.item.Color}}{{end}}" required><br><br>
+
+    <label for="Price">Price ($):</label>
+    <input type="number" id="price" name="Price" step="0.01" value="{{if .item}}{{.item.Price}}{{end}}" required><br><br>
+
+    <label for="Stock">Stock Quantity:</label>
+    <input type="number" id="stock" name="Stock" value="{{if .item}}{{.item.Stock}}{{else}}1{{end}}" required><br><br>
+
+    <label for="Description">Description:</label><br>
+    <textarea id="description" name="Description" rows="4" cols="50">{{if .item}}{{.item.Description}}{{end}}</textarea><br><br>
+
+    <label for="ImageURL">Image URL:</label>
+    <input type="url" id="image_url" name="ImageURL" value="{{if .item}}{{.item.ImageURL}}{{end}}"><br><br>
+
+    <button type="submit">{{if .item}}Update{{else}}Add{{end}} Item</button>
+</form>
+
+<p><a href="/admin/clothes">Back to Inventory List</a></p>
+</body>
+</html>

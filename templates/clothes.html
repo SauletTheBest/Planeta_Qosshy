@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clothes Catalog - Planeta Qosshy</title>
+</head>
+<body>
+<button onclick="logout()">Logout</button>
+<a href="/profile"><button>Profile</button></a>
+<a href="/orders"><button>My Orders</button></a>
+
+<h1>Clothes Catalog</h1>
+
+<!-- Filtering and Sorting Form -->
+<form method="GET" action="/clothes">
+  <label for="category">Category:</label>
+  <input type="text" id="category" name="category" value="{{.category}}" placeholder="e.g. Hoodies, T-Shirts">
+
+  <label for="brand">Brand:</label>
+  <input type="text" id="brand" name="brand" value="{{.brand}}" placeholder="e.g. Nike, Adidas">
+
+  <label for="size">Size:</label>
+  <select id="size" name="size">
+    <option value="">-- All Sizes --</option>
+    <option value="S" {{if eq .size "S"}}selected{{end}}>S</option>
+    <option value="M" {{if eq .size "M"}}selected{{end}}>M</option>
+    <option value="L" {{if eq .size "L"}}selected{{end}}>L</option>
+    <option value="XL" {{if eq .size "XL"}}selected{{end}}>XL</option>
+    <option value="XXL" {{if eq .size "XXL"}}selected{{end}}>XXL</option>
+  </select>
+
+  <label for="min_price">Min Price:</label>
+  <input type="number" id="min_price" name="min_price" value="{{.min_price}}">
+
+  <label for="max_price">Max Price:</label>
+  <input type="number" id="max_price" name="max_price" value="{{.max_price}}">
+
+  <label for="sort">Sort By:</label>
+  <select id="sort" name="sort">
+    <option value="">-- Select --</option>
+    <option value="price_asc" {{if eq .sort "price_asc"}}selected{{end}}>Price: Low to High</option>
+    <option value="price_desc" {{if eq .sort "price_desc"}}selected{{end}}>Price: High to Low</option>
+    <option value="newest" {{if eq .sort "newest"}}selected{{end}}>Newest Arrivals</option>
+  </select>
+
+  <button type="submit">Apply Filters</button>
+</form>
+
+<br>
+
+<!-- Items List Table -->
+<table border="1">
+  <thead>
+  <tr>
+    <th>Title</th>
+    <th>Brand</th>
+    <th>Category</th>
+    <th>Size</th>
+    <th>Color</th>
+    <th>Price</th>
+    <th>Stock</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{range .clothes}}
+  <tr>
+    <td>{{.Title}}</td>
+    <td>{{.Brand}}</td>
+    <td>{{.Category}}</td>
+    <td>{{.Size}}</td>
+    <td>{{.Color}}</td>
+    <td>${{printf "%.2f" .Price}}</td>
+    <td>{{.Stock}} available</td>
+    <td><a href="/clothes/{{.ID}}">View Details</a></td>
+  </tr>
+  {{else}}
+  <tr>
+    <td colspan="8">No clothing items found matching criteria.</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>
+
+<!-- Pagination -->
+<div>
+  {{if gt .page 1}}
+  <a href="/clothes?page={{sub .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}">Previous</a>
+  {{end}}
+
+  <span>Page {{.page}} of {{ceil (div .totalItems .limit)}}</span>
+
+  {{if lt (mul .page .limit) .totalItems}}
+  <a href="/clothes?page={{add .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}">Next</a>
+  {{end}}
+</div>
+
+<script>
+  function logout() {
+    fetch('/auth/logout', { method: 'POST', credentials: 'same-origin' })
+      .then(response => {
+        if (response.ok) window.location.href = '/auth/login';
+        else alert('Failed to logout');
+      })
+      .catch(error => console.error('Error:', error));
+  }
+</script>
+</body>
+</html>

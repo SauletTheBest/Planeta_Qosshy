@@ -7,92 +7,101 @@ import (
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
 	"github.com/gin-gonic/gin"
-	_ "github.com/gorilla/sessions"
 )
 
 func AdminDashboard(c *gin.Context) {
 	c.HTML(http.StatusOK, "admin_dashboard.html", nil)
 }
 
-// AdminListCars Lists cars
-func AdminListCars(c *gin.Context) {
-	var cars []models.Car
-	if err := database.DB.Find(&cars).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch cars"})
+// AdminListClothes lists all inventory items for admin
+func AdminListClothes(c *gin.Context) {
+	var items []models.Clothes
+	if err := database.DB.Find(&items).Error; err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch clothing items"})
 		return
 	}
 
-	c.HTML(http.StatusOK, "ADMIN_car_list.html", gin.H{
-		"cars": cars,
+	c.HTML(http.StatusOK, "ADMIN_clothes_list.html", gin.H{
+		"items": items,
 	})
 }
 
-func AdminNewCar(c *gin.Context) {
-
-	c.HTML(http.StatusOK, "ADMIN_car_form.html", gin.H{
-		"action": "/admin/cars",
+// AdminNewClothes renders form for adding new clothes
+func AdminNewClothes(c *gin.Context) {
+	c.HTML(http.StatusOK, "ADMIN_clothes_form.html", gin.H{
+		"action": "/admin/clothes",
 		"method": "POST",
-		"car":    nil,
+		"item":   nil,
 	})
 }
 
-// AdminCreateCar Add a new car
-func AdminCreateCar(c *gin.Context) {
-	var input models.Car
+// AdminCreateClothes handles creation of new clothing item
+func AdminCreateClothes(c *gin.Context) {
+	var input models.Clothes
 
 	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	database.DB.Create(&input)
-	c.JSON(http.StatusOK, gin.H{"message": "Car added successfully", "car": input})
-}
+	if input.Stock > 0 {
+		input.InStock = true
+	}
 
-func AdminEditCar(c *gin.Context) {
-	var car models.Car
-	carID := c.Param("id")
-
-	if err := database.DB.First(&car, carID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Car not found"})
+	if err := database.DB.Create(&input).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create clothing item"})
 		return
 	}
 
-	c.HTML(http.StatusOK, "ADMIN_car_form.html", gin.H{
-		"action": "/admin/cars/" + carID, // Form action URL
-		"method": "POST",                 // Form method
-		"car":    car,                    // Car data for editing
+	c.JSON(http.StatusOK, gin.H{"message": "Clothing item added successfully", "item": input})
+}
+
+// AdminEditClothes renders form to edit existing item
+func AdminEditClothes(c *gin.Context) {
+	var item models.Clothes
+	itemID := c.Param("id")
+
+	if err := database.DB.First(&item, itemID).Error; err != nil {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
+		return
+	}
+
+	c.HTML(http.StatusOK, "ADMIN_clothes_form.html", gin.H{
+		"action": "/admin/clothes/" + itemID,
+		"method": "POST",
+		"item":   item,
 	})
 }
 
-// EditCar Edit an existing car
-func AdminUpdateCar(c *gin.Context) {
-	carID, err := strconv.Atoi(c.Param("id"))
+// AdminUpdateClothes handles updates to an existing item
+func AdminUpdateClothes(c *gin.Context) {
+	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid item ID"})
 		return
 	}
 
-	var car models.Car
-	if err := database.DB.First(&car, carID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Car not found"})
+	var item models.Clothes
+	if err := database.DB.First(&item, itemID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Clothing item not found"})
 		return
 	}
-	// we can go to the nearest bakery shop til' 9 pm
-	if err := c.ShouldBind(&car); err != nil {
+
+	if err := c.ShouldBind(&item); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	database.DB.Save(&car)
-	c.JSON(http.StatusOK, gin.H{"message": "Car updated successfully", "car": car})
+	item.InStock = item.Stock > 0
+	database.DB.Save(&item)
+	c.JSON(http.StatusOK, gin.H{"message": "Clothing item updated successfully", "item": item})
 }
 
-// AdminDeleteCar Delete a car
-func AdminDeleteCar(c *gin.Context) {
-	carID, err := strconv.Atoi(c.Param("id"))
+// AdminDeleteClothes handles deletion of a clothing item
+func AdminDeleteClothes(c *gin.Context) {
+	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid item ID"})
 		return
 	}
 
@@ -103,15 +112,15 @@ func AdminDeleteCar(c *gin.Context) {
 		}
 	}()
 
-	if err := tx.Where("car_id = ?", carID).Delete(&models.Order{}).Error; err != nil {
+	if err := tx.Where("clothes_id = ?", itemID).Delete(&models.Order{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete related orders"})
 		return
 	}
 
-	if err := tx.Delete(&models.Car{}, carID).Error; err != nil {
+	if err := tx.Delete(&models.Clothes{}, itemID).Error; err != nil {
 		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete car"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete clothing item"})
 		return
 	}
 
@@ -121,5 +130,5 @@ func AdminDeleteCar(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Car and related orders deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Clothing item and related orders deleted successfully"})
 }

@@ -25,16 +25,16 @@ func Profile(c *gin.Context) {
 		return
 	}
 
-	var purchasedCars []models.Car
+	var purchasedClothes []models.Clothes
 	for _, purchase := range purchases {
-		purchasedCars = append(purchasedCars, purchase.Car)
+		purchasedClothes = append(purchasedClothes, purchase.Clothes)
 	}
 
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
 		"user":          user,
-		"purchasedCars": purchasedCars,
+		"purchasedCars": purchasedClothes,
 		"sessionUserID": sessionUserID,
 		"chatID":        chatID,
 		"chatActive":    chatStatus == "active",

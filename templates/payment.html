@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment</title>
+  <title>Payment - Planeta Qosshy</title>
 </head>
 <body>
-<h1>Enter Payment Details</h1>
+<h1>Checkout: {{.item.Title}}</h1>
+<p>Total Price: <strong>${{printf "%.2f" .amount}}</strong></p>
 
-<form action="/orders/{{.carID}}" method="POST">
+<form action="/orders/{{.clothesID}}" method="POST">
   <label for="card_name">Cardholder Name:</label><br>
   <input type="text" id="card_name" name="card_name" required><br><br>
 
@@ -18,30 +19,27 @@
   <label for="expiry_date">Expiry Date (MM/YY):</label><br>
   <input type="text" id="expiry_date" name="expiry_date" maxlength="5" placeholder="MM/YY" required oninput="formatExpiryDate(this)"><br><br>
 
-
   <label for="cvv">CVV:</label><br>
   <input type="text" id="cvv" name="cvv" maxlength="3" required oninput="this.value = this.value.replace(/\D/g, '');"><br><br>
 
   <input type="hidden" id="user_id" name="user_id" value="{{.userID}}">
-  <input type="hidden" id="car_id" name="car_id" value="{{.carID}}">
+  <input type="hidden" id="clothes_id" name="clothes_id" value="{{.clothesID}}">
   <input type="hidden" id="amount" name="amount" value="{{.amount}}">
 
-  <button type="submit">Pay ${{.amount}}</button>
+  <button type="submit">Pay ${{printf "%.2f" .amount}}</button>
 </form>
 
 <br>
-<a href="/cars"><button>Cancel</button></a>
+<a href="/clothes"><button>Cancel</button></a>
 </body>
 
 <script>
   function formatExpiryDate(input) {
-    let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+    let value = input.value.replace(/\D/g, '');
     if (value.length > 2) {
       value = value.substring(0, 2) + '/' + value.substring(2, 4);
     }
-    input.value = value.substring(0, 5); // Ensure max length is 5
+    input.value = value.substring(0, 5);
   }
 </script>
-
-
 </html>

@@ -24,11 +24,20 @@ func Connect() {
 		log.Fatal("Failed to connect to database")
 	}
 
-	err = db.AutoMigrate(&models.User{}, &models.Car{}, &models.Order{}, &models.Payment{}, &models.Transaction{},
-		&models.Chat{}, &models.Message{})
+	err = db.AutoMigrate(
+		&models.User{}, 
+		&models.Clothes{}, 
+		&models.Order{}, 
+		&models.Payment{}, 
+		&models.Transaction{},
+		&models.Chat{}, 
+		&models.Message{},
+	)
+
 	if err != nil {
-		println("DATABaE MIGRATION ERROR!!!: ", err.Error())
+		println("Database Migration Error: ", err.Error())
 		return
 	}
+	
 	DB = db
 }

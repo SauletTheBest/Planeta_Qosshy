@@ -1,18 +1,18 @@
 package tests
 
 import (
-	"planeta_qosshy/controllers"
 	"html/template"
 	"math"
 	"net/http"
 	"net/http/httptest"
+	"planeta_qosshy/controllers"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdminNewCar(t *testing.T) {
+func TestAdminNewClothes(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	router := gin.Default()
@@ -27,14 +27,14 @@ func TestAdminNewCar(t *testing.T) {
 
 	router.LoadHTMLGlob("../templates/*")
 
-	router.GET("/admin/cars/new", controllers.AdminNewCar)
+	router.GET("admin/clothes/new", controllers.AdminNewClothes)
 
-	req, _ := http.NewRequest("GET", "/admin/cars/new", nil)
+	req, _ := http.NewRequest("GET", "/admin/clothes/new", nil)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusOK, resp.Code)
-	assert.Contains(t, resp.Body.String(), `action="/admin/cars"`)
+	assert.Contains(t, resp.Body.String(), `action="/admin/clothes"`)
 	assert.Contains(t, resp.Body.String(), `method="POST"`)
 }

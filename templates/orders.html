@@ -6,12 +6,15 @@
     <title>Your Orders</title>
 </head>
 <body>
-<h1>Your Orders</h1>
+<h1>Your Purchased Clothes</h1>
+<a href="/clothes"><button>Back to Catalog</button></a>
 <ul>
-    {{range .Orders}}
+    {{range .orders}}
     <li>
-        Car: {{.Car.Make}} {{.Car.Model}}, Price: ${{.Amount}}, Status: {{.Status}}
+        <strong>{{.Clothes.Title}}</strong> - {{.Clothes.Brand}} (Size: {{.Clothes.Size}}, Color: {{.Clothes.Color}}) | Price: ${{printf "%.2f" .Clothes.Price}} | Date: {{.CreatedAt.Format "Jan 02, 2006"}}
     </li>
+    {{else}}
+    <p>No orders placed yet.</p>
     {{end}}
 </ul>
 </body>
