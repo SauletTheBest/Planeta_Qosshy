@@ -9,5 +9,5 @@ type Order struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 
 	User User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	Clothes  Clothes  `gorm:"foreignKey:CarID;constraint:OnDelete:CASCADE;"`
+	Clothes  Clothes  `gorm:"foreignKey:ClothesID;constraint:OnDelete:CASCADE;"`
 }

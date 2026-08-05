@@ -48,7 +48,7 @@ func HelpdeskController(c *gin.Context) {
 
 	fullMessage := "From: " + email + "\n\n" + message
 
-	err = util.SendEmail("suhansun13@gmail.com", subject, fullMessage)
+	err = util.SendEmail("", subject, fullMessage)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to send email"})
 		return

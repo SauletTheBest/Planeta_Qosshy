@@ -20,7 +20,7 @@ func Profile(c *gin.Context) {
 	}
 
 	var purchases []models.Order
-	if err := database.DB.Preload("Car").Where("user_id = ?", sessionUserID).Find(&purchases).Error; err != nil {
+	if err := database.DB.Preload("Clothes").Where("user_id = ?", sessionUserID).Find(&purchases).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch purchase history"})
 		return
 	}
@@ -33,11 +33,11 @@ func Profile(c *gin.Context) {
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
-		"user":          user,
-		"purchasedCars": purchasedClothes,
-		"sessionUserID": sessionUserID,
-		"chatID":        chatID,
-		"chatActive":    chatStatus == "active",
+		"user":             user,
+		"purchasedClothes": purchasedClothes,
+		"sessionUserID":    sessionUserID,
+		"chatID":           chatID,
+		"chatActive":       chatStatus == "active",
 	})
 }
 

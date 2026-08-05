@@ -13,5 +13,5 @@ type Payment struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 
 	User User 		 `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	Clothes  Clothes `gorm:"foreignKey:CarID;constraint:OnDelete:SET NULL;"`
+	Clothes  Clothes `gorm:"foreignKey:ClothesID;constraint:OnDelete:SET NULL;"`
 }

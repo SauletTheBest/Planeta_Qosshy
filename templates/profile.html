@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
 <h1>Welcome, {{.user.Username}}</h1>
@@ -16,24 +17,23 @@
 </a>
 
 <h2>Your Purchase History</h2>
-{{if .purchasedCars}}
+{{if .purchasedClothes}}
 <ul>
-    {{range .purchasedCars}}
+    {{range .purchasedClothes}}
     <li>
-        <img src="{{.ImageURL}}" alt="{{.Brand}} {{.Model}}" style="width: 100px;"><br>
-        <strong>{{.Brand}} {{.Model}} ({{.Year}})</strong> - ${{.Price}}<br>
-        Mileage: {{.Mileage}} miles<br>
-        <p>Status: {{if .Sold}} Sold {{else}} Available {{end}}</p>
+        <img src="{{.ImageURL}}" alt="{{.Title}}" style="width: 100px;"><br>
+        <strong>{{.Title}} ({{.Brand}})</strong> - ${{.Price}}<br>
+        Size: {{.Size}} | Color: {{.Color}}<br>
     </li>
     <hr>
     {{end}}
 </ul>
 {{else}}
-<p>You haven't purchased any cars yet.</p>
+<p>You haven't purchased any clothes yet.</p>
 {{end}}
 
-<a href="/cars">
-    <button>Return to Cars</button>
+<a href="/clothes">
+    <button>Return to Clothes</button>
 </a>
 
 <h2>Helpdesk</h2>
@@ -52,6 +52,6 @@
 {{end}}
 
 <br><br>
-<a href="/logout"><button>Logout</button></a>
+<a href="/auth/logout"><button>Logout</button></a>
 </body>
 </html>
