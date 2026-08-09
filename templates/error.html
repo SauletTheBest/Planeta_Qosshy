@@ -1,13 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Error</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ошибка — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>An Error Occurred</h1>
-<p>{{.error}}</p>
-<a href="/clothes">Go Back</a>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+  </nav>
+</header>
+<div class="message-page">
+  <div class="message-card">
+    <div class="icon">❌</div>
+    <h2>Что-то пошло не так</h2>
+    <p>{{.error}}</p>
+    <a href="/clothes" class="btn btn-primary">Вернуться в каталог</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

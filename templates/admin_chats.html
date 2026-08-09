@@ -1,23 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Active Chats</title>
+  <title>Чаты поддержки — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Active Chats</h1>
-<ul>
-  {{range .chats}}
-  <li>
-    <a href="/admin/chat/{{.ID}}">Chat with User {{.UserID}}</a>
-    <form action="/admin/chat/{{.ID}}/close" method="POST">
-      <button type="submit">Close chat {{.UserID}}</button>
-    </form>
-  </li>
-  {{end}}
-</ul>
-<br>
-<a href="/admin"><button>Back to Admin Panel</button></a>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/admin/">Админ</a>
+    <a href="/clothes">Сайт</a>
+  </nav>
+  <div class="header-actions">
+    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Чаты поддержки</h1>
+  </div>
+  <nav class="admin-nav">
+    <a href="/admin/">Главная</a>
+    <a href="/admin/clothes">Товары</a>
+    <a href="/admin/clothes/new">Добавить товар</a>
+    <a href="/admin/chats" class="active">Чаты поддержки</a>
+  </nav>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID Чата</th>
+        <th>Пользователь</th>
+        <th>Статус</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .chats}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td>{{.UserID}}</td>
+        <td>{{if .Active}}<span style="color:#1e7e50;font-weight:700;">Активен</span>{{else}}<span style="color:#888;">Закрыт</span>{{end}}</td>
+        <td>
+          <a href="/admin/chat/{{.ID}}" class="btn btn-ghost">Открыть чат</a>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="4" style="text-align:center;color:#999;padding:40px;">Активных чатов нет</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
 </body>
 </html>

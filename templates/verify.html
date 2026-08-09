@@ -1,12 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Verification</title>
+  <title>Подтверждение email — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Email Verification</h1>
-<p>Please click the verification link sent to your email to verify your account.</p>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+  </nav>
+</header>
+<div class="message-page">
+  <div class="message-card">
+    {{if .warning}}
+    <div class="icon">⚠️</div>
+    <h2>Аккаунт создан</h2>
+    <p>{{.warning}}</p>
+    {{else}}
+    <div class="icon">📧</div>
+    <h2>Проверьте вашу почту</h2>
+    <p>Мы отправили письмо со ссылкой на <strong>{{.email}}</strong>.<br>Перейдите по ссылке, чтобы активировать аккаунт.</p>
+    {{end}}
+    <a href="/auth/login" class="btn btn-primary">Перейти ко входу</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

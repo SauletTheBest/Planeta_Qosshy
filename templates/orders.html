@@ -1,21 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Orders</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мои заказы — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Your Purchased Clothes</h1>
-<a href="/clothes"><button>Back to Catalog</button></a>
-<ul>
-    {{range .orders}}
-    <li>
-        <strong>{{.Clothes.Title}}</strong> - {{.Clothes.Brand}} (Size: {{.Clothes.Size}}, Color: {{.Clothes.Color}}) | Price: ${{printf "%.2f" .Clothes.Price}} | Date: {{.CreatedAt.Format "Jan 02, 2006"}}
-    </li>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders" class="active">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <h1 class="page-title">Мои заказы</h1>
+  {{range .orders}}
+  <div class="order-item">
+    {{if .Clothes.ImageURL}}
+      <img src="{{.Clothes.ImageURL}}" alt="{{.Clothes.Title}}">
     {{else}}
-    <p>No orders placed yet.</p>
+      <img src="" alt="" style="background:#f0f0f0;">
     {{end}}
-</ul>
+    <div class="order-item-info">
+      <h4>{{.Clothes.Title}}</h4>
+      <p>{{.Clothes.Brand}} &mdash; Размер: {{.Clothes.Size}}, Цвет: {{.Clothes.Color}}</p>
+      <p>Заказан: {{.CreatedAt.Format "02.01.2006"}}</p>
+    </div>
+    <div class="order-item-price">{{printf "%.0f" .Clothes.Price}} ₸</div>
+  </div>
+  {{else}}
+  <div class="message-card" style="margin:0 auto;box-shadow:none;border:1px solid #ebebeb;">
+    <div class="icon">🛒</div>
+    <h2>Заказов пока нет</h2>
+    <p>Вы ещё ничего не купили. Перейдите в каталог, чтобы начать покупки!</p>
+    <a href="/clothes" class="btn btn-primary">Перейти в каталог</a>
+  </div>
+  {{end}}
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile">Профиль</a>
+      <a href="/auth/logout">Выйти</a>
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

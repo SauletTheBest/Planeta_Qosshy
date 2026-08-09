@@ -1,25 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Contact Support</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поддержка — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-
-<h1>Contact Support</h1>
-
-<form action="/helpdesk/send" method="post" enctype="multipart/form-data">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="subject">Subject:</label>
-    <input type="text" id="subject" name="subject" required>
-
-    <label for="message">Message:</label>
-    <textarea id="message" name="message" required></textarea>
-
-    <button type="submit">Submit</button>
-</form>
-
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="auth-page">
+  <div class="auth-card" style="max-width:520px;">
+    <h2>Написать в поддержку</h2>
+    <p style="text-align:center;color:#666;margin-bottom:24px;font-size:.9rem;">
+      Есть вопрос или проблема? Заполните форму, и мы свяжемся с вами.
+    </p>
+    {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
+    {{if .success}}<div class="alert alert-success">{{.success}}</div>{{end}}
+    <form action="/helpdesk/send" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="email">Ваш Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="subject">Тема</label>
+        <input type="text" id="subject" name="subject" placeholder="Как мы можем помочь?" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Сообщение</label>
+        <textarea id="message" name="message" rows="5" placeholder="Опишите вашу проблему..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="attachments">Вложения (необязательно, jpg/png/pdf)</label>
+        <input type="file" id="attachments" name="attachments" multiple accept=".jpg,.png,.pdf">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Отправить сообщение</button>
+    </form>
+    <div style="margin-top:14px;text-align:center;">
+      <a href="/profile" class="btn btn-ghost">← Назад в профиль</a>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile">Профиль</a>
+      <a href="/auth/logout">Выйти</a>
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

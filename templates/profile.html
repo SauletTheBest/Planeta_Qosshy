@@ -1,57 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Welcome, {{.user.Username}}</h1>
-<p>Email: {{.user.Email}}</p>
-<p>Role: {{.user.Role}}</p>
-<p>Account Verified: {{if .user.Verified}} ✅ Yes {{else}} ❌ No {{end}}</p>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile" class="active">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <h1 class="page-title">Мой профиль</h1>
 
-<a href="/profile/edit">
-    <button>Edit Profile</button>
-</a>
+  <div class="profile-card">
+    <h2>Данные аккаунта</h2>
+    <div class="profile-row"><span class="key">Имя пользователя</span><span>{{.user.Username}}</span></div>
+    <div class="profile-row"><span class="key">Email</span><span>{{.user.Email}}</span></div>
+    <div class="profile-row"><span class="key">Роль</span><span>{{.user.Role}}</span></div>
+    <div class="profile-row">
+      <span class="key">Email подтверждён</span>
+      <span>{{if .user.Verified}}✅ Да{{else}}❌ Нет{{end}}</span>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="/profile/edit" class="btn btn-outline">Редактировать профиль</a>
+      <a href="/orders" class="btn btn-ghost">Мои заказы</a>
+    </div>
+  </div>
 
-<h2>Your Purchase History</h2>
-{{if .purchasedClothes}}
-<ul>
-    {{range .purchasedClothes}}
-    <li>
-        <img src="{{.ImageURL}}" alt="{{.Title}}" style="width: 100px;"><br>
-        <strong>{{.Title}} ({{.Brand}})</strong> - ${{.Price}}<br>
-        Size: {{.Size}} | Color: {{.Color}}<br>
-    </li>
-    <hr>
+  <div class="profile-card">
+    <h2>История покупок</h2>
+    {{if .purchasedClothes}}
+      {{range .purchasedClothes}}
+      <div class="order-item">
+        {{if .ImageURL}}<img src="{{.ImageURL}}" alt="{{.Title}}">{{else}}<img src="" alt="" style="background:#f0f0f0;">{{end}}
+        <div class="order-item-info">
+          <h4>{{.Title}}</h4>
+          <p>{{.Brand}} &mdash; Размер: {{.Size}}, Цвет: {{.Color}}</p>
+        </div>
+        <div class="order-item-price">{{printf "%.0f" .Price}} ₸</div>
+      </div>
+      {{end}}
+    {{else}}
+      <p style="color:#999;padding:20px 0;">Вы ещё ничего не купили.</p>
+      <a href="/clothes" class="btn btn-primary">Перейти в каталог</a>
     {{end}}
-</ul>
-{{else}}
-<p>You haven't purchased any clothes yet.</p>
-{{end}}
+  </div>
 
-<a href="/clothes">
-    <button>Return to Clothes</button>
-</a>
-
-<h2>Helpdesk</h2>
-<p>If you need support, click the button below:</p>
-<a href="/helpdesk">
-    <button>Contact Support</button>
-</a>
-
-<h2>Live Support Chat</h2>
-{{if .chatActive}}
-<p><a href="/chat/{{.chatID}}"><button>Go to Active Chat</button></a></p>
-{{else}}
-<form action="/chat/start/{{.user.ID}}" method="POST">
-    <button type="submit">Start a New Chat</button>
-</form>
-{{end}}
-
-<br><br>
-<a href="/auth/logout"><button>Logout</button></a>
+  <div class="profile-card">
+    <h2>Поддержка</h2>
+    <p style="color:#666;margin-bottom:16px;">Есть вопросы? Свяжитесь с нашей службой поддержки или начните чат.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="/helpdesk" class="btn btn-outline">Написать в поддержку</a>
+      {{if .chatActive}}
+        <a href="/chat/{{.chatID}}" class="btn btn-primary">Перейти в активный чат</a>
+      {{else}}
+        <form action="/chat/start/{{.user.ID}}" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-ghost">Начать чат</button>
+        </form>
+      {{end}}
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile">Профиль</a>
+      <a href="/auth/logout">Выйти</a>
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

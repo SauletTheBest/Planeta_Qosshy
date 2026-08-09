@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planeta Qosshy — Интернет-магазин одежды</title>
+  <link rel="stylesheet" href="./static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+
+<body>
+
+  <!-- ШАПКА -->
+  <header class="header">
+    <a href="/" class="logo">PLANETA QOSSHY</a>
+    <nav class="nav">
+      <a href="/" class="active">Главная</a>
+      <a href="/clothes">Каталог</a>
+      {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+    </nav>
+    <div class="header-actions">
+      {{if .isLoggedIn}}
+      {{if .isAdmin}}<a href="/admin/" class="btn btn-outline">Админка</a>{{end}}
+      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+      {{else}}
+      <a href="/auth/login" class="btn btn-outline">Войти</a>
+      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
+      {{end}}
+    </div>
+  </header>
+
+  <main>
+    <!-- ИНТЕРАКТИВНАЯ КАРУСЕЛЬ (Hero Slider) -->
+    <section class="hero-carousel" style="position:relative;overflow:hidden;border-radius:12px;margin:20px 5%;box-shadow:0 4px 20px rgba(0,0,0,0.15);">
+      <div class="carousel-track" id="carouselTrack" style="display:flex;transition:transform 0.5s ease-in-out;">
+        <!-- Слайд 1: Новая коллекция -->
+        <div class="carousel-slide" style="min-width:100%;height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') center/cover no-repeat;">
+          <div style="max-width:600px;padding:20px;">
+            <h1 style="font-size:2.4rem;font-weight:800;margin-bottom:12px;line-height:1.2;color:#fff;">Новая коллекция<br>Осень / Зима</h1>
+            <p style="font-size:1.1rem;margin-bottom:24px;color:rgba(255,255,255,0.9);">Минималистичный стиль и максимальный комфорт.<br>Обнови свой гардероб прямо сейчас.</p>
+            <a href="/clothes" class="btn btn-primary" style="padding:12px 28px;font-size:1rem;background:#fff;color:#111;border:none;font-weight:700;">Перейти в каталог</a>
+          </div>
+        </div>
+        <!-- Слайд 2: Скидки и Акции -->
+        <div class="carousel-slide" style="min-width:100%;height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600') center/cover no-repeat;">
+          <div style="max-width:600px;padding:20px;">
+            <h1 style="font-size:2.4rem;font-weight:800;margin-bottom:12px;line-height:1.2;color:#fff;">Скидка 15% на первый заказ</h1>
+            <p style="font-size:1.1rem;margin-bottom:24px;color:rgba(255,255,255,0.9);">Зарегистрируйся на сайте и заказывай премиальную одежду по лучшим ценам.</p>
+            <a href="/auth/register" class="btn btn-primary" style="padding:12px 28px;font-size:1rem;background:#fff;color:#111;border:none;font-weight:700;">Зарегистрироваться</a>
+          </div>
+        </div>
+        <!-- Слайд 3: Доставка -->
+        <div class="carousel-slide" style="min-width:100%;height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600') center/cover no-repeat;">
+          <div style="max-width:600px;padding:20px;">
+            <h1 style="font-size:2.4rem;font-weight:800;margin-bottom:12px;line-height:1.2;color:#fff;">Доставка по всему Казахстану</h1>
+            <p style="font-size:1.1rem;margin-bottom:24px;color:rgba(255,255,255,0.9);">Удобный выбор размеров, гарантия качества и быстрая отправка заказов.</p>
+            <a href="/clothes" class="btn btn-primary" style="padding:12px 28px;font-size:1rem;background:#fff;color:#111;border:none;font-weight:700;">Выбрать вещи</a>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3;">
+        <div class="carousel-dot active" onclick="goToSlide(0)" style="width:24px;height:10px;border-radius:5px;background:#fff;cursor:pointer;transition:all 0.3s;"></div>
+        <div class="carousel-dot" onclick="goToSlide(1)" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5);cursor:pointer;transition:all 0.3s;"></div>
+        <div class="carousel-dot" onclick="goToSlide(2)" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5);cursor:pointer;transition:all 0.3s;"></div>
+      </div>
+    </section>
+
+    <!-- ПОПУЛЯРНЫЕ ТОВАРЫ ИЗ БАЗЫ ДАННЫХ -->
+    <section class="products-section" id="catalog">
+      <h2>Новинки и Популярные товары</h2>
+      <div class="product-grid">
+        {{range .featuredClothes}}
+        <div class="product-card">
+          <div class="product-image">
+            {{if .ImageURL}}
+              <img src="{{.ImageURL}}" alt="{{.Title}}">
+            {{else}}
+              <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" alt="{{.Title}}">
+            {{end}}
+          </div>
+          <div class="product-card-home-body">
+            <h3>{{.Title}}</h3>
+            <p class="price-home">{{printf "%.0f" .Price}} ₸</p>
+            <a href="/clothes/{{.ID}}" class="btn-buy">Подробнее</a>
+          </div>
+        </div>
+        {{else}}
+        <div style="grid-column: 1 / -1; padding: 40px; color: #888; text-align: center;">
+          <p style="font-size:1.1rem;margin-bottom:12px;">Пока нет товаров на витрине.</p>
+          <a href="/admin/clothes/new" class="btn btn-outline">Добавить первый товар в админке</a>
+        </div>
+        {{end}}
+      </div>
+      <div style="margin-top:40px;text-align:center;">
+        <a href="/clothes" class="btn btn-outline" style="padding:12px 28px;">Смотреть весь каталог →</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ПОДВАЛ -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h3>PLANETA QOSSHY</h3>
+        <p>Стиль и комфорт на каждый день.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Навигация</h4>
+        <a href="/">Главная</a>
+        <a href="/clothes">Каталог</a>
+        <a href="/about">О нас</a>
+      </div>
+      <div class="footer-links">
+        <h4>Аккаунт</h4>
+        {{if .isLoggedIn}}
+        <a href="/orders">Мои заказы</a>
+        <a href="/profile">Профиль</a>
+        <a href="/auth/logout">Выйти</a>
+        {{else}}
+        <a href="/auth/login">Войти</a>
+        <a href="/auth/register">Регистрация</a>
+        {{end}}
+      </div>
+      <div class="footer-links">
+        <h4>Контакты</h4>
+        <p>support@planetaqosshy.kz</p>
+        <p>+7 (777) 888-80-80</p>
+        <p>Улица Республики, 77</p>
+        <div class="social-links" style="margin-top:12px;">
+          <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+            <img src="/static/image/2gis.png" alt="2GIS">
+          </a>
+          <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+            <img src="/static/image/instagram.png" alt="Instagram">
+          </a>
+          <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+            <img src="/static/image/whatsapp.png" alt="WhatsApp">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    function goToSlide(index) {
+      currentSlide = index;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.style.width = (i === index) ? '24px' : '10px';
+        dot.style.borderRadius = (i === index) ? '5px' : '50%';
+        dot.style.background = (i === index) ? '#fff' : 'rgba(255,255,255,0.5)';
+      });
+    }
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % 3;
+      goToSlide(currentSlide);
+    }, 5000);
+  </script>
+
+</body>
+</html>

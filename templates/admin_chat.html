@@ -1,69 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Chat</title>
+  <title>Чат #{{.chatID}} — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Chat with User</h1>
-
-<div id="chat-box">
-  {{range .messages}}
-  <p><strong>{{.SenderID}}:</strong> {{.Content}}</p>
-  {{end}}
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/admin/">Админ</a>
+    <a href="/clothes">Сайт</a>
+  </nav>
+  <div class="header-actions">
+    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Чат с пользователем #{{.chatID}}</h1>
+    <div style="display:flex;gap:10px;">
+      <a href="/admin/chats" class="btn btn-ghost">← К чатам</a>
+      <form action="/admin/chat/{{.chatID}}/close" method="POST" onsubmit="return confirm('Закрыть чат?');">
+        <button type="submit" class="btn btn-danger">Закрыть чат</button>
+      </form>
+    </div>
+  </div>
+  <div class="chat-layout">
+    <div class="chat-box" id="chat-box">
+      {{range .messages}}
+      <div class="chat-message">
+        <strong>{{.SenderID}}</strong>
+        <div class="chat-bubble">{{.Content}}</div>
+      </div>
+      {{else}}
+      <p style="color:#999;text-align:center;padding:40px;">Сообщений пока нет</p>
+      {{end}}
+    </div>
+    <form class="chat-form" action="/admin/chat/{{.chatID}}/send" method="POST">
+      <input type="text" name="message" placeholder="Ответить пользователю..." required>
+      <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+  </div>
 </div>
-
-<form action="/admin/chat/{{.chatID}}/send" method="POST">
-  <input type="text" name="message" id="message-input" placeholder="Type a response..." required>
-  <button type="submit" id="send-button">Send</button>
-</form>
-
-<br>
-<a href="/admin/chats"><button>Back to Chats</button></a>
-</body>
-
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
 <script>
-  var ws = new WebSocket("wss://carsellproject.onrender.com/wss");
-
-  ws.onopen = function() {
-  console.log("WebSocket connection established.");
-};
-
-
-  ws.onmessage = function(event) {
-    var message = JSON.parse(event.data);
-    var chatBox = document.getElementById("chat-box");
-
-    var messageElement = document.createElement("p");
-    messageElement.innerHTML = "<strong>" + message.sender_id + ":</strong> " + message.content;
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  };
-
-
-  // Function to send a new message to the server
-  function sendMessage() {
-    var input = document.getElementById("message-input");
-    var messageContent = input.value;
-    var chatId = "{{.chatID}}"
-
-    var message = {
-      chat_id: chatId,
-      sender_id: "Admin",  // Исправлено с Sender на sender_id
-      content: messageContent,
-      created_at: new Date().toISOString() // Добавлено время
-    };
-
-    ws.send(JSON.stringify(message));
-    input.value = "";
-  }
-
-  // Attach the send message function to the "Send" button
-  document.getElementById("send-button").onclick = function() {
-  sendMessage();
-};
+  var chatBox = document.getElementById('chat-box');
+  if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 </script>
-
-
+</body>
 </html>

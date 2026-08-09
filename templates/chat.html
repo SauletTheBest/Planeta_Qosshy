@@ -1,67 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Chat</title>
+  <title>Чат с поддержкой — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Live Chat</h1>
-<div id="chat-box">
-  {{range .messages}}
-  <p><strong>{{.SenderID}}:</strong> {{.Content}}</p>
-  {{end}}
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+    <a href="/profile" style="color:#999;font-size:.88rem;">← Назад в профиль</a>
+    <h1 class="page-title" style="margin:0;">Чат с поддержкой</h1>
+  </div>
+  <div class="chat-layout">
+    <div class="chat-box" id="chat-box">
+      {{range .messages}}
+      <div class="chat-message">
+        <strong>{{.SenderID}}</strong>
+        <div class="chat-bubble">{{.Content}}</div>
+      </div>
+      {{else}}
+      <p style="color:#999;text-align:center;padding:40px;">Начните диалог с нашей поддержкой</p>
+      {{end}}
+    </div>
+    <form class="chat-form" action="/chat/{{.chatID}}/send" method="POST">
+      <input type="text" id="message-input" name="message" placeholder="Введите сообщение..." required>
+      <button type="submit" id="send-button" class="btn btn-primary">Отправить</button>
+    </form>
+  </div>
 </div>
-
-<form action="/chat/{{.chatID}}/send" method="POST">
-  <input type="text" name="message" id="message-input" placeholder="Type your message..." required>
-  <button type="submit" id="send-button">Send</button>
-</form>
-
-<br>
-<a href="/profile"><button>Back to Profile</button></a>
-</body>
-
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 <script>
-  var ws = new WebSocket("wss://carsellproject.onrender.com/wss");
+  var wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  var ws = new WebSocket(wsProtocol + '//' + window.location.host + '/wss');
 
-  ws.onopen = function() {
-    console.log("WebSocket connection established.");
-  };
+  ws.onopen = function() { console.log('WebSocket подключён.'); };
 
   ws.onmessage = function(event) {
     var message = JSON.parse(event.data);
-    var chatBox = document.getElementById("chat-box");
-
-    var messageElement = document.createElement("p");
-    messageElement.innerHTML = "<strong>" + message.sender_id + ":</strong> " + message.content;
-    chatBox.appendChild(messageElement);
+    var chatBox = document.getElementById('chat-box');
+    var div = document.createElement('div');
+    div.className = 'chat-message';
+    div.innerHTML = '<strong>' + message.sender_id + '</strong><div class="chat-bubble">' + message.content + '</div>';
+    chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   };
 
-
-  // Function to send a new message to the server
-  function sendMessage() {
-    var input = document.getElementById("message-input");
-    var messageContent = input.value;
+  document.getElementById('send-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    var input = document.getElementById('message-input');
+    var messageContent = input.value.trim();
+    if (!messageContent) return;
     var message = {
-      chat_id: "{{.chatID}}",
-      sender_id: "User",  // Исправлено с Sender на sender_id
+      chat_id: '{{.chatID}}',
+      sender_id: 'Пользователь',
       content: messageContent,
-      created_at: new Date().toISOString() // Добавлено время
+      created_at: new Date().toISOString()
     };
-
     ws.send(JSON.stringify(message));
-    input.value = "";
-  }
-
-
-  // Attach the send message function to the "Send" button
-  document.getElementById("send-button").onclick = function() {
-    sendMessage();
-  };
+    input.value = '';
+  });
 </script>
-
-
-
+</body>
 </html>

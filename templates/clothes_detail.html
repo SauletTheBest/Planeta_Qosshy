@@ -1,38 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{.item.Title}} - Details</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <title>{{.item.Title}} — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>{{.item.Title}}</h1>
-
-{{if .item.ImageURL}}
-<img src="{{.item.ImageURL}}" alt="{{.item.Title}}" style="max-width: 400px; height: auto;">
-{{else}}
-<p>No image available</p>
-{{end}}
-
-<table border="1">
-  <tr><th>Title</th><td>{{.item.Title}}</td></tr>
-  <tr><th>Brand</th><td>{{.item.Brand}}</td></tr>
-  <tr><th>Category</th><td>{{.item.Category}}</td></tr>
-  <tr><th>Size</th><td>{{.item.Size}}</td></tr>
-  <tr><th>Color</th><td>{{.item.Color}}</td></tr>
-  <tr><th>Price</th><td>${{printf "%.2f" .item.Price}}</td></tr>
-  <tr><th>Stock</th><td>{{.item.Stock}} in stock</td></tr>
-  <tr><th>Description</th><td>{{.item.Description}}</td></tr>
-</table>
-
-<br>
-{{if gt .item.Stock 0}}
-<a href="/payment/{{.item.ID}}"><button>Buy This Item</button></a>
-{{else}}
-<p style="color: red; font-weight: bold;">Out of Stock</p>
-{{end}}
-
-<p><a href="/clothes">Back to Clothes Catalog</a></p>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+  </nav>
+  <div class="header-actions">
+    {{if .isLoggedIn}}
+      {{if .isAdmin}}<a href="/admin/" class="btn btn-outline">Админка</a>{{end}}
+      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+    {{else}}
+      <a href="/auth/login" class="btn btn-outline">Войти</a>
+      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
+    {{end}}
+  </div>
+</header>
+<div class="page-content">
+  <p style="margin-bottom:24px;font-size:.88rem;color:#999;">
+    <a href="/clothes" style="color:#999;">← Назад в каталог</a>
+  </p>
+  <div class="detail-layout">
+    <div>
+      {{if .item.ImageURL}}
+        <img class="detail-img" src="{{.item.ImageURL}}" alt="{{.item.Title}}">
+      {{else}}
+        <div class="detail-img-placeholder">🧥</div>
+      {{end}}
+    </div>
+    <div class="detail-info">
+      <p class="brand">{{.item.Brand}} &mdash; {{.item.Category}}</p>
+      <h1>{{.item.Title}}</h1>
+      <p class="price">{{printf "%.0f" .item.Price}} ₸</p>
+      <div class="detail-tags">
+        <span class="tag">Размер: {{.item.Size}}</span>
+        <span class="tag">Цвет: {{.item.Color}}</span>
+        <span class="tag">В наличии: {{.item.Stock}} шт.</span>
+      </div>
+      {{if .item.Description}}
+      <p class="desc">{{.item.Description}}</p>
+      {{end}}
+      {{if gt .item.Stock 0}}
+        {{if .isLoggedIn}}
+          <a href="/payment/{{.item.ID}}" class="btn btn-primary btn-block">Купить — {{printf "%.0f" .item.Price}} ₸</a>
+        {{else}}
+          <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>
+        {{end}}
+      {{else}}
+        <div class="alert alert-error">⚠️ Товар временно отсутствует на складе.</div>
+      {{end}}
+      <div style="margin-top:12px;">
+        <a href="/helpdesk" class="btn btn-ghost btn-block">Есть вопрос? Написать в поддержку</a>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      {{if .isLoggedIn}}
+        <a href="/orders">Мои заказы</a>
+        <a href="/profile">Профиль</a>
+        <a href="/auth/logout">Выйти</a>
+      {{else}}
+        <a href="/auth/login">Войти</a>
+        <a href="/auth/register">Регистрация</a>
+      {{end}}
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

@@ -1,111 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clothes Catalog - Planeta Qosshy</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <title>Каталог — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<button onclick="logout()">Logout</button>
-<a href="/profile"><button>Profile</button></a>
-<a href="/orders"><button>My Orders</button></a>
-
-<h1>Clothes Catalog</h1>
-
-<!-- Filtering and Sorting Form -->
-<form method="GET" action="/clothes">
-  <label for="category">Category:</label>
-  <input type="text" id="category" name="category" value="{{.category}}" placeholder="e.g. Hoodies, T-Shirts">
-
-  <label for="brand">Brand:</label>
-  <input type="text" id="brand" name="brand" value="{{.brand}}" placeholder="e.g. Nike, Adidas">
-
-  <label for="size">Size:</label>
-  <select id="size" name="size">
-    <option value="">-- All Sizes --</option>
-    <option value="S" {{if eq .size "S"}}selected{{end}}>S</option>
-    <option value="M" {{if eq .size "M"}}selected{{end}}>M</option>
-    <option value="L" {{if eq .size "L"}}selected{{end}}>L</option>
-    <option value="XL" {{if eq .size "XL"}}selected{{end}}>XL</option>
-    <option value="XXL" {{if eq .size "XXL"}}selected{{end}}>XXL</option>
-  </select>
-
-  <label for="min_price">Min Price:</label>
-  <input type="number" id="min_price" name="min_price" value="{{.min_price}}">
-
-  <label for="max_price">Max Price:</label>
-  <input type="number" id="max_price" name="max_price" value="{{.max_price}}">
-
-  <label for="sort">Sort By:</label>
-  <select id="sort" name="sort">
-    <option value="">-- Select --</option>
-    <option value="price_asc" {{if eq .sort "price_asc"}}selected{{end}}>Price: Low to High</option>
-    <option value="price_desc" {{if eq .sort "price_desc"}}selected{{end}}>Price: High to Low</option>
-    <option value="newest" {{if eq .sort "newest"}}selected{{end}}>Newest Arrivals</option>
-  </select>
-
-  <button type="submit">Apply Filters</button>
-</form>
-
-<br>
-
-<!-- Items List Table -->
-<table border="1">
-  <thead>
-  <tr>
-    <th>Title</th>
-    <th>Brand</th>
-    <th>Category</th>
-    <th>Size</th>
-    <th>Color</th>
-    <th>Price</th>
-    <th>Stock</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  {{range .clothes}}
-  <tr>
-    <td>{{.Title}}</td>
-    <td>{{.Brand}}</td>
-    <td>{{.Category}}</td>
-    <td>{{.Size}}</td>
-    <td>{{.Color}}</td>
-    <td>${{printf "%.2f" .Price}}</td>
-    <td>{{.Stock}} available</td>
-    <td><a href="/clothes/{{.ID}}">View Details</a></td>
-  </tr>
-  {{else}}
-  <tr>
-    <td colspan="8">No clothing items found matching criteria.</td>
-  </tr>
-  {{end}}
-  </tbody>
-</table>
-
-<!-- Pagination -->
-<div>
-  {{if gt .page 1}}
-  <a href="/clothes?page={{sub .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}">Previous</a>
-  {{end}}
-
-  <span>Page {{.page}} of {{ceil (div .totalItems .limit)}}</span>
-
-  {{if lt (mul .page .limit) .totalItems}}
-  <a href="/clothes?page={{add .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}">Next</a>
-  {{end}}
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes" class="active">Каталог</a>
+    {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+  </nav>
+  <div class="header-actions">
+    {{if .isLoggedIn}}
+      {{if .isAdmin}}<a href="/admin/" class="btn btn-outline">Админка</a>{{end}}
+      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+    {{else}}
+      <a href="/auth/login" class="btn btn-outline">Войти</a>
+      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
+    {{end}}
+  </div>
+</header>
+<div class="page-content">
+  <h1 class="page-title">Каталог одежды</h1>
+  <form method="GET" action="/clothes" class="filter-bar">
+    <div class="form-group">
+      <label for="category">Категория</label>
+      <select id="category" name="category">
+        <option value="">Все категории</option>
+        <option value="Футболки" {{if eq .category "Футболки"}}selected{{end}}>Футболки</option>
+        <option value="Худи" {{if eq .category "Худи"}}selected{{end}}>Худи и Свитшоты</option>
+        <option value="Куртки" {{if eq .category "Куртки"}}selected{{end}}>Куртки и Пальто</option>
+        <option value="Брюки" {{if eq .category "Брюки"}}selected{{end}}>Брюки и Джинсы</option>
+        <option value="Обувь" {{if eq .category "Обувь"}}selected{{end}}>Обувь</option>
+        <option value="Аксессуары" {{if eq .category "Аксессуары"}}selected{{end}}>Аксессуары</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="brand">Бренд</label>
+      <input type="text" id="brand" name="brand" value="{{.brand}}" placeholder="Nike, Adidas...">
+    </div>
+    <div class="form-group">
+      <label for="size">Размер</label>
+      <select id="size" name="size">
+        <option value="">Все размеры</option>
+        <option value="S"   {{if eq .size "S"}}selected{{end}}>S</option>
+        <option value="M"   {{if eq .size "M"}}selected{{end}}>M</option>
+        <option value="L"   {{if eq .size "L"}}selected{{end}}>L</option>
+        <option value="XL"  {{if eq .size "XL"}}selected{{end}}>XL</option>
+        <option value="XXL" {{if eq .size "XXL"}}selected{{end}}>XXL</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="min_price">Цена от ₸</label>
+      <input type="number" id="min_price" name="min_price" value="{{.min_price}}" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label for="max_price">Цена до ₸</label>
+      <input type="number" id="max_price" name="max_price" value="{{.max_price}}" placeholder="999999">
+    </div>
+    <div class="form-group">
+      <label for="sort">Сортировка</label>
+      <select id="sort" name="sort">
+        <option value="">По умолчанию</option>
+        <option value="price_asc"  {{if eq .sort "price_asc"}}selected{{end}}>Цена ↑</option>
+        <option value="price_desc" {{if eq .sort "price_desc"}}selected{{end}}>Цена ↓</option>
+        <option value="newest"     {{if eq .sort "newest"}}selected{{end}}>Новинки</option>
+      </select>
+    </div>
+    <div style="align-self:flex-end;">
+      <button type="submit" class="btn btn-primary">Применить</button>
+    </div>
+  </form>
+  <div class="product-grid">
+    {{range .clothes}}
+    <div class="product-card">
+      {{if .ImageURL}}
+        <img class="product-card-img" src="{{.ImageURL}}" alt="{{.Title}}">
+      {{else}}
+        <div class="product-card-placeholder">🧥</div>
+      {{end}}
+      <div class="product-card-body">
+        <p class="brand">{{.Brand}}</p>
+        <h3>{{.Title}}</h3>
+        <div class="meta">
+          <span class="tag">{{.Category}}</span>
+          <span class="tag">{{.Size}}</span>
+          <span class="tag">{{.Color}}</span>
+        </div>
+        <p class="price">{{printf "%.0f" .Price}} ₸</p>
+        <a href="/clothes/{{.ID}}" class="btn btn-primary btn-block">Подробнее</a>
+      </div>
+    </div>
+    {{else}}
+    <div style="grid-column:1/-1;text-align:center;padding:60px;color:#999;">
+      <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+      <p>Товары не найдены. Попробуйте изменить фильтры.</p>
+    </div>
+    {{end}}
+  </div>
+  <div class="pagination">
+    {{if gt .page 1}}
+    <a href="/clothes?page={{sub .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}" class="btn btn-ghost">← Назад</a>
+    {{end}}
+    <span>Страница {{.page}} из {{ceil (div .totalItems .limit)}}</span>
+    {{if lt (mul .page .limit) .totalItems}}
+    <a href="/clothes?page={{add .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}" class="btn btn-ghost">Вперёд →</a>
+    {{end}}
+  </div>
 </div>
-
-<script>
-  function logout() {
-    fetch('/auth/logout', { method: 'POST', credentials: 'same-origin' })
-      .then(response => {
-        if (response.ok) window.location.href = '/auth/login';
-        else alert('Failed to logout');
-      })
-      .catch(error => console.error('Error:', error));
-  }
-</script>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      {{if .isLoggedIn}}
+        <a href="/orders">Мои заказы</a>
+        <a href="/profile">Профиль</a>
+        <a href="/auth/logout">Выйти</a>
+      {{else}}
+        <a href="/auth/login">Войти</a>
+        <a href="/auth/register">Регистрация</a>
+      {{end}}
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>

@@ -1,45 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment - Planeta Qosshy</title>
+  <title>Оформление заказа — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Checkout: {{.item.Title}}</h1>
-<p>Total Price: <strong>${{printf "%.2f" .amount}}</strong></p>
-
-<form action="/orders/{{.clothesID}}" method="POST">
-  <label for="card_name">Cardholder Name:</label><br>
-  <input type="text" id="card_name" name="card_name" required><br><br>
-
-  <label for="card_number">Card Number:</label><br>
-  <input type="text" id="card_number" name="card_number" maxlength="19" placeholder="1234 5678 9012 3456" required oninput="this.value = this.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim();"><br><br>
-
-  <label for="expiry_date">Expiry Date (MM/YY):</label><br>
-  <input type="text" id="expiry_date" name="expiry_date" maxlength="5" placeholder="MM/YY" required oninput="formatExpiryDate(this)"><br><br>
-
-  <label for="cvv">CVV:</label><br>
-  <input type="text" id="cvv" name="cvv" maxlength="3" required oninput="this.value = this.value.replace(/\D/g, '');"><br><br>
-
-  <input type="hidden" id="user_id" name="user_id" value="{{.userID}}">
-  <input type="hidden" id="clothes_id" name="clothes_id" value="{{.clothesID}}">
-  <input type="hidden" id="amount" name="amount" value="{{.amount}}">
-
-  <button type="submit">Pay ${{printf "%.2f" .amount}}</button>
-</form>
-
-<br>
-<a href="/clothes"><button>Cancel</button></a>
-</body>
-
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <h1 class="page-title">Оформление заказа</h1>
+  <div class="payment-layout">
+    <div class="payment-card">
+      <h2>Данные карты</h2>
+      <form action="/orders/{{.clothesID}}" method="POST">
+        <div class="form-group">
+          <label for="card_name">Имя владельца карты</label>
+          <input type="text" id="card_name" name="card_name" placeholder="Иван Иванов" required>
+        </div>
+        <div class="form-group">
+          <label for="card_number">Номер карты</label>
+          <input type="text" id="card_number" name="card_number" maxlength="19" placeholder="1234 5678 9012 3456" required
+            oninput="this.value=this.value.replace(/\D/g,'').replace(/(\d{4})/g,'$1 ').trim()">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label for="expiry_date">Срок (ММ/ГГ)</label>
+            <input type="text" id="expiry_date" name="expiry_date" maxlength="5" placeholder="MM/ГГ" required oninput="formatExpiry(this)">
+          </div>
+          <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" name="cvv" maxlength="3" placeholder="123" required oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+        </div>
+        <input type="hidden" name="user_id"    value="{{.userID}}">
+        <input type="hidden" name="clothes_id" value="{{.clothesID}}">
+        <input type="hidden" name="amount"     value="{{.amount}}">
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">
+          Оплатить — {{printf "%.0f" .amount}} ₸
+        </button>
+      </form>
+      <div style="margin-top:16px;">
+        <a href="/clothes" class="btn btn-ghost btn-block">Отмена</a>
+      </div>
+    </div>
+    <div class="order-summary">
+      <h3>Состав заказа</h3>
+      {{if .item.ImageURL}}
+        <img class="summary-img" src="{{.item.ImageURL}}" alt="{{.item.Title}}">
+      {{end}}
+      <div class="summary-row"><span>Товар</span><span>{{.item.Title}}</span></div>
+      <div class="summary-row"><span>Бренд</span><span>{{.item.Brand}}</span></div>
+      <div class="summary-row"><span>Размер</span><span>{{.item.Size}}</span></div>
+      <div class="summary-row"><span>Цвет</span><span>{{.item.Color}}</span></div>
+      <div class="summary-row total"><span>Итого</span><span>{{printf "%.0f" .amount}} ₸</span></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile">Профиль</a>
+      <a href="/auth/logout">Выйти</a>
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 <script>
-  function formatExpiryDate(input) {
-    let value = input.value.replace(/\D/g, '');
-    if (value.length > 2) {
-      value = value.substring(0, 2) + '/' + value.substring(2, 4);
-    }
-    input.value = value.substring(0, 5);
-  }
+function formatExpiry(input){
+  let v=input.value.replace(/\D/g,'');
+  if(v.length>2) v=v.substring(0,2)+'/'+v.substring(2,4);
+  input.value=v.substring(0,5);
+}
 </script>
+</body>
 </html>

@@ -1,50 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Clothes Inventory</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товары — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Admin - Clothes Inventory</h1>
-<a href="/admin/clothes/new">Add New Item</a>
-
-<table border="1">
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/admin/">Админ</a>
+    <a href="/clothes">Сайт</a>
+  </nav>
+  <div class="header-actions">
+    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Управление товарами</h1>
+    <a href="/admin/clothes/new" class="btn btn-primary">+ Добавить товар</a>
+  </div>
+  <nav class="admin-nav">
+    <a href="/admin/">Главная</a>
+    <a href="/admin/clothes" class="active">Товары</a>
+    <a href="/admin/clothes/new">Добавить товар</a>
+    <a href="/admin/chats">Чаты поддержки</a>
+  </nav>
+  <table class="data-table">
     <thead>
-    <tr>
+      <tr>
         <th>ID</th>
-        <th>Title</th>
-        <th>Brand</th>
-        <th>Category</th>
-        <th>Size</th>
-        <th>Color</th>
-        <th>Price</th>
-        <th>Stock</th>
-        <th>Actions</th>
-    </tr>
+        <th>Название</th>
+        <th>Бренд</th>
+        <th>Категория</th>
+        <th>Размер</th>
+        <th>Цена (₸)</th>
+        <th>Остаток</th>
+        <th>Действия</th>
+      </tr>
     </thead>
     <tbody>
-    {{range .items}}
-    <tr>
+      {{range .clothes}}
+      <tr>
         <td>{{.ID}}</td>
         <td>{{.Title}}</td>
         <td>{{.Brand}}</td>
         <td>{{.Category}}</td>
         <td>{{.Size}}</td>
-        <td>{{.Color}}</td>
-        <td>${{printf "%.2f" .Price}}</td>
+        <td>{{printf "%.0f" .Price}} ₸</td>
         <td>{{.Stock}}</td>
-        <td>
-            <a href="/admin/clothes/{{.ID}}/edit">Edit</a>
-            <form action="/admin/clothes/{{.ID}}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                <button type="submit">Delete</button>
-            </form>
+        <td style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="/admin/clothes/{{.ID}}/edit" class="btn btn-ghost">Изменить</a>
+          <form action="/admin/clothes/{{.ID}}/delete" method="POST" onsubmit="return confirm('Удалить этот товар?');">
+            <button type="submit" class="btn btn-danger">Удалить</button>
+          </form>
         </td>
-    </tr>
-    {{end}}
+      </tr>
+      {{else}}
+      <tr><td colspan="8" style="text-align:center;color:#999;padding:40px;">Товары не найдены</td></tr>
+      {{end}}
     </tbody>
-</table>
-
-<p><a href="/admin">Back to Admin Dashboard</a></p>
+  </table>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
 </body>
 </html>

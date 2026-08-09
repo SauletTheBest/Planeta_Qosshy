@@ -1,16 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
+  <title>Панель администратора — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Admin Dashboard</h1>
-<ul>
-  <li><a href="/admin/clothes">View All Clothes</a></li>
-  <li><a href="/admin/clothes/new">Add New Clothing Item</a></li>
-  <li><a href="/admin/chats">View All Customer Chats</a></li>
-</ul>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/admin/">Админ</a>
+    <a href="/clothes">Сайт</a>
+  </nav>
+  <div class="header-actions">
+    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Панель управления</h1>
+    <a href="/clothes" class="btn btn-outline">← На сайт</a>
+  </div>
+  <nav class="admin-nav">
+    <a href="/admin/" class="active">Главная</a>
+    <a href="/admin/clothes">Товары</a>
+    <a href="/admin/clothes/new">Добавить товар</a>
+    <a href="/admin/chats">Чаты поддержки</a>
+  </nav>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">🧥</div>
+      <div class="stat-label">Товары</div>
+      <div style="margin-top:12px;"><a href="/admin/clothes" class="btn btn-outline">Управление</a></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">💬</div>
+      <div class="stat-label">Чаты</div>
+      <div style="margin-top:12px;"><a href="/admin/chats" class="btn btn-outline">Смотреть</a></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">➕</div>
+      <div class="stat-label">Добавить товар</div>
+      <div style="margin-top:12px;"><a href="/admin/clothes/new" class="btn btn-primary">Создать</a></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
 </body>
 </html>

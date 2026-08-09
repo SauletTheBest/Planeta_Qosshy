@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О нас — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+  <style>
+    .about-hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') center/cover no-repeat;
+      color: #fff; padding: 100px 5%; text-align: center;
+    }
+    .about-hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; }
+    .about-hero p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 650px; margin: 0 auto; }
+
+    .about-section { max-width: 960px; margin: 60px auto; padding: 0 20px; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 60px; }
+    .about-grid img { width: 100%; border-radius: 12px; object-fit: cover; height: 360px; }
+    .about-text h2 { font-size: 28px; font-weight: 800; margin-bottom: 16px; }
+    .about-text p { color: #555; line-height: 1.8; margin-bottom: 16px; }
+
+    .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 40px; }
+    .value-card { background: #f9f9f9; border-radius: 8px; padding: 28px; border: 1px solid #eee; }
+    .value-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .value-card p { color: #666; font-size: 0.9rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/about" class="active">О нас</a>
+    {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+  </nav>
+  <div class="header-actions">
+    {{if .isLoggedIn}}
+      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+    {{else}}
+      <a href="/auth/login" class="btn btn-outline">Войти</a>
+      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
+    {{end}}
+  </div>
+</header>
+
+<main>
+  <section class="about-hero">
+    <h1>О магазине Planeta Qosshy</h1>
+    <p>Мы создаем удобный гардероб для повседневной жизни. Современный стиль, честные цены и внимание к деталям.</p>
+  </section>
+
+  <div class="about-section">
+    <div class="about-grid">
+      <div>
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800" alt="Наш магазин">
+      </div>
+      <div class="about-text">
+        <h2>Наша история</h2>
+        <p>Planeta Qosshy — магазин одежды в Казахстане. Мы начинали с небольшой подборки качественных вещей и стремимся сделать покупку одежды простой и приятной.</p>
+        <p>Каждая модель в нашем каталоге отбирается вручную. Мы следим за качеством материалов, посадки и пошива.</p>
+      </div>
+    </div>
+
+    <h2 style="font-size: 28px; font-weight: 800; text-align: center; margin-top: 60px;">Наши принципы</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <h3>✨ Качество материалов</h3>
+        <p>Мы отбираем вещи из натуральных и износостойких тканей, которые сохраняют форму и цвет после стирок.</p>
+      </div>
+      <div class="value-card">
+        <h3>🤝 Честный сервис</h3>
+        <p>Быстрая отгрузка, прозрачные цены в тенге (₸) и помощь с выбором размера в любое время.</p>
+      </div>
+      <div class="value-card">
+        <h3>🚀 Развитие</h3>
+        <p>Мы регулярно обновляем каталог новыми коллекциями и учитываем отзывы каждого нашего покупателя.</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 60px;">
+      <a href="/clothes" class="btn btn-primary" style="padding: 14px 36px; font-size: 1rem;">Перейти в каталог одежды</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      {{if .isLoggedIn}}
+        <a href="/orders">Мои заказы</a>
+        <a href="/profile">Профиль</a>
+        <a href="/auth/logout">Выйти</a>
+      {{else}}
+        <a href="/auth/login">Войти</a>
+        <a href="/auth/register">Регистрация</a>
+      {{end}}
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
+
+</body>
+</html>

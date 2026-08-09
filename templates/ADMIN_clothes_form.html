@@ -1,46 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{if .item}}Edit Clothing Item{{else}}Add New Clothes{{end}}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{if .clothes}}Редактировать{{else}}Новый{{end}} товар — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>{{if .item}}Edit Clothing Item{{else}}Add New Clothes{{end}}</h1>
-
-{{if .error}}<p style="color: red;">{{.error}}</p>{{end}}
-
-<form action="{{.action}}" method="POST">
-    <label for="Title">Title:</label>
-    <input type="text" id="title" name="Title" value="{{if .item}}{{.item.Title}}{{end}}" required><br><br>
-
-    <label for="Brand">Brand:</label>
-    <input type="text" id="brand" name="Brand" value="{{if .item}}{{.item.Brand}}{{end}}" required><br><br>
-
-    <label for="Category">Category:</label>
-    <input type="text" id="category" name="Category" value="{{if .item}}{{.item.Category}}{{end}}" placeholder="e.g. Hoodies, T-Shirts" required><br><br>
-
-    <label for="Size">Size:</label>
-    <input type="text" id="size" name="Size" value="{{if .item}}{{.item.Size}}{{end}}" placeholder="e.g. S, M, L, XL" required><br><br>
-
-    <label for="Color">Color:</label>
-    <input type="text" id="color" name="Color" value="{{if .item}}{{.item.Color}}{{end}}" required><br><br>
-
-    <label for="Price">Price ($):</label>
-    <input type="number" id="price" name="Price" step="0.01" value="{{if .item}}{{.item.Price}}{{end}}" required><br><br>
-
-    <label for="Stock">Stock Quantity:</label>
-    <input type="number" id="stock" name="Stock" value="{{if .item}}{{.item.Stock}}{{else}}1{{end}}" required><br><br>
-
-    <label for="Description">Description:</label><br>
-    <textarea id="description" name="Description" rows="4" cols="50">{{if .item}}{{.item.Description}}{{end}}</textarea><br><br>
-
-    <label for="ImageURL">Image URL:</label>
-    <input type="url" id="image_url" name="ImageURL" value="{{if .item}}{{.item.ImageURL}}{{end}}"><br><br>
-
-    <button type="submit">{{if .item}}Update{{else}}Add{{end}} Item</button>
-</form>
-
-<p><a href="/admin/clothes">Back to Inventory List</a></p>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/admin/">Админ</a>
+    <a href="/clothes">Сайт</a>
+  </nav>
+  <div class="header-actions">
+    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content">
+  <div class="admin-header">
+    <h1>{{if .clothes}}Редактировать товар{{else}}Добавить новый товар{{end}}</h1>
+    <a href="/admin/clothes" class="btn btn-ghost">← К списку</a>
+  </div>
+  <nav class="admin-nav">
+    <a href="/admin/">Главная</a>
+    <a href="/admin/clothes">Товары</a>
+    <a href="/admin/clothes/new" class="active">Добавить товар</a>
+    <a href="/admin/chats">Чаты поддержки</a>
+  </nav>
+  <div style="max-width:640px;">
+    <div class="auth-card" style="max-width:100%;">
+      {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
+      <form action="{{if .clothes}}/admin/clothes/{{.clothes.ID}}{{else}}/admin/clothes{{end}}" method="POST">
+        <div class="form-group">
+          <label for="title">Название товара</label>
+          <input type="text" id="title" name="title" value="{{if .clothes}}{{.clothes.Title}}{{end}}" placeholder="Название" required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label for="brand">Бренд</label>
+            <input type="text" id="brand" name="brand" value="{{if .clothes}}{{.clothes.Brand}}{{end}}" placeholder="Nike">
+          </div>
+          <div class="form-group">
+            <label for="category">Категория</label>
+            <select id="category" name="category" required>
+              <option value="">-- Выберите категорию --</option>
+              <option value="Футболки" {{if and .clothes (eq .clothes.Category "Футболки")}}selected{{end}}>Футболки</option>
+              <option value="Худи" {{if and .clothes (eq .clothes.Category "Худи")}}selected{{end}}>Худи и Свитшоты</option>
+              <option value="Куртки" {{if and .clothes (eq .clothes.Category "Куртки")}}selected{{end}}>Куртки и Пальто</option>
+              <option value="Брюки" {{if and .clothes (eq .clothes.Category "Брюки")}}selected{{end}}>Брюки и Джинсы</option>
+              <option value="Обувь" {{if and .clothes (eq .clothes.Category "Обувь")}}selected{{end}}>Обувь</option>
+              <option value="Аксессуары" {{if and .clothes (eq .clothes.Category "Аксессуары")}}selected{{end}}>Аксессуары</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label for="size">Размер</label>
+            <select id="size" name="size">
+              <option value="S"   {{if and .clothes (eq .clothes.Size "S")}}selected{{end}}>S</option>
+              <option value="M"   {{if and .clothes (eq .clothes.Size "M")}}selected{{end}}>M</option>
+              <option value="L"   {{if and .clothes (eq .clothes.Size "L")}}selected{{end}}>L</option>
+              <option value="XL"  {{if and .clothes (eq .clothes.Size "XL")}}selected{{end}}>XL</option>
+              <option value="XXL" {{if and .clothes (eq .clothes.Size "XXL")}}selected{{end}}>XXL</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="color">Цвет</label>
+            <input type="text" id="color" name="color" value="{{if .clothes}}{{.clothes.Color}}{{end}}" placeholder="Черный">
+          </div>
+          <div class="form-group">
+            <label for="stock">Остаток (шт.)</label>
+            <input type="number" id="stock" name="stock" value="{{if .clothes}}{{.clothes.Stock}}{{else}}0{{end}}" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="price">Цена (₸)</label>
+          <input type="number" id="price" name="price" value="{{if .clothes}}{{printf "%.0f" .clothes.Price}}{{end}}" placeholder="9999" min="0" step="1" required>
+        </div>
+        <div class="form-group">
+          <label for="image_url">Ссылка на изображение</label>
+          <input type="text" id="image_url" name="image_url" value="{{if .clothes}}{{.clothes.ImageURL}}{{end}}" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label for="description">Описание</label>
+          <textarea id="description" name="description" rows="4" placeholder="Описание товара...">{{if .clothes}}{{.clothes.Description}}{{end}}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          {{if .clothes}}Сохранить изменения{{else}}Создать товар{{end}}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
 </body>
 </html>

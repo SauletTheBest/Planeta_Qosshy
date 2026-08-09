@@ -1,14 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заказ оформлен — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<h1>Order Details</h1>
-<p>Car: {{.Car.Make}} {{.Car.Model}}</p>
-<p>Price: ${{.Amount}}</p>
-<p>Status: {{.Status}}</p>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="message-page">
+  <div class="message-card">
+    <div class="icon">✅</div>
+    <h2>Заказ оформлен!</h2>
+    <p>Спасибо за покупку. Ваш заказ успешно обработан.<br>Статус: <strong>{{.Status}}</strong></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/orders" class="btn btn-primary">Мои заказы</a>
+      <a href="/clothes" class="btn btn-ghost">Продолжить покупки</a>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-content">
+    <div><h3>PLANETA QOSSHY</h3><p>Твой стиль. Твой выбор.</p></div>
+    <div class="footer-links"><h4>Магазин</h4><a href="/clothes">Каталог</a><a href="/orders">Мои заказы</a></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
 </body>
 </html>
