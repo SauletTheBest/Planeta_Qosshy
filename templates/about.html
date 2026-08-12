@@ -39,7 +39,7 @@
   </nav>
   <div class="header-actions">
     {{if .isLoggedIn}}
-      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
+      <span style="font-size:.88rem;color:#888;">Здравствуйте,чем могу помочь? {{.username}}</span>
       <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
     {{else}}
       <a href="/auth/login" class="btn btn-outline">Войти</a>

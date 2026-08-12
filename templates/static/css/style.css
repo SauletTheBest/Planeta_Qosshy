@@ -89,8 +89,46 @@ textarea { resize:vertical; }
 .tag { background:#f0f0f0; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; color:#555; }
 
 /* Filter Bar */
-.filter-bar { background:#fff; border:1px solid #ebebeb; border-radius:8px; padding:20px 24px; display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; margin-bottom:32px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
-.filter-bar .form-group { margin:0; min-width:120px; flex:1; }
+.filter-bar {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.04);
+}
+.filter-bar .form-group {
+  margin: 0;
+  min-width: 140px;
+  flex: 1;
+}
+.filter-bar label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.filter-bar select, .filter-bar input {
+  background: #fcfcfc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+}
+.filter-bar select:focus, .filter-bar input:focus {
+  border-color: #111;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+}
 
 /* Data Table */
 .data-table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05); }
@@ -183,3 +221,243 @@ textarea { resize:vertical; }
 /* Responsive */
 @media(max-width:900px){.detail-layout,.payment-layout{grid-template-columns:1fr}.hero-content h1{font-size:36px}}
 @media(max-width:640px){.auth-card{padding:32px 20px}.header{flex-wrap:wrap;gap:8px}.nav{display:none}.message-card{padding:36px 20px}.hero-content h1{font-size:28px}.hero{height:55vh}}
+
+/* Floating Chat Widget */
+.chat-widget-btn {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  background: #111 !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 26px !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+  z-index: 99999 !important;
+  transition: transform 0.25s ease, background-color 0.25s !important;
+  border: 2px solid #fff !important;
+}
+.chat-widget-btn:hover {
+  transform: scale(1.08) !important;
+  background: #222 !important;
+}
+
+/* Tooltip Welcome Badge */
+.chat-widget-tooltip {
+  position: fixed !important;
+  bottom: 34px !important;
+  right: 92px !important;
+  background: #fff !important;
+  color: #111 !important;
+  padding: 10px 16px !important;
+  border-radius: 20px !important;
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+  border: 1px solid #eee !important;
+  z-index: 99998 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  animation: floatTooltip 3s infinite ease-in-out !important;
+  white-space: nowrap !important;
+}
+.chat-widget-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #fff;
+}
+@keyframes floatTooltip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Mini Chat Popup Window */
+.chat-popup-window {
+  display: none !important;
+  position: fixed !important;
+  bottom: 94px !important;
+  right: 24px !important;
+  width: 360px !important;
+  max-width: calc(100vw - 32px) !important;
+  height: 460px !important;
+  max-height: calc(100vh - 120px) !important;
+  background: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25) !important;
+  z-index: 100000 !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border: 1px solid #eaeaea !important;
+}
+.chat-popup-window.active {
+  display: flex !important;
+}
+
+.chat-popup-header {
+  background: #111;
+  color: #fff;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-popup-header h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-popup-header span.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #20c997;
+  display: inline-block;
+}
+.chat-popup-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.chat-popup-close:hover { color: #fff; }
+
+.chat-popup-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-popup-footer {
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 8px;
+}
+.chat-popup-footer input {
+  flex: 1;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  border: 1px solid #ddd;
+}
+.chat-popup-footer button {
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+}
+
+/* Chat Pulse Animation */
+@keyframes widgetPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  50% { transform: scale(1.08); box-shadow: 0 10px 25px rgba(0,0,0,0.45); }
+}
+.chat-widget-btn {
+  animation: widgetPulse 3s infinite ease-in-out !important;
+}
+
+/* Category Chips Selector */
+.category-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.chip-option {
+  position: relative;
+  cursor: pointer;
+}
+.chip-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  color: #333;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.chip-option input[type="radio"]:checked + .chip-badge {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+.chip-badge:hover {
+  border-color: #111;
+  background: #eee;
+}
+
+/* Size Chips Selector */
+.size-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.size-chip-option {
+  position: relative;
+  cursor: pointer;
+}
+.size-chip-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.size-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #222;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.size-chip-option input[type="checkbox"]:checked + .size-chip-badge {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+.size-chip-badge:hover {
+  border-color: #111;
+}
+
+

@@ -111,6 +111,7 @@
         <a href="/">Главная</a>
         <a href="/clothes">Каталог</a>
         <a href="/about">О нас</a>
+        <a href="/helpdesk">Служба Поддержки</a>
       </div>
       <div class="footer-links">
         <h4>Аккаунт</h4>
@@ -146,6 +147,28 @@
     </div>
   </footer>
 
+  <!-- Floating Chat Widget -->
+  <div id="chatWidgetContainer">
+    <div class="chat-widget-tooltip" id="chatTooltip" style="position:fixed;bottom:34px;right:92px;background:#fff;color:#111;padding:10px 16px;border-radius:20px;font-size:0.86rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.15);border:1px solid #eee;z-index:99998;white-space:nowrap;">
+      <span>👋 Есть вопросы? Напишите нам!</span>
+    </div>
+    <div class="chat-widget-btn" id="chatWidgetBtn" onclick="toggleChatWidget()" style="position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.3);z-index:99999;border:2px solid #fff;">💬</div>
+
+    <div class="chat-popup-window" id="chatPopupWindow" style="display:none;position:fixed;bottom:94px;right:24px;width:360px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,0.25);z-index:100000;flex-direction:column;overflow:hidden;border:1px solid #eaeaea;">
+      <div class="chat-popup-header" style="background:#111;color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <h4 style="font-size:0.95rem;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#20c997;display:inline-block;"></span> Поддержка Planeta Qosshy</h4>
+        <button onclick="toggleChatWidget()" style="background:transparent;border:none;color:#aaa;font-size:20px;cursor:pointer;">&times;</button>
+      </div>
+      <div class="chat-popup-body" id="chatPopupBody" style="flex:1;padding:16px;overflow-y:auto;background:#fdfdfd;display:flex;flex-direction:column;gap:10px;">
+        <div style="text-align:center;padding:20px;color:#888;">Загрузка чата...</div>
+      </div>
+      <div class="chat-popup-footer" id="chatPopupFooter" style="display:none;padding:12px 16px;background:#fff;border-top:1px solid #f0f0f0;gap:8px;">
+        <input type="text" id="chatWidgetInput" placeholder="Напишите сообщение..." onkeypress="if(event.key==='Enter') sendWidgetMessage()" style="flex:1;border-radius:20px;padding:8px 14px;font-size:0.88rem;border:1px solid #ddd;">
+        <button class="btn btn-primary" onclick="sendWidgetMessage()" style="border-radius:20px;padding:8px 16px;font-size:0.88rem;">Отправить</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentSlide = 0;
     const track = document.getElementById('carouselTrack');
@@ -165,6 +188,152 @@
       currentSlide = (currentSlide + 1) % 3;
       goToSlide(currentSlide);
     }, 5000);
+
+    // Widget Logic
+    let widgetWs = null;
+    let currentWidgetChatID = null;
+    let widgetIsLoaded = false;
+
+    function toggleChatWidget() {
+      const windowEl = document.getElementById('chatPopupWindow');
+      const tooltip = document.getElementById('chatTooltip');
+      const isOpen = windowEl.style.display === 'flex';
+
+      if (isOpen) {
+        windowEl.style.display = 'none';
+      } else {
+        windowEl.style.display = 'flex';
+        if (tooltip) tooltip.style.display = 'none';
+        if (!widgetIsLoaded) {
+          loadWidgetChat();
+        }
+      }
+    }
+
+    setTimeout(() => {
+      const tooltip = document.getElementById('chatTooltip');
+      if (tooltip) tooltip.style.opacity = '0';
+    }, 6000);
+
+    async function loadWidgetChat() {
+      const body = document.getElementById('chatPopupBody');
+      const footer = document.getElementById('chatPopupFooter');
+      
+      try {
+        const res = await fetch('/api/chat/active');
+        const data = await res.json();
+
+        if (!data.isLoggedIn) {
+          body.innerHTML = `
+            <div style="text-align:center;padding:36px 16px;color:#555;">
+              <div style="font-size:36px;margin-bottom:12px;">🔒</div>
+              <h4 style="font-weight:700;margin-bottom:8px;">Нужна авторизация</h4>
+              <p style="font-size:0.86rem;color:#777;margin-bottom:20px;">Чтобы написать в поддержку, войдите в свой аккаунт.</p>
+              <a href="/auth/login" class="btn btn-primary btn-block" style="margin-bottom:8px;">Войти</a>
+              <a href="/auth/register" class="btn btn-outline btn-block">Регистрация</a>
+            </div>
+          `;
+          footer.style.display = 'none';
+          return;
+        }
+
+        currentWidgetChatID = String(data.chatID);
+        footer.style.display = 'flex';
+        renderWidgetMessages(data.messages || []);
+        initWidgetWebSocket();
+        widgetIsLoaded = true;
+
+      } catch(e) {
+        body.innerHTML = `<div style="text-align:center;padding:20px;color:red;">Ошибка загрузки чата</div>`;
+      }
+    }
+
+    function getMsgContent(msg) {
+      return msg.content || msg.Content || msg.message || "";
+    }
+    function getMsgSender(msg) {
+      return msg.sender_id || msg.SenderID || msg.senderID || "";
+    }
+    function getMsgChatID(msg) {
+      return String(msg.chat_id || msg.ChatID || "");
+    }
+
+    function renderWidgetMessages(messages) {
+      const body = document.getElementById('chatPopupBody');
+      if (messages.length === 0) {
+        body.innerHTML = `<div style="text-align:center;padding:20px;color:#aaa;font-size:0.86rem;">Напишите сообщение, и оператор ответит вам!</div>`;
+        return;
+      }
+
+      body.innerHTML = messages.map(msg => {
+        const sender = getMsgSender(msg);
+        const content = getMsgContent(msg);
+        const isMe = (sender === 'User');
+        return `
+          <div style="display:flex;flex-direction:column;align-items:${isMe ? 'flex-end' : 'flex-start'};">
+            <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${isMe ? 'Вы' : 'Оператор'}</span>
+            <div style="background:${isMe ? '#111' : '#e9ecef'};color:${isMe ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
+              ${escapeHtml(content)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function initWidgetWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      widgetWs = new WebSocket(protocol + '//' + window.location.host + '/wss');
+
+      widgetWs.onmessage = function(event) {
+        const msg = JSON.parse(event.data);
+        if (getMsgChatID(msg) === currentWidgetChatID) {
+          appendWidgetMessage(msg);
+        }
+      };
+    }
+
+    function appendWidgetMessage(msg) {
+      const body = document.getElementById('chatPopupBody');
+      const sender = getMsgSender(msg);
+      const content = getMsgContent(msg);
+      const isMe = (sender === 'User');
+      const msgHtml = `
+        <div style="display:flex;flex-direction:column;align-items:${isMe ? 'flex-end' : 'flex-start'};">
+          <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${isMe ? 'Вы' : 'Оператор'}</span>
+          <div style="background:${isMe ? '#111' : '#e9ecef'};color:${isMe ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
+            ${escapeHtml(content)}
+          </div>
+        </div>
+      `;
+      body.insertAdjacentHTML('beforeend', msgHtml);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function sendWidgetMessage() {
+      const input = document.getElementById('chatWidgetInput');
+      const text = input.value.trim();
+      if (!text || !widgetWs || !currentWidgetChatID) return;
+
+      const msgPayload = {
+        chat_id: currentWidgetChatID,
+        sender_id: "User",
+        content: text,
+        ChatID: currentWidgetChatID,
+        SenderID: "User",
+        Content: text
+      };
+
+      widgetWs.send(JSON.stringify(msgPayload));
+      input.value = '';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
   </script>
 
 </body>
