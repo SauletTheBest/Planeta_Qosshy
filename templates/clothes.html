@@ -54,19 +54,33 @@
         <label for="brand">Бренд</label>
         <input type="text" id="brand" name="brand" value="{{.brand}}" placeholder="Nike, Adidas...">
       </div>
-      <div class="form-group">
-        <label for="size">Размер</label>
-        <select id="size" name="size">
-          <option value="">Все размеры</option>
-          <option value="XS" {{if eq .size "XS" }}selected{{end}}>XS</option>
-          <option value="S" {{if eq .size "S" }}selected{{end}}>S</option>
-          <option value="M" {{if eq .size "M" }}selected{{end}}>M</option>
-          <option value="L" {{if eq .size "L" }}selected{{end}}>L</option>
-          <option value="XL" {{if eq .size "XL" }}selected{{end}}>XL</option>
-          <option value="XXL" {{if eq .size "XXL" }}selected{{end}}>XXL</option>
-          <option value="3XL" {{if eq .size "3XL" }}selected{{end}}>3XL</option>
-        </select>
-      </div>
+     <div class="form-group">
+  <label for="size">Размер</label>
+  <select id="size" name="size">
+    <option value="">Все размеры</option>
+    <optgroup label="Одежда">
+      <option value="XS"  {{if eq .size "XS"}}selected{{end}}>XS</option>
+      <option value="S"   {{if eq .size "S"}}selected{{end}}>S</option>
+      <option value="M"   {{if eq .size "M"}}selected{{end}}>M</option>
+      <option value="L"   {{if eq .size "L"}}selected{{end}}>L</option>
+      <option value="XL"  {{if eq .size "XL"}}selected{{end}}>XL</option>
+      <option value="XXL" {{if eq .size "XXL"}}selected{{end}}>XXL</option>
+      <option value="3XL" {{if eq .size "3XL"}}selected{{end}}>3XL</option>
+    </optgroup>
+    <optgroup label="Обувь">
+      <option value="36" {{if eq .size "36"}}selected{{end}}>36</option>
+      <option value="37" {{if eq .size "37"}}selected{{end}}>37</option>
+      <option value="38" {{if eq .size "38"}}selected{{end}}>38</option>
+      <option value="39" {{if eq .size "39"}}selected{{end}}>39</option>
+      <option value="40" {{if eq .size "40"}}selected{{end}}>40</option>
+      <option value="41" {{if eq .size "41"}}selected{{end}}>41</option>
+      <option value="42" {{if eq .size "42"}}selected{{end}}>42</option>
+      <option value="43" {{if eq .size "43"}}selected{{end}}>43</option>
+      <option value="44" {{if eq .size "44"}}selected{{end}}>44</option>
+      <option value="45" {{if eq .size "45"}}selected{{end}}>45</option>
+    </optgroup>
+  </select>
+</div>
       <div class="form-group">
         <label for="min_price">Цена от (₸)</label>
         <input type="number" id="min_price" name="min_price" value="{{.min_price}}" placeholder="0">
@@ -102,7 +116,7 @@
           <h3>{{.Title}}</h3>
           <div class="meta">
             <span class="tag">{{.Category}}</span>
-            <span class="tag">{{.Size}}</span>
+            <span class="tag clean-size-tag" data-raw-size="{{.Size}}">{{.Size}}</span>
             <span class="tag">{{.Color}}</span>
           </div>
           <p class="price">{{printf "%.0f" .Price}} ₸</p>
@@ -356,6 +370,17 @@
       div.innerText = text;
       return div.innerHTML;
     }
+
+    document.querySelectorAll('.clean-size-tag').forEach(tag => {
+    const raw = tag.getAttribute('data-raw-size') || '';
+    if (!raw) return;
+    const cleanSizes = raw.split(',')
+      .map(part => part.trim())
+      .filter(part => part && !part.endsWith(':0')) // Пропускаем распроданные
+      .map(part => part.split(':')[0].trim()); // Берем только наименование размера без ":количество"
+    tag.innerText = cleanSizes.length > 0 ? cleanSizes.join(', ') : 'Распродано';
+    });
+
   </script>
 </body>
 

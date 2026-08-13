@@ -63,12 +63,31 @@
       {{end}}
       <div class="summary-row"><span>Товар</span><span>{{.item.Title}}</span></div>
       <div class="summary-row"><span>Бренд</span><span>{{.item.Brand}}</span></div>
-      <div class="summary-row"><span>Размер</span><span>{{.item.Size}}</span></div>
+      <div class="summary-row"><span>Размер</span><span id="displayPaymentSize">{{if .selectedSize}}{{.selectedSize}}{{else}}{{.item.Size}}{{end}}</span></div>
       <div class="summary-row"><span>Цвет</span><span>{{.item.Color}}</span></div>
       <div class="summary-row total"><span>Итого</span><span>{{printf "%.0f" .amount}} ₸</span></div>
     </div>
   </div>
 </div>
+<script>
+  (function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sz = urlParams.get('size');
+    const el = document.getElementById('displayPaymentSize');
+    if (sz && el) {
+      el.innerText = sz;
+    } else if (el) {
+      const raw = el.innerText;
+      if (raw.includes(':')) {
+        const parts = raw.split(',').map(s => s.trim());
+        const avail = parts.find(p => !p.endsWith(':0'));
+        if (avail) {
+          el.innerText = avail.split(':')[0].trim();
+        }
+      }
+    }
+  })();
+</script>
 <footer class="footer">
   <div class="footer-content">
     <div>
