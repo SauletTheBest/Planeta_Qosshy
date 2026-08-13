@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,209 +8,333 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
+
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/admin/">Админ</a>
-    <a href="/clothes">Сайт</a>
-  </nav>
-  <div class="header-actions">
-    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
-    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-  </div>
-</header>
-<div class="page-content">
-  <div class="admin-header">
-    <h1>{{if .clothes}}Редактировать товар{{else}}Добавить новый товар{{end}}</h1>
-    <a href="/admin/clothes" class="btn btn-ghost">← К списку</a>
-  </div>
-  <nav class="admin-nav">
-    <a href="/admin/">Главная</a>
-    <a href="/admin/clothes">Товары</a>
-    <a href="/admin/clothes/new" class="active">Добавить товар</a>
-    <a href="/admin/chats">Чаты поддержки</a>
-  </nav>
-  <div style="max-width:640px;">
-    <div class="auth-card" style="max-width:100%;">
-      {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
-      <form action="{{if .clothes}}/admin/clothes/{{.clothes.ID}}{{else}}/admin/clothes{{end}}" method="POST">
-        <div class="form-group">
-          <label for="title">Название товара</label>
-          <input type="text" id="title" name="title" value="{{if .clothes}}{{.clothes.Title}}{{end}}" placeholder="Название" required>
-        </div>
-        <div class="form-group">
-          <label for="brand">Бренд</label>
-          <input type="text" id="brand" name="brand" value="{{if .clothes}}{{.clothes.Brand}}{{end}}" placeholder="Например: Nike, Zara, Adidas">
-        </div>
-        
-        <div class="form-group">
-          <label style="font-weight:600;margin-bottom:8px;display:block;">Категория товара:</label>
-          <div class="category-chips-grid">
-            {{$cat := ""}}
-            {{if .clothes}}{{$cat = .clothes.Category}}{{end}}
-            <label class="chip-option">
-              <input type="radio" name="category" value="Футболки" {{if eq $cat "Футболки"}}checked{{end}} required>
-              <span class="chip-badge">Футболки</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Худи" {{if eq $cat "Худи"}}checked{{end}}>
-              <span class="chip-badge">Худи и Свитшоты</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Куртки" {{if eq $cat "Куртки"}}checked{{end}}>
-              <span class="chip-badge">Куртки и Пальто</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Брюки" {{if eq $cat "Брюки"}}checked{{end}}>
-              <span class="chip-badge">Брюки и Джинсы</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Платья" {{if eq $cat "Платья"}}checked{{end}}>
-              <span class="chip-badge">Платья и Юбки</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Шорты" {{if eq $cat "Шорты"}}checked{{end}}>
-              <span class="chip-badge">Шорты</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Спортивные костюмы" {{if eq $cat "Спортивные костюмы"}}checked{{end}}>
-              <span class="chip-badge">Спортивные костюмы</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Свитера" {{if eq $cat "Свитера"}}checked{{end}}>
-              <span class="chip-badge">Свитера и Кофты</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Обувь" {{if eq $cat "Обувь"}}checked{{end}}>
-              <span class="chip-badge">Обувь</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Аксессуары" {{if eq $cat "Аксессуары"}}checked{{end}}>
-              <span class="chip-badge">Аксессуары</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Головные уборы" {{if eq $cat "Головные уборы"}}checked{{end}}>
-              <span class="chip-badge">Головные уборы</span>
-            </label>
-            <label class="chip-option">
-              <input type="radio" name="category" value="Белье и Носки" {{if eq $cat "Белье и Носки"}}checked{{end}}>
-              <span class="chip-badge">Белье и Носки</span>
-            </label>
+  <header class="header">
+    <a href="/" class="logo">PLANETA QOSSHY</a>
+    <nav class="nav">
+      <a href="/admin/">Админ</a>
+      <a href="/clothes">Сайт</a>
+    </nav>
+    <div class="header-actions">
+      <span
+        style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+    </div>
+  </header>
+  <div class="page-content">
+    <div class="admin-header">
+      <h1>{{if .clothes}}Редактировать товар{{else}}Добавить новый товар{{end}}</h1>
+      <a href="/admin/clothes" class="btn btn-ghost">← К списку</a>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/">Главная</a>
+      <a href="/admin/clothes">Товары</a>
+      <a href="/admin/clothes/new" class="active">Добавить товар</a>
+      <a href="/admin/chats">Чаты поддержки</a>
+    </nav>
+    <div style="max-width:640px;">
+      <div class="auth-card" style="max-width:100%;">
+        {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
+        <form action="{{if .clothes}}/admin/clothes/{{.clothes.ID}}{{else}}/admin/clothes{{end}}" method="POST">
+          <div class="form-group">
+            <label for="title">Название товара</label>
+            <input type="text" id="title" name="title" value="{{if .clothes}}{{.clothes.Title}}{{end}}"
+              placeholder="Название" required>
           </div>
-        </div>
+          <div class="form-group">
+            <label for="brand">Бренд</label>
+            <input type="text" id="brand" name="brand" value="{{if .clothes}}{{.clothes.Brand}}{{end}}"
+              placeholder="Например: Nike, Zara, Adidas">
+          </div>
 
-        <div class="form-group" style="margin-top:20px;background:#f9f9f9;padding:16px;border-radius:12px;border:1px solid #eee;">
-          <label style="font-weight:600;display:block;margin-bottom:4px;">Размеры и остаток на складе (для каждого размера):</label>
-          <small style="color:#666;display:block;margin-bottom:12px;">Укажите сколько штук каждого размера есть в наличии. Если размера нет — оставьте 0.</small>
-          
-          <input type="hidden" id="size" name="size" value="{{if .clothes}}{{.clothes.Size}}{{else}}M:1{{end}}">
-          <input type="hidden" id="stock" name="stock" value="{{if .clothes}}{{.clothes.Stock}}{{else}}1{{end}}">
-
-          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:12px;" id="sizeStockInputsGrid">
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">XS</span>
-              <input type="number" class="size-stock-val" data-size="XS" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">S</span>
-              <input type="number" class="size-stock-val" data-size="S" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">M</span>
-              <input type="number" class="size-stock-val" data-size="M" value="1" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">L</span>
-              <input type="number" class="size-stock-val" data-size="L" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">XL</span>
-              <input type="number" class="size-stock-val" data-size="XL" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">XXL</span>
-              <input type="number" class="size-stock-val" data-size="XXL" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
-            </div>
-            <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-weight:700;font-size:0.9rem;">3XL</span>
-              <input type="number" class="size-stock-val" data-size="3XL" value="0" min="0" oninput="calculateSizeStock()" style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+          <div class="form-group">
+            <label style="font-weight:600;margin-bottom:8px;display:block;">Категория товара:</label>
+            <div class="category-chips-grid">
+              {{$cat := ""}}
+              {{if .clothes}}{{$cat = .clothes.Category}}{{end}}
+              <label class="chip-option">
+                <input type="radio" name="category" value="Футболки" {{if eq $cat "Футболки" }}checked{{end}} required>
+                <span class="chip-badge">Футболки</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Худи" {{if eq $cat "Худи" }}checked{{end}}>
+                <span class="chip-badge">Худи и Свитшоты</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Куртки" {{if eq $cat "Куртки" }}checked{{end}}>
+                <span class="chip-badge">Куртки и Пальто</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Брюки" {{if eq $cat "Брюки" }}checked{{end}}>
+                <span class="chip-badge">Брюки и Джинсы</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Платья" {{if eq $cat "Платья" }}checked{{end}}>
+                <span class="chip-badge">Платья и Юбки</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Шорты" {{if eq $cat "Шорты" }}checked{{end}}>
+                <span class="chip-badge">Шорты</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Спортивные костюмы" {{if eq $cat "Спортивные костюмы"
+                  }}checked{{end}}>
+                <span class="chip-badge">Спортивные костюмы</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Свитера" {{if eq $cat "Свитера" }}checked{{end}}>
+                <span class="chip-badge">Свитера и Кофты</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Обувь" {{if eq $cat "Обувь" }}checked{{end}}>
+                <span class="chip-badge">Обувь</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Аксессуары" {{if eq $cat "Аксессуары" }}checked{{end}}>
+                <span class="chip-badge">Аксессуары</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Головные уборы" {{if eq $cat "Головные уборы"
+                  }}checked{{end}}>
+                <span class="chip-badge">Головные уборы</span>
+              </label>
+              <label class="chip-option">
+                <input type="radio" name="category" value="Белье и Носки" {{if eq $cat "Белье и Носки" }}checked{{end}}>
+                <span class="chip-badge">Белье и Носки</span>
+              </label>
             </div>
           </div>
-          <div style="margin-top:12px;font-size:0.88rem;color:#333;display:flex;justify-content:space-between;align-items:center;">
-            <span>Общий остаток: <strong id="totalStockDisplay" style="color:#111;font-size:1rem;">1 шт.</strong></span>
-            <span style="color:#666;">Итоговая сводка: <strong id="sizeSummaryDisplay">M:1</strong></span>
+
+          <div class="form-group"
+            style="margin-top:20px;background:#f9f9f9;padding:16px;border-radius:12px;border:1px solid #eee;">
+            <label style="font-weight:600;display:block;margin-bottom:4px;">Размеры и остаток на складе (для каждого
+              размера):</label>
+            <small style="color:#666;display:block;margin-bottom:12px;">Укажите сколько штук каждого размера есть в
+              наличии. Если размера нет — оставьте 0.</small>
+
+            <input type="hidden" id="size" name="size" value="{{if .clothes}}{{.clothes.Size}}{{else}}M:1{{end}}">
+            <input type="hidden" id="stock" name="stock" value="{{if .clothes}}{{.clothes.Stock}}{{else}}1{{end}}">
+            <!-- Сетка размеров для ОДЕЖДЫ -->
+            <div id="apparelSizeGrid"
+              style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:12px;">
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">XS</span>
+                <input type="number" class="size-stock-val" data-size="XS" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">S</span>
+                <input type="number" class="size-stock-val" data-size="S" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">M</span>
+                <input type="number" class="size-stock-val" data-size="M" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">L</span>
+                <input type="number" class="size-stock-val" data-size="L" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">XL</span>
+                <input type="number" class="size-stock-val" data-size="XL" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">XXL</span>
+                <input type="number" class="size-stock-val" data-size="XXL" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">3XL</span>
+                <input type="number" class="size-stock-val" data-size="3XL" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+            </div>
+            <!-- Сетка размеров для ОБУВИ (36 - 45) -->
+            <div id="shoesSizeGrid"
+              style="display:none;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:12px;">
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">36</span>
+                <input type="number" class="size-stock-val" data-size="36" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">37</span>
+                <input type="number" class="size-stock-val" data-size="37" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">38</span>
+                <input type="number" class="size-stock-val" data-size="38" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">39</span>
+                <input type="number" class="size-stock-val" data-size="39" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">40</span>
+                <input type="number" class="size-stock-val" data-size="40" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">41</span>
+                <input type="number" class="size-stock-val" data-size="41" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">42</span>
+                <input type="number" class="size-stock-val" data-size="42" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">43</span>
+                <input type="number" class="size-stock-val" data-size="43" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">44</span>
+                <input type="number" class="size-stock-val" data-size="44" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+              <div
+                style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:0.9rem;">45</span>
+                <input type="number" class="size-stock-val" data-size="45" value="0" min="0"
+                  oninput="calculateSizeStock()"
+                  style="width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;">
+              </div>
+            </div>
+            <div
+              style="margin-top:12px;font-size:0.88rem;color:#333;display:flex;justify-content:space-between;align-items:center;">
+              <span>Общий остаток: <strong id="totalStockDisplay" style="color:#111;font-size:1rem;">0
+                  шт.</strong></span>
+              <span style="color:#666;">Итоговая сводка: <strong id="sizeSummaryDisplay">M:1</strong></span>
+            </div>
           </div>
-        </div>
 
-        <script>
-          function parseInitialSizes() {
-            const rawSize = document.getElementById('size').value || '';
-            if (!rawSize) return;
-
-            const parts = rawSize.split(',').map(s => s.trim());
-            parts.forEach(p => {
-              if (p.includes(':')) {
-                const [sz, cnt] = p.split(':');
-                const inp = document.querySelector(`.size-stock-val[data-size="${sz.trim()}"]`);
-                if (inp) inp.value = parseInt(cnt) || 0;
-              } else if (p) {
-                const inp = document.querySelector(`.size-stock-val[data-size="${p}"]`);
-                if (inp && parseInt(inp.value) === 0) inp.value = 1;
+          <script>
+            function switchSizeGrid() {
+              const selectedCat = document.querySelector('input[name="category"]:checked')?.value || '';
+              const apparelGrid = document.getElementById('apparelSizeGrid');
+              const shoesGrid = document.getElementById('shoesSizeGrid');
+              if (selectedCat === 'Обувь') {
+                apparelGrid.style.display = 'none';
+                shoesGrid.style.display = 'grid';
+              } else {
+                apparelGrid.style.display = 'grid';
+                shoesGrid.style.display = 'none';
               }
-            });
-            calculateSizeStock();
-          }
+            }
+            function parseInitialSizes() {
+              // Слушаем клики по категориям для переключения сеток
+              const catRadios = document.querySelectorAll('input[name="category"]');
+              catRadios.forEach(r => r.addEventListener('change', switchSizeGrid));
+              switchSizeGrid();
+              const rawSize = document.getElementById('size').value || '';
+              if (!rawSize) return;
+              const parts = rawSize.split(',').map(s => s.trim());
+              parts.forEach(p => {
+                if (p.includes(':')) {
+                  const [sz, cnt] = p.split(':');
+                  const inp = document.querySelector(`.size-stock-val[data-size="${sz.trim()}"]`);
+                  if (inp) inp.value = parseInt(cnt) || 0;
+                }
+              });
+              calculateSizeStock();
+            }
+            function calculateSizeStock() {
+              const selectedCat = document.querySelector('input[name="category"]:checked')?.value || '';
+              const activeGridId = (selectedCat === 'Обувь') ? 'shoesSizeGrid' : 'apparelSizeGrid';
+              const inputs = document.querySelectorAll(`#${activeGridId} .size-stock-val`);
+              let total = 0;
+              let sizeParts = [];
+              inputs.forEach(inp => {
+                const qty = parseInt(inp.value) || 0;
+                const sz = inp.getAttribute('data-size');
+                if (qty > 0) {
+                  total += qty;
+                  sizeParts.push(`${sz}:${qty}`);
+                }
+              });
+              const finalSizeStr = sizeParts.length > 0 ? sizeParts.join(', ') : 'Распродано';
+              document.getElementById('size').value = finalSizeStr;
+              document.getElementById('stock').value = total;
+              document.getElementById('totalStockDisplay').innerText = total + ' шт.';
+              document.getElementById('sizeSummaryDisplay').innerText = finalSizeStr;
+            }
+            document.addEventListener('DOMContentLoaded', parseInitialSizes);
+          </script>
 
-          function calculateSizeStock() {
-            const inputs = document.querySelectorAll('.size-stock-val');
-            let total = 0;
-            let sizeParts = [];
-
-            inputs.forEach(inp => {
-              const qty = parseInt(inp.value) || 0;
-              const sz = inp.getAttribute('data-size');
-              if (qty > 0) {
-                total += qty;
-                sizeParts.push(`${sz}:${qty}`);
-              }
-            });
-
-            const finalSizeStr = sizeParts.length > 0 ? sizeParts.join(', ') : 'Распродано';
-            document.getElementById('size').value = finalSizeStr;
-            document.getElementById('stock').value = total;
-            document.getElementById('totalStockDisplay').innerText = total + ' шт.';
-            document.getElementById('sizeSummaryDisplay').innerText = finalSizeStr;
-          }
-
-          document.addEventListener('DOMContentLoaded', parseInitialSizes);
-        </script>
-
-        <div class="form-group" style="margin-top:16px;">
-          <label for="color">Цвет товара</label>
-          <input type="text" id="color" name="color" value="{{if .clothes}}{{.clothes.Color}}{{end}}" placeholder="Например: Черный, Белый">
-        </div>
-        <div class="form-group">
-          <label for="price">Цена (₸)</label>
-          <input type="number" id="price" name="price" value="{{if .clothes}}{{printf "%.0f" .clothes.Price}}{{end}}" placeholder="9999" min="0" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="image_url">Ссылка на изображение</label>
-          <input type="text" id="image_url" name="image_url" value="{{if .clothes}}{{.clothes.ImageURL}}{{end}}" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label for="description">Описание</label>
-          <textarea id="description" name="description" rows="4" placeholder="Описание товара...">{{if .clothes}}{{.clothes.Description}}{{end}}</textarea>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          {{if .clothes}}Сохранить изменения{{else}}Создать товар{{end}}
-        </button>
-      </form>
+          <div class="form-group" style="margin-top:16px;">
+            <label for="color">Цвет товара</label>
+            <input type="text" id="color" name="color" value="{{if .clothes}}{{.clothes.Color}}{{end}}"
+              placeholder="Например: Черный, Белый">
+          </div>
+          <div class="form-group">
+            <label for="price">Цена (₸)</label>
+            <input type="number" id="price" name="price" value="{{if .clothes}}{{printf " %.0f" .clothes.Price}}{{end}}"
+              placeholder="9999" min="0" step="1" required>
+          </div>
+          <div class="form-group">
+            <label for="image_url">Ссылка на изображение</label>
+            <input type="text" id="image_url" name="image_url" value="{{if .clothes}}{{.clothes.ImageURL}}{{end}}"
+              placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" name="description" rows="4"
+              placeholder="Описание товара...">{{if .clothes}}{{.clothes.Description}}{{end}}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            {{if .clothes}}Сохранить изменения{{else}}Создать товар{{end}}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-<footer class="footer">
-  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
-</footer>
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p>
+    </div>
+  </footer>
 </body>
+
 </html>
