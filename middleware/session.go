@@ -1,15 +1,33 @@
 package middleware
 
 import (
-	"github.com/gorilla/sessions"
 	"net/http"
 	"os"
+	"sync"
+
+	"github.com/gorilla/sessions"
+	"github.com/joho/godotenv"
 )
 
-var store = sessions.NewCookieStore([]byte(os.Getenv("COOKIE_SECRET")))
+var (
+	store *sessions.CookieStore
+	once  sync.Once
+)
+
+func GetStore() *sessions.CookieStore {
+	once.Do(func() {
+		_ = godotenv.Load()
+		secret := os.Getenv("COOKIE_SECRET")
+		if secret == "" {
+			secret = "default_secret_key_planeta_qosshy_2026"
+		}
+		store = sessions.NewCookieStore([]byte(secret))
+	})
+	return store
+}
 
 func GetSession(r *http.Request) (*sessions.Session, error) {
-	return store.Get(r, "session")
+	return GetStore().Get(r, "session")
 }
 
 func SaveSession(w http.ResponseWriter, r *http.Request, session *sessions.Session) error {

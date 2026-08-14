@@ -6,6 +6,7 @@ import (
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -45,6 +46,9 @@ func GetClothes(c *gin.Context) {
 			query = query.Where("price <= ?", maxPriceFloat)
 		}
 	}
+	if maxPrice == "0" {
+
+	}
 
 	// Sorting
 	sort := c.Query("sort")
@@ -61,13 +65,18 @@ func GetClothes(c *gin.Context) {
 
 	// Pagination
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "12"))
 	offset := (page - 1) * limit
 
 	var totalItems int64
 	query.Model(&models.Clothes{}).Count(&totalItems)
 
 	query.Offset(offset).Limit(limit).Find(&clothes)
+
+	isLoggedIn, _ := c.Get("isLoggedIn")
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	isAdmin := (role == "admin")
 
 	c.HTML(http.StatusOK, "clothes.html", gin.H{
 		"clothes":    clothes,
@@ -81,6 +90,9 @@ func GetClothes(c *gin.Context) {
 		"max_price":  maxPrice,
 		"sort":       sort,
 		"totalItems": int(totalItems),
+		"isLoggedIn": isLoggedIn,
+		"username":   username,
+		"isAdmin":    isAdmin,
 	})
 }
 
@@ -94,7 +106,47 @@ func GetClothesByID(c *gin.Context) {
 		return
 	}
 
+	isLoggedIn, _ := c.Get("isLoggedIn")
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	isAdmin := (role == "admin")
+
 	c.HTML(http.StatusOK, "clothes_detail.html", gin.H{
-		"item": item,
+		"item":       item,
+		"isLoggedIn": isLoggedIn,
+		"username":   username,
+		"isAdmin":    isAdmin,
+	})
+}
+
+// GetHomePage fetches popular products from DB and renders home_page.html
+func GetHomePage(c *gin.Context) {
+	var featuredClothes []models.Clothes
+	database.DB.Where("in_stock = ? AND stock > 0", true).Order("id DESC").Limit(5).Find(&featuredClothes)
+
+	isLoggedIn, _ := c.Get("isLoggedIn")
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	isAdmin := (role == "admin")
+
+	c.HTML(http.StatusOK, "home_page.html", gin.H{
+		"featuredClothes": featuredClothes,
+		"isLoggedIn":      isLoggedIn,
+		"username":        username,
+		"isAdmin":         isAdmin,
+	})
+}
+
+// GetAboutPage renders the "About Us" page
+func GetAboutPage(c *gin.Context) {
+	isLoggedIn, _ := c.Get("isLoggedIn")
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	isAdmin := (role == "admin")
+
+	c.HTML(http.StatusOK, "about.html", gin.H{
+		"isLoggedIn": isLoggedIn,
+		"username":   username,
+		"isAdmin":    isAdmin,
 	})
 }

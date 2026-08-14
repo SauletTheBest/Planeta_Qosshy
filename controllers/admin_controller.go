@@ -6,6 +6,7 @@ import (
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,16 +23,17 @@ func AdminListClothes(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "ADMIN_clothes_list.html", gin.H{
-		"items": items,
+		"clothes": items,
+		"items":   items,
 	})
 }
 
 // AdminNewClothes renders form for adding new clothes
 func AdminNewClothes(c *gin.Context) {
 	c.HTML(http.StatusOK, "ADMIN_clothes_form.html", gin.H{
-		"action": "/admin/clothes",
-		"method": "POST",
-		"item":   nil,
+		"action":  "/admin/clothes",
+		"method":  "POST",
+		"clothes": nil,
 	})
 }
 
@@ -40,20 +42,32 @@ func AdminCreateClothes(c *gin.Context) {
 	var input models.Clothes
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.HTML(http.StatusBadRequest, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Ошибка заполнения формы: " + err.Error(),
+			"action":  "/admin/clothes",
+			"method":  "POST",
+			"clothes": input,
+		})
 		return
 	}
 
 	if input.Stock > 0 {
 		input.InStock = true
+	} else {
+		input.InStock = false
 	}
 
 	if err := database.DB.Create(&input).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create clothing item"})
+		c.HTML(http.StatusInternalServerError, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Не удалось создать товар в базе данных",
+			"action":  "/admin/clothes",
+			"method":  "POST",
+			"clothes": input,
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Clothing item added successfully", "item": input})
+	c.Redirect(http.StatusFound, "/admin/clothes")
 }
 
 // AdminEditClothes renders form to edit existing item
@@ -67,9 +81,9 @@ func AdminEditClothes(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "ADMIN_clothes_form.html", gin.H{
-		"action": "/admin/clothes/" + itemID,
-		"method": "POST",
-		"item":   item,
+		"action":  "/admin/clothes/" + itemID,
+		"method":  "POST",
+		"clothes": item,
 	})
 }
 
@@ -77,24 +91,38 @@ func AdminEditClothes(c *gin.Context) {
 func AdminUpdateClothes(c *gin.Context) {
 	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid item ID"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid item ID"})
 		return
 	}
 
 	var item models.Clothes
 	if err := database.DB.First(&item, itemID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Clothing item not found"})
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
 		return
 	}
 
 	if err := c.ShouldBind(&item); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.HTML(http.StatusBadRequest, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Ошибка заполнения: " + err.Error(),
+			"action":  "/admin/clothes/" + strconv.Itoa(itemID),
+			"method":  "POST",
+			"clothes": item,
+		})
 		return
 	}
 
 	item.InStock = item.Stock > 0
-	database.DB.Save(&item)
-	c.JSON(http.StatusOK, gin.H{"message": "Clothing item updated successfully", "item": item})
+	if err := database.DB.Save(&item).Error; err != nil {
+		c.HTML(http.StatusInternalServerError, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Не удалось сохранить изменения",
+			"action":  "/admin/clothes/" + strconv.Itoa(itemID),
+			"method":  "POST",
+			"clothes": item,
+		})
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/admin/clothes")
 }
 
 // AdminDeleteClothes handles deletion of a clothing item
@@ -130,5 +158,5 @@ func AdminDeleteClothes(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Clothing item and related orders deleted successfully"})
+	c.Redirect(http.StatusFound, "/admin/clothes")
 }

@@ -8,7 +8,7 @@ import (
 
 // AdminMiddleware Middleware to check if the user is an admin
 func RequireAdmin(c *gin.Context) {
-	session, err := store.Get(c.Request, "session")
+	session, err := GetSession(c.Request)
 
 	if err != nil {
 		fmt.Println("Error retrieving session:", err)

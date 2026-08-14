@@ -50,9 +50,8 @@ func BuyClothes(c *gin.Context) {
 }
 
 func GetUserOrders(c *gin.Context) {
-	session, _ := store.Get(c.Request, "session")
-	userID, exists := session.Values["user_id"].(uint)
-	if !exists {
+	userID := c.GetUint("userID")
+	if userID == 0 {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}

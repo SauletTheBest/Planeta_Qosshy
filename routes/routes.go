@@ -19,6 +19,7 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.Logger())
 
 	r.Static("/static", "./templates/static")
+	r.Static("/image", "./templates/image")
 
 	// Template helper math functions
 	r.SetFuncMap(template.FuncMap{
@@ -29,16 +30,16 @@ func SetupRouter() *gin.Engine {
 		"ceil": func(a float64) int { return int(math.Ceil(a)) },
 	})
 
-	r.LoadHTMLGlob("templates/*")
+	r.LoadHTMLGlob("templates/*.html")
 
-	// Redirect root homepage to clothes catalog
-	r.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusFound, "/clothes")
-	})
+	// Homepage with optional auth context & DB products
+	r.GET("/", middleware.OptionalAuth, controllers.GetHomePage)
+	r.GET("/about", middleware.OptionalAuth, controllers.GetAboutPage)
 
 	// WebSocket routes for support chat
 	r.GET("/wss", controllers.HandleConnections)
 	go controllers.HandleMessages()
+	r.GET("/api/chat/active", middleware.OptionalAuth, controllers.APIGetActiveChat)
 	r.POST("/chat/start/:id", controllers.StartChat)
 	r.GET("/chat/:chatID", controllers.ChatPage)
 	r.POST("/chat/:chatID/send", controllers.SendMessage)
@@ -49,14 +50,19 @@ func SetupRouter() *gin.Engine {
 		auth.POST("/register", controllers.Register)
 		auth.POST("/login", controllers.Login)
 		auth.POST("/logout", controllers.Logout)
+		auth.GET("/logout", controllers.Logout)
 		auth.GET("/verify", controllers.VerifyEmail)
 		auth.GET("/register", func(c *gin.Context) { c.HTML(http.StatusOK, "register.html", gin.H{}) })
-		auth.GET("/login", func(c *gin.Context) { c.HTML(http.StatusOK, "login.html", gin.H{}) })
+		auth.GET("/login", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"verified": c.Query("verified") == "1",
+			})
+		})
 	}
 
-	// Public Clothes catalog routes
+	// Public Clothes catalog routes (browsable without login)
 	clothes := r.Group("/clothes")
-	clothes.Use(middleware.AuthRequired)
+	clothes.Use(middleware.OptionalAuth)
 	{
 		clothes.GET("/", controllers.GetClothes)
 		clothes.GET("/:id", controllers.GetClothesByID)

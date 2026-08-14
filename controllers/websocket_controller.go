@@ -134,7 +134,6 @@ func SendMessage(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
-	print(chatID, chat.Status, messageContent)
 
 	message := models.Message{
 		ChatID:   chatID,
@@ -144,4 +143,40 @@ func SendMessage(c *gin.Context) {
 	database.DB.Create(&message)
 
 	c.Redirect(http.StatusSeeOther, "/chat/"+chatID)
+}
+
+// APIGetActiveChat returns active chat status and history for widget
+func APIGetActiveChat(c *gin.Context) {
+	userIDVal, exists := c.Get("userID")
+	if !exists || userIDVal == nil {
+		c.JSON(http.StatusOK, gin.H{"isLoggedIn": false})
+		return
+	}
+
+	userID := userIDVal.(uint)
+	var chat models.Chat
+	err := database.DB.Where("user_id = ? AND status = 'active'", userID).First(&chat).Error
+
+	if err != nil {
+		// Create a new active chat automatically
+		chat = models.Chat{
+			UserID:    int(userID),
+			Status:    "active",
+			CreatedAt: time.Now(),
+		}
+		if err := database.DB.Create(&chat).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create chat"})
+			return
+		}
+	}
+
+	var messages []models.Message
+	database.DB.Where("chat_id = ?", strconv.Itoa(int(chat.ID))).Order("created_at ASC").Find(&messages)
+
+	c.JSON(http.StatusOK, gin.H{
+		"isLoggedIn": true,
+		"chatID":     chat.ID,
+		"userID":     userID,
+		"messages":   messages,
+	})
 }

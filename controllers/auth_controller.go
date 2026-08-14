@@ -2,20 +2,17 @@ package controllers
 
 import (
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 	"planeta_qosshy/util"
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
-	"os"
 )
-
-var store = sessions.NewCookieStore([]byte(os.Getenv("COOKIE_SECRET")))
 
 func generateToken() (string, error) {
 	bytes := make([]byte, 32)
@@ -99,13 +96,21 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	err = util.SendVerificationEmail(user.Email, token)
-	if err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to send verification email"})
+	// Try to send verification email — non-fatal if SMTP fails
+	smtpErr := util.SendVerificationEmail(user.Email, token)
+	if smtpErr != nil {
+		log.Println("Warning: could not send verification email:", smtpErr)
+		// Still redirect — user account was created successfully
+		c.HTML(http.StatusOK, "verify.html", gin.H{
+			"email":   user.Email,
+			"warning": "Account created, but we couldn't send the verification email. Please contact support.",
+		})
 		return
 	}
 
-	c.Redirect(http.StatusFound, "/auth/login")
+	c.HTML(http.StatusOK, "verify.html", gin.H{
+		"email": user.Email,
+	})
 }
 
 func Login(c *gin.Context) {
@@ -129,7 +134,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	session, _ := store.Get(c.Request, "session")
+	session, _ := middleware.GetSession(c.Request)
 	fmt.Println(user.Role, " ", user.ID)
 	session.Values["userID"] = user.ID
 	session.Values["role"] = user.Role
@@ -143,12 +148,12 @@ func Login(c *gin.Context) {
 	if user.Role == "admin" {
 		c.Redirect(http.StatusFound, "/admin")
 	} else {
-		c.Redirect(http.StatusFound, "/cars")
+		c.Redirect(http.StatusFound, "/clothes")
 	}
 }
 
 func Logout(c *gin.Context) {
-	session, _ := store.Get(c.Request, "session")
+	session, _ := middleware.GetSession(c.Request)
 	delete(session.Values, "userID")
 	err := session.Save(c.Request, c.Writer)
 	if err != nil {
@@ -156,5 +161,5 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusFound, "/auth/login")
+	c.Redirect(http.StatusFound, "/clothes")
 }
