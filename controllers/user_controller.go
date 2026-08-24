@@ -82,28 +82,29 @@ func UpdateProfile(c *gin.Context) {
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": err.Error()})
 		return
 	}
-	print(input.Username, "|", input.Email, "|", input.Password)
-	if input.Username == "" || input.Email == "" || input.Password == "" {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Username or email and password are required"})
+	if input.Username == "" || input.Email == "" {
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Имя пользователя и Email обязательны для заполнения"})
 		return
 	}
 
 	if !util.IsValidEmail(input.Email) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email format"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Неверный формат Email"})
 		return
 	}
 
-	hashedPassword := util.HashPassword(input.Password)
+	updates := map[string]interface{}{
+		"username": input.Username,
+		"email":    input.Email,
+	}
 
-	result := database.DB.Model(&models.User{}).Where("id = ?", sessionUserID).Updates(models.User{
-		Username: input.Username,
-		Email:    input.Email,
-		Password: hashedPassword,
-	})
+	if input.Password != "" {
+		updates["password"] = util.HashPassword(input.Password)
+	}
+
+	result := database.DB.Model(&models.User{}).Where("id = ?", sessionUserID).Updates(updates)
 
 	if result.Error != nil {
-
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to update profile"})
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось обновить профиль"})
 		return
 	}
 	if result.RowsAffected == 0 {
