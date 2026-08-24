@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,45 +8,71 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
+
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/">Главная</a>
-    <a href="/clothes">Каталог</a>
-    <a href="/orders">Мои заказы</a>
-    <a href="/profile" class="active">Профиль</a>
-  </nav>
-  <div class="header-actions">
-    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-  </div>
-</header>
-<div class="auth-page">
-  <div class="auth-card" style="max-width:500px;">
-    <h2>Редактировать профиль</h2>
-    {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
-    <form action="/profile/edit/{{.user.ID}}" method="POST">
-      <div class="form-group">
-        <label for="username">Имя пользователя</label>
-        <input type="text" id="username" name="username" value="{{.user.Username}}" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="{{.user.Email}}" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Новый пароль</label>
-        <input type="password" id="password" name="password" placeholder="Оставьте пустым, чтобы не менять" required>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block">Сохранить изменения</button>
-    </form>
-    <div style="margin-top:14px;text-align:center;">
-      <a href="/profile" class="btn btn-ghost">← Отмена</a>
+  <header class="header">
+    <a href="/" class="logo">PLANETA QOSSHY</a>
+    <nav class="nav">
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile" class="active">Профиль</a>
+    </nav>
+    <div class="header-actions">
+      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
     </div>
+  </header>
+  <div class="page-content" style="max-width:600px;margin:30px auto;">
+    <h1 class="page-title" style="margin-bottom:24px;">Редактирование профиля</h1>
+
+    {{if .error}}
+      <div class="alert alert-error" style="margin-bottom:20px;border-radius:10px;">{{.error}}</div>
+    {{end}}
+
+    <form action="/profile/edit/{{.user.ID}}" method="POST">
+      <!-- Секция: Личные данные -->
+      <div style="background:#fff;border-radius:14px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.04);border:1px solid #ebebeb;margin-bottom:24px;">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:18px;color:#111;display:flex;align-items:center;gap:8px;">
+          <span>👤</span> Личная информация
+        </h3>
+        
+        <div class="form-group" style="margin-bottom:18px;">
+          <label for="username" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Имя пользователя</label>
+          <input type="text" id="username" name="username" value="{{.user.Username}}" required style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="email" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Email адрес</label>
+          <input type="email" id="email" name="email" value="{{.user.Email}}" required style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+        </div>
+      </div>
+
+      <!-- Секция: Безопасность / Смена пароля -->
+      <div style="background:#fff;border-radius:14px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.04);border:1px solid #ebebeb;margin-bottom:24px;">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:#111;display:flex;align-items:center;gap:8px;">
+          <span>🔒</span> Безопасность аккаунта
+        </h3>
+        <p style="font-size:0.85rem;color:#777;margin-bottom:18px;">
+          Заполняйте поле ниже <strong>только если хотите сменить пароль</strong>. Если пароль менять не требуется, просто оставьте его пустым.
+        </p>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="password" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Новый пароль</label>
+          <input type="password" id="password" name="password" placeholder="Введите новый пароль (необязательно)" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button type="submit" class="btn btn-primary" style="padding:12px 28px;border-radius:10px;font-size:0.95rem;font-weight:700;flex:1;">Сохранить изменения</button>
+        <a href="/profile" class="btn btn-ghost" style="padding:12px 20px;border-radius:10px;font-size:0.95rem;">Отмена</a>
+      </div>
+    </form>
   </div>
-</div>
-<footer class="footer">
-  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
-</footer>
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p>
+    </div>
+  </footer>
 </body>
+
 </html>

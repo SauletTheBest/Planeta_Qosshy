@@ -27,7 +27,18 @@
     <h2>Данные аккаунта</h2>
     <div class="profile-row"><span class="key">Имя пользователя</span><span>{{.user.Username}}</span></div>
     <div class="profile-row"><span class="key">Email</span><span>{{.user.Email}}</span></div>
-    <div class="profile-row"><span class="key">Роль</span><span>{{.user.Role}}</span></div>
+    <div class="profile-row">
+      <span class="key">Роль</span>
+      <span>
+        {{if eq .user.Role "admin"}}
+          <strong style="color:#d9534f;background:#fdf7f7;padding:3px 10px;border-radius:12px;border:1px solid #f5c6cb;">Администратор</strong>
+        {{else if eq .user.Role "user"}}
+          <strong style="color:#20c997;background:#f0fcf8;padding:3px 10px;border-radius:12px;border:1px solid #c3e6cb;">Пользователь</strong>
+        {{else}}
+          {{.user.Role}}
+        {{end}}
+      </span>
+    </div>
     <div class="profile-row">
       <span class="key">Email подтверждён</span>
       <span>{{if .user.Verified}}✅ Да{{else}}❌ Нет{{end}}</span>
@@ -120,7 +131,7 @@
 
   <div class="chat-popup-window" id="chatPopupWindow" style="display:none;position:fixed;bottom:94px;right:24px;width:360px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,0.25);z-index:100000;flex-direction:column;overflow:hidden;border:1px solid #eaeaea;">
     <div style="background:#111;color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-      <h4 style="font-size:0.95rem;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#20c997;display:inline-block;"></span> Поддержка Planeta Qosshy</h4>
+      <h4 style="font-size:0.95rem;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#20c997;display:inline-block;"></span> Онлайн Чат с оператором</h4>
       <button onclick="toggleChatWidget()" style="background:transparent;border:none;color:#aaa;font-size:20px;cursor:pointer;">&times;</button>
     </div>
     <div class="chat-popup-body" id="chatPopupBody" style="flex:1;padding:16px;overflow-y:auto;background:#fdfdfd;display:flex;flex-direction:column;gap:10px;">
@@ -141,12 +152,12 @@
   function toggleChatWidget() {
     const windowEl = document.getElementById('chatPopupWindow');
     const tooltip = document.getElementById('chatTooltip');
-    const isOpen = windowEl.style.display === 'flex';
+    const isOpen = windowEl.classList.contains('active');
 
     if (isOpen) {
-      windowEl.style.display = 'none';
+      windowEl.classList.remove('active');
     } else {
-      windowEl.style.display = 'flex';
+      windowEl.classList.add('active');
       if (tooltip) tooltip.style.display = 'none';
       if (!widgetIsLoaded) {
         loadWidgetChat();

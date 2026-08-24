@@ -216,12 +216,12 @@
   function toggleChatWidget() {
     const windowEl = document.getElementById('chatPopupWindow');
     const tooltip = document.getElementById('chatTooltip');
-    const isOpen = windowEl.style.display === 'flex';
+    const isOpen = windowEl.classList.contains('active');
 
     if (isOpen) {
-      windowEl.style.display = 'none';
+      windowEl.classList.remove('active');
     } else {
-      windowEl.style.display = 'flex';
+      windowEl.classList.add('active');
       if (tooltip) tooltip.style.display = 'none';
       if (!widgetIsLoaded) {
         loadWidgetChat();

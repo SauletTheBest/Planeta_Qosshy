@@ -236,7 +236,7 @@
 
     <div class="chat-popup-window" id="chatPopupWindow" style="display:none;position:fixed;bottom:94px;right:24px;width:360px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,0.25);z-index:100000;flex-direction:column;overflow:hidden;border:1px solid #eaeaea;">
       <div class="chat-popup-header" style="background:#111;color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-        <h4 style="font-size:0.95rem;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#20c997;display:inline-block;"></span> Поддержка Planeta Qosshy</h4>
+        <h4 style="font-size:0.95rem;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#20c997;display:inline-block;"></span> Онлайн Чат с оператором</h4>
         <button onclick="toggleChatWidget()" style="background:transparent;border:none;color:#aaa;font-size:20px;cursor:pointer;">&times;</button>
       </div>
       <div class="chat-popup-body" id="chatPopupBody" style="flex:1;padding:16px;overflow-y:auto;background:#fdfdfd;display:flex;flex-direction:column;gap:10px;">
@@ -277,12 +277,12 @@
     function toggleChatWidget() {
       const windowEl = document.getElementById('chatPopupWindow');
       const tooltip = document.getElementById('chatTooltip');
-      const isOpen = windowEl.style.display === 'flex';
+      const isOpen = windowEl.classList.contains('active');
 
       if (isOpen) {
-        windowEl.style.display = 'none';
+        windowEl.classList.remove('active');
       } else {
-        windowEl.style.display = 'flex';
+        windowEl.classList.add('active');
         if (tooltip) tooltip.style.display = 'none';
         if (!widgetIsLoaded) {
           loadWidgetChat();
