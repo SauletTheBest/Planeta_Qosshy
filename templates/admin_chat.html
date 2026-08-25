@@ -21,28 +21,31 @@
 </header>
 <div class="page-content">
   <div class="admin-header">
-    <h1>Чат с пользователем #{{.chatID}}</h1>
+    <h1>Чат с покупателем {{if .username}}{{.username}} <span style="font-size:0.9rem;color:#777;">({{.email}})</span>{{else}}#{{.chatID}}{{end}}</h1>
     <div style="display:flex;gap:10px;">
       <a href="/admin/chats" class="btn btn-ghost">← К чатам</a>
-      <form action="/admin/chat/{{.chatID}}/close" method="POST" onsubmit="return confirm('Закрыть чат?');">
-        <button type="submit" class="btn btn-danger">Закрыть чат</button>
+      <form action="/admin/chat/{{.chatID}}/close" method="POST" onsubmit="return confirm('Завершить этот чат?');" style="margin:0;">
+        <button type="submit" class="btn btn-outline">Завершить чат</button>
+      </form>
+      <form action="/admin/chat/{{.chatID}}/delete" method="POST" onsubmit="return confirm('Удалить эту беседу и её сообщения?');" style="margin:0;">
+        <button type="submit" class="btn btn-danger">🗑️ Удалить чат</button>
       </form>
     </div>
   </div>
   <div class="chat-layout">
     <div class="chat-box" id="chat-box">
       {{range .messages}}
-      <div class="chat-message">
-        <strong>{{.SenderID}}</strong>
-        <div class="chat-bubble">{{.Content}}</div>
+      <div class="chat-message" style="display:flex;flex-direction:column;align-items:{{if eq .SenderID "Admin"}}flex-end{{else}}flex-start{{end}};">
+        <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">{{if eq .SenderID "Admin"}}Администратор{{else}}{{.SenderID}}{{end}}</span>
+        <div class="chat-bubble" style="background:{{if eq .SenderID "Admin"}}#111{{else}}#e9ecef{{end}};color:{{if eq .SenderID "Admin"}}#fff{{else}}#111{{end}};">{{.Content}}</div>
       </div>
       {{else}}
       <p style="color:#999;text-align:center;padding:40px;">Сообщений пока нет</p>
       {{end}}
     </div>
-    <form class="chat-form" action="/admin/chat/{{.chatID}}/send" method="POST">
-      <input type="text" name="message" placeholder="Ответить пользователю..." required>
-      <button type="submit" class="btn btn-primary">Отправить</button>
+    <form class="chat-form" id="admin-chat-form" action="/admin/chat/{{.chatID}}/send" method="POST">
+      <input type="text" id="admin-message-input" name="message" placeholder="Ответить покупателю..." required autocomplete="off">
+      <button type="submit" id="admin-send-btn" class="btn btn-primary">Отправить</button>
     </form>
   </div>
 </div>
@@ -50,8 +53,61 @@
   <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
 </footer>
 <script>
-  var chatBox = document.getElementById('chat-box');
+  const currentChatID = "{{.chatID}}";
+  const chatBox = document.getElementById('chat-box');
   if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const adminWs = new WebSocket(protocol + '//' + window.location.host + '/wss');
+
+  adminWs.onmessage = function(event) {
+    const msg = JSON.parse(event.data);
+    const msgChatID = String(msg.chat_id || msg.ChatID || "");
+    if (msgChatID === currentChatID) {
+      appendAdminMessage(msg);
+    }
+  };
+
+  function appendAdminMessage(msg) {
+    const sender = msg.sender_id || msg.SenderID || msg.senderID || "";
+    const content = msg.content || msg.Content || msg.message || "";
+    const isAdminMsg = (sender === 'Admin' || sender === 'Оператор');
+
+    const div = document.createElement('div');
+    div.className = 'chat-message';
+    div.style.cssText = `display:flex;flex-direction:column;align-items:${isAdminMsg ? 'flex-end' : 'flex-start'};`;
+    div.innerHTML = `
+      <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${isAdminMsg ? 'Администратор' : escapeHtml(sender)}</span>
+      <div class="chat-bubble" style="background:${isAdminMsg ? '#111' : '#e9ecef'};color:${isAdminMsg ? '#fff' : '#111'};">${escapeHtml(content)}</div>
+    `;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  document.getElementById('admin-send-btn').addEventListener('click', function(e) {
+    const input = document.getElementById('admin-message-input');
+    const text = input.value.trim();
+    if (!text || !adminWs) return;
+
+    e.preventDefault();
+    const msgPayload = {
+      chat_id: currentChatID,
+      sender_id: "Admin",
+      content: text,
+      ChatID: currentChatID,
+      SenderID: "Admin",
+      Content: text
+    };
+
+    adminWs.send(JSON.stringify(msgPayload));
+    input.value = '';
+  });
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML;
+  }
 </script>
 </body>
 </html>

@@ -20,8 +20,13 @@
   </div>
 </header>
 <div class="page-content">
-  <div class="admin-header">
+  <div class="admin-header" style="display:flex;justify-content:space-between;align-items:center;">
     <h1>Чаты поддержки</h1>
+    {{if .chats}}
+    <form action="/admin/chats/delete-all" method="POST" onsubmit="return confirm('Удалить ВСЕ сообщения и чаты безвозвратно?');">
+      <button type="submit" class="btn btn-outline" style="color:red;border-color:red;">🧹 Очистить все чаты</button>
+    </form>
+    {{end}}
   </div>
   <nav class="admin-nav">
     <a href="/admin/">Главная</a>
@@ -33,7 +38,7 @@
     <thead>
       <tr>
         <th>ID Чата</th>
-        <th>Пользователь</th>
+        <th>Покупатель</th>
         <th>Статус</th>
         <th>Действия</th>
       </tr>
@@ -41,15 +46,30 @@
     <tbody>
       {{range .chats}}
       <tr>
-        <td>{{.ID}}</td>
-        <td>{{.UserID}}</td>
-        <td>{{if .Active}}<span style="color:#1e7e50;font-weight:700;">Активен</span>{{else}}<span style="color:#888;">Закрыт</span>{{end}}</td>
+        <td>#{{.ID}}</td>
         <td>
-          <a href="/admin/chat/{{.ID}}" class="btn btn-ghost">Открыть чат</a>
+          {{if .Username}}
+            <strong>{{.Username}}</strong> <span style="font-size:0.8rem;color:#777;">({{.Email}})</span>
+          {{else}}
+            Пользователь #{{.UserID}}
+          {{end}}
+        </td>
+        <td>
+          {{if eq .Status "active"}}
+            <span style="color:#1e7e50;font-weight:700;">🟢 Активен</span>
+          {{else}}
+            <span style="color:#888;">⚪ Завершен</span>
+          {{end}}
+        </td>
+        <td style="display:flex;gap:8px;">
+          <a href="/admin/chat/{{.ID}}" class="btn btn-ghost">Открыть</a>
+          <form action="/admin/chat/{{.ID}}/delete" method="POST" onsubmit="return confirm('Удалить эту беседу?');" style="margin:0;">
+            <button type="submit" class="btn btn-ghost" style="color:red;">Удалить</button>
+          </form>
         </td>
       </tr>
       {{else}}
-      <tr><td colspan="4" style="text-align:center;color:#999;padding:40px;">Активных чатов нет</td></tr>
+      <tr><td colspan="4" style="text-align:center;color:#999;padding:40px;">Активных чатов пока нет</td></tr>
       {{end}}
     </tbody>
   </table>

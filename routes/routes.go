@@ -91,8 +91,10 @@ func SetupRouter() *gin.Engine {
 		admin.POST("/clothes/:id", controllers.AdminUpdateClothes)
 		admin.POST("/clothes/:id/delete", controllers.AdminDeleteClothes)
 		admin.GET("/chats", controllers.AdminChatList)
+		admin.POST("/chats/delete-all", controllers.AdminDeleteAllChats)
 		admin.GET("/chat/:chatID", controllers.AdminChat)
 		admin.POST("/chat/:chatID/close", controllers.AdminCloseChat)
+		admin.POST("/chat/:chatID/delete", controllers.AdminDeleteChat)
 		admin.POST("/chat/:chatID/send", controllers.AdminSendMessage)
 
 		admin.GET("/", controllers.AdminDashboard)
