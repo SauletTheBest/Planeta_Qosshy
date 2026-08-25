@@ -170,6 +170,8 @@
     if (tooltip) tooltip.style.opacity = '0';
   }, 6000);
 
+  let currentUsername = "User";
+
   async function loadWidgetChat() {
     const body = document.getElementById('chatPopupBody');
     const footer = document.getElementById('chatPopupFooter');
@@ -192,6 +194,22 @@
         return;
       }
 
+      if (data.isAdmin) {
+        body.innerHTML = `
+          <div style="text-align:center;padding:28px 16px;color:#333;">
+            <div style="font-size:42px;margin-bottom:12px;">👑</div>
+            <h4 style="font-weight:700;margin-bottom:8px;">Панель Администратора</h4>
+            <p style="font-size:0.86rem;color:#666;margin-bottom:20px;line-height:1.5;">
+              Вы вошли как <strong>Администратор</strong>. Для просмотра вопросов покупателей и ответа на них перейдите в служебный центр чатов.
+            </p>
+            <a href="/admin/chats" class="btn btn-primary btn-block" style="border-radius:20px;padding:10px 16px;text-decoration:none;display:inline-block;">Управление Чатами</a>
+          </div>
+        `;
+        footer.style.display = 'none';
+        return;
+      }
+
+      currentUsername = data.username || "User";
       currentWidgetChatID = String(data.chatID);
       footer.style.display = 'flex';
       renderWidgetMessages(data.messages || []);
@@ -223,11 +241,12 @@
     body.innerHTML = messages.map(msg => {
       const sender = getMsgSender(msg);
       const content = getMsgContent(msg);
-      const isMe = (sender === 'User');
+      const isAdminMsg = (sender === 'Admin' || sender === 'Оператор');
+      const displayName = isAdminMsg ? 'Оператор' : (sender || currentUsername);
       return `
-        <div style="display:flex;flex-direction:column;align-items:${isMe ? 'flex-end' : 'flex-start'};">
-          <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${isMe ? 'Вы' : 'Оператор'}</span>
-          <div style="background:${isMe ? '#111' : '#e9ecef'};color:${isMe ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
+        <div style="display:flex;flex-direction:column;align-items:${!isAdminMsg ? 'flex-end' : 'flex-start'};">
+          <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${escapeHtml(displayName)}</span>
+          <div style="background:${!isAdminMsg ? '#111' : '#e9ecef'};color:${!isAdminMsg ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
             ${escapeHtml(content)}
           </div>
         </div>
@@ -253,11 +272,12 @@
     const body = document.getElementById('chatPopupBody');
     const sender = getMsgSender(msg);
     const content = getMsgContent(msg);
-    const isMe = (sender === 'User');
+    const isAdminMsg = (sender === 'Admin' || sender === 'Оператор');
+    const displayName = isAdminMsg ? 'Оператор' : (sender || currentUsername);
     const msgHtml = `
-      <div style="display:flex;flex-direction:column;align-items:${isMe ? 'flex-end' : 'flex-start'};">
-        <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${isMe ? 'Вы' : 'Оператор'}</span>
-        <div style="background:${isMe ? '#111' : '#e9ecef'};color:${isMe ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
+      <div style="display:flex;flex-direction:column;align-items:${!isAdminMsg ? 'flex-end' : 'flex-start'};">
+        <span style="font-size:0.72rem;color:#999;margin-bottom:2px;">${escapeHtml(displayName)}</span>
+        <div style="background:${!isAdminMsg ? '#111' : '#e9ecef'};color:${!isAdminMsg ? '#fff' : '#111'};padding:8px 14px;border-radius:14px;font-size:0.88rem;max-width:80%;word-break:break-word;">
           ${escapeHtml(content)}
         </div>
       </div>
@@ -273,10 +293,10 @@
 
     const msgPayload = {
       chat_id: currentWidgetChatID,
-      sender_id: "User",
+      sender_id: currentUsername,
       content: text,
       ChatID: currentWidgetChatID,
-      SenderID: "User",
+      SenderID: currentUsername,
       Content: text
     };
 

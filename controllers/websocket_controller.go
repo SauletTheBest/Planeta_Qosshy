@@ -154,6 +154,11 @@ func APIGetActiveChat(c *gin.Context) {
 	}
 
 	userID := userIDVal.(uint)
+	var user models.User
+	database.DB.First(&user, userID)
+
+	isAdmin := (user.Role == "admin")
+
 	var chat models.Chat
 	err := database.DB.Where("user_id = ? AND status = 'active'", userID).First(&chat).Error
 
@@ -175,6 +180,8 @@ func APIGetActiveChat(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"isLoggedIn": true,
+		"isAdmin":    isAdmin,
+		"username":   user.Username,
 		"chatID":     chat.ID,
 		"userID":     userID,
 		"messages":   messages,
