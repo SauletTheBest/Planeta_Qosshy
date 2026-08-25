@@ -33,8 +33,8 @@ services:
       - VERIFICATION_ADDRESS=http://localhost:8080
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=587
-      - SMTP_USER=aifinance.aitu.team@gmail.com
-      - SMTP_PASS=pcsm ikhs rjar wnay
+      - SMTP_USER=
+      - SMTP_PASS=
       - STRIPE_SECRET_KEY=sk_test_yourkey
     depends_on:
       postgres:
