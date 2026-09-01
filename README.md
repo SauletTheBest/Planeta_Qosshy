@@ -1,4 +1,4 @@
-# 👕 Planeta Qosshy — Clothes Selling Services Platform
+## 👕 Planeta Qosshy — Clothes Selling Services Platform
 
 **Planeta Qosshy** is a full-stack e-commerce web application built in **Go (Golang)** using the **Gin Web Framework**, **GORM ORM**, **PostgreSQL**, **Gorilla WebSockets**, and **Gorilla Sessions**. 
 
@@ -6,34 +6,34 @@ The platform supports user authentication with email verification, clothes catal
 
 ---
 
-## 🖼 UI Preview / Скриншоты интерфейса
+### 🖼 UI Preview / Скриншоты интерфейса
 
-### 🛍 1. Витрина и Карточка товара
+#### 🛍 1. Витрина и Карточка товара
 <p align="center">
   <img src="./images/home_page.png" alt="Главная страница" width="48%" />
   <img src="./images/card.png" alt="Карточка товара" width="48%" />
 </p>
 
-### 👤 2. Профиль пользователя и Онлайн-чат поддержки
+#### 👤 2. Профиль пользователя и Онлайн-чат поддержки
 <p align="center">
   <img src="./images/profile.png" alt="Профиль пользователя" width="48%" />
   <img src="./images/chat.png" alt="WebSocket Чат Поддержки" width="48%" />
 </p>
 
-### ⚙️ 3. Панель Администратора
+#### ⚙️ 3. Панель Администратора
 <p align="center">
   <img src="./images/admin_panel.png" alt="Админ-панель Дашборд" width="48%" />
   <img src="./images/admin_panel_list.png" alt="Управление каталогом" width="48%" />
 </p>
 
-### ℹ️ 4. О компании
+#### ℹ️ 4. О компании
 <p align="center">
   <img src="./images/aboutus.png" alt="О нас" width="97%" />
 </p>
 
 ---
 
-## 📐 Architecture & Technology Stack
+### 📐 Architecture & Technology Stack
 
 | Layer / Aspect | Technology / Library | Description |
 | :--- | :--- | :--- |
@@ -51,7 +51,7 @@ The platform supports user authentication with email verification, clothes catal
 
 ---
 
-## 📦 Package Structure & Responsibilities
+### 📦 Package Structure & Responsibilities
 
 The codebase is structured following standard MVC and layered architecture principles:
 
@@ -104,9 +104,9 @@ Planeta_Qosshy/
 
 ---
 
-## 🔄 Data Flows & Workflows
+### 🔄 Data Flows & Workflows
 
-### 1. User Registration & Authentication Flow
+#### 1. User Registration & Authentication Flow
 
 ```mermaid
 sequenceDiagram
@@ -131,7 +131,7 @@ sequenceDiagram
     AuthCtrl-->>User: Email Verified Success Page
 ```
 
-### 2. Purchase & External Payment Processing Flow
+#### 2. Purchase & External Payment Processing Flow
 
 ```mermaid
 sequenceDiagram
@@ -160,7 +160,7 @@ sequenceDiagram
     end
 ```
 
-### 3. Real-Time WebSocket Support Chat Flow
+#### 3. Real-Time WebSocket Support Chat Flow
 
 ```mermaid
 sequenceDiagram
@@ -183,11 +183,11 @@ sequenceDiagram
 
 ---
 
-## 🐳 Running with Docker & Docker Compose (Recommended)
+### 🐳 Running with Docker & Docker Compose (Recommended)
 
 You can launch both the **Go API** and the **PostgreSQL** database in isolated containers with a single command.
 
-### Step-by-Step Docker Setup
+#### Step-by-Step Docker Setup
 
 1. **Start the containers**:
    ```bash
@@ -211,7 +211,7 @@ You can launch both the **Go API** and the **PostgreSQL** database in isolated c
 
 ---
 
-## ⚙️ Environment Variables Setup (Local Execution)
+### ⚙️ Environment Variables Setup (Local Execution)
 
 If running directly on host without Docker, create a `.env` file in `Planeta_Qosshy/`:
 
@@ -232,7 +232,7 @@ VERIFICATION_ADDRESS=http://localhost:8080
 
 ---
 
-## 🚀 Running Locally (Without Docker)
+### 🚀 Running Locally (Without Docker)
 
 1. **Navigate to the application directory**:
    ```bash
@@ -249,7 +249,7 @@ VERIFICATION_ADDRESS=http://localhost:8080
 
 ---
 
-## 🧪 Testing
+### 🧪 Testing
 
 - **Run Go Unit & Integration Tests**:
   ```bash
