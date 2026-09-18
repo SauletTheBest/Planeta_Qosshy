@@ -10,25 +10,25 @@ The platform supports user authentication with email verification, clothes catal
 
 ### 🛍 1. Витрина и Карточка товара
 <p align="center">
-  <img src="./images/home_page.png" alt="Главная страница" width="48%" />
-  <img src="./images/card.png" alt="Карточка товара" width="48%" />
+  <img src="./docs/screenshots/home_page.png" alt="Главная страница" width="48%" />
+  <img src="./docs/screenshots/card.png" alt="Карточка товара" width="48%" />
 </p>
 
 ### 👤 2. Профиль пользователя и Онлайн-чат поддержки
 <p align="center">
-  <img src="./images/profile.png" alt="Профиль пользователя" width="48%" />
-  <img src="./images/chat.png" alt="WebSocket Чат Поддержки" width="48%" />
+  <img src="./docs/screenshots/profile.png" alt="Профиль пользователя" width="48%" />
+  <img src="./docs/screenshots/chat.png" alt="WebSocket Чат Поддержки" width="48%" />
 </p>
 
 ### ⚙️ 3. Панель Администратора
 <p align="center">
-  <img src="./images/admin_panel.png" alt="Админ-панель Дашборд" width="48%" />
-  <img src="./images/admin_panel_list.png" alt="Управление каталогом" width="48%" />
+  <img src="./docs/screenshots/admin_panel.png" alt="Админ-панель Дашборд" width="48%" />
+  <img src="./docs/screenshots/admin_panel_list.png" alt="Управление каталогом" width="48%" />
 </p>
 
 ### ℹ️ 4. О компании
 <p align="center">
-  <img src="./images/aboutus.png" alt="О нас" width="97%" />
+  <img src="./docs/screenshots/aboutus.png" alt="О нас" width="97%" />
 </p>
 
 ---
