@@ -3318,3 +3318,551 @@
 {"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 8.164618ms","time":"2026-08-14T12:18:57+05:00"}
 {"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.918427ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-14T12:18:58+05:00"}
 {"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 11.038416ms","time":"2026-08-14T12:18:58+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.422509ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T12:21:42+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 7.750303ms","time":"2026-08-14T12:21:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.054593ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T20:00:34+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 8.170815ms","time":"2026-08-14T20:00:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.100011ms","level":"info","method":"GET","msg":"Request details","path":"/static/css/style.css","status":200,"time":"2026-08-14T20:00:35+05:00"}
+{"level":"info","msg":"[GET] /static/css/style.css 127.0.0.1 | 200 | 10.283254ms","time":"2026-08-14T20:00:35+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.496719ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-14T20:00:49+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 4.604383ms","time":"2026-08-14T20:00:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.90654ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes/new","status":200,"time":"2026-08-14T20:02:21+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes/new 127.0.0.1 | 200 | 7.039821ms","time":"2026-08-14T20:02:21+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.1911ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes","status":200,"time":"2026-08-14T20:03:16+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes 127.0.0.1 | 200 | 8.288979ms","time":"2026-08-14T20:03:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.113186ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes/new","status":200,"time":"2026-08-14T20:03:21+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes/new 127.0.0.1 | 200 | 4.207601ms","time":"2026-08-14T20:03:21+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.680501ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes","status":200,"time":"2026-08-14T20:03:22+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes 127.0.0.1 | 200 | 6.776763ms","time":"2026-08-14T20:03:22+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.742084ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:04:17+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 8.900965ms","time":"2026-08-14T20:04:17+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"243.643µs","level":"info","method":"GET","msg":"Request details","path":"/auth/logout","status":302,"time":"2026-08-14T20:04:19+05:00"}
+{"level":"info","msg":"[GET] /auth/logout 127.0.0.1 | 302 | 339.866µs","time":"2026-08-14T20:04:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.329339ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:04:19+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.436047ms","time":"2026-08-14T20:04:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.692334ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-14T20:04:20+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 3.787995ms","time":"2026-08-14T20:04:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"194.577µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:04:35+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 294.01µs","time":"2026-08-14T20:04:35+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"177.902µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:04:37+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 280.408µs","time":"2026-08-14T20:04:37+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"172.809µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:04:38+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 255.36µs","time":"2026-08-14T20:04:38+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.947549ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T20:04:41+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 10.062912ms","time":"2026-08-14T20:04:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"159.681µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:04:58+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 274.494µs","time":"2026-08-14T20:04:58+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"133.761µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:05:00+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 213.629µs","time":"2026-08-14T20:05:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"159.781µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:05:06+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 248.293µs","time":"2026-08-14T20:05:06+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.352478ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:05:08+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.505207ms","time":"2026-08-14T20:05:08+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.285166ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T20:05:08+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 4.394681ms","time":"2026-08-14T20:05:08+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.157166ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:07:15+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.310978ms","time":"2026-08-14T20:07:15+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.17115ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-14T20:07:17+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 4.344799ms","time":"2026-08-14T20:07:17+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.23186ms","level":"info","method":"GET","msg":"Request details","path":"/auth/register","status":200,"time":"2026-08-14T20:07:21+05:00"}
+{"level":"info","msg":"[GET] /auth/register 127.0.0.1 | 200 | 2.332165ms","time":"2026-08-14T20:07:21+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.498681ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-14T20:07:26+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 3.716544ms","time":"2026-08-14T20:07:26+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"198.441241ms","level":"info","method":"POST","msg":"Request details","path":"/auth/login","status":302,"time":"2026-08-14T20:09:27+05:00"}
+{"level":"info","msg":"[POST] /auth/login 127.0.0.1 | 302 | 198.541194ms","time":"2026-08-14T20:09:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.829995ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-14T20:09:27+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 3.934748ms","time":"2026-08-14T20:09:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"7.403736ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-14T20:09:30+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 7.508629ms","time":"2026-08-14T20:09:30+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.246218ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-14T20:09:33+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 3.35345ms","time":"2026-08-14T20:09:33+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.931836ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:09:34+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.056404ms","time":"2026-08-14T20:09:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.953756ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:09:36+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 7.055711ms","time":"2026-08-14T20:09:36+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.721281185s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-14T20:09:39+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2.721395724s","time":"2026-08-14T20:09:39+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.800447ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T20:09:39+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 7.909526ms","time":"2026-08-14T20:09:39+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.624378ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-14T20:09:40+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.712278ms","time":"2026-08-14T20:09:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.958864816s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-14T20:09:46+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 5.959011034s","time":"2026-08-14T20:09:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.392015ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:09:46+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.527386ms","time":"2026-08-14T20:09:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.038563ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-14T20:09:47+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 10.145526ms","time":"2026-08-14T20:09:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.705364ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:09:49+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 6.812254ms","time":"2026-08-14T20:09:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.545748ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/6","status":200,"time":"2026-08-14T20:09:51+05:00"}
+{"level":"info","msg":"[GET] /clothes/6 127.0.0.1 | 200 | 7.657431ms","time":"2026-08-14T20:09:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.645518ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:09:54+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 8.767646ms","time":"2026-08-14T20:09:54+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.744717ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/4","status":200,"time":"2026-08-14T20:09:58+05:00"}
+{"level":"info","msg":"[GET] /clothes/4 127.0.0.1 | 200 | 6.858998ms","time":"2026-08-14T20:09:58+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.326607ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-14T20:10:27+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 9.497176ms","time":"2026-08-14T20:10:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.121242ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-14T20:10:28+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.208965ms","time":"2026-08-14T20:10:28+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"11.326146ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-14T20:10:29+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 11.460097ms","time":"2026-08-14T20:10:29+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.185734ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-14T20:10:34+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 9.596743ms","time":"2026-08-14T20:10:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.815756ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-14T20:10:36+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.562403ms","time":"2026-08-14T20:10:36+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.997596ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-14T20:11:00+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 9.149755ms","time":"2026-08-14T20:11:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.877428ms","level":"info","method":"GET","msg":"Request details","path":"/about","status":200,"time":"2026-08-14T20:11:10+05:00"}
+{"level":"info","msg":"[GET] /about 127.0.0.1 | 200 | 4.969199ms","time":"2026-08-14T20:11:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.004077ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-14T20:11:48+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 6.193054ms","time":"2026-08-14T20:11:48+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.233759ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-14T20:11:49+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 6.320531ms","time":"2026-08-14T20:11:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"11.577913ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-14T20:11:53+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 11.707863ms","time":"2026-08-14T20:11:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.94929ms","level":"info","method":"GET","msg":"Request details","path":"/chat/1","status":200,"time":"2026-08-14T20:11:56+05:00"}
+{"level":"info","msg":"[GET] /chat/1 127.0.0.1 | 200 | 9.04822ms","time":"2026-08-14T20:11:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"14.640994ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:41:41+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 16.12335ms","time":"2026-08-23T16:41:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.104476ms","level":"info","method":"GET","msg":"Request details","path":"/static/css/style.css","status":200,"time":"2026-08-23T16:41:41+05:00"}
+{"level":"info","msg":"[GET] /static/css/style.css 127.0.0.1 | 200 | 10.227536ms","time":"2026-08-23T16:41:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"981.121µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/2gis.png","status":200,"time":"2026-08-23T16:41:41+05:00"}
+{"level":"info","msg":"[GET] /static/image/2gis.png 127.0.0.1 | 200 | 1.191962ms","time":"2026-08-23T16:41:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.905457ms","level":"info","method":"GET","msg":"Request details","path":"/static/image/instagram.png","status":200,"time":"2026-08-23T16:41:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.313021ms","level":"info","method":"GET","msg":"Request details","path":"/static/image/whatsapp.png","status":200,"time":"2026-08-23T16:41:41+05:00"}
+{"level":"info","msg":"[GET] /static/image/whatsapp.png 127.0.0.1 | 200 | 1.41575ms","time":"2026-08-23T16:41:41+05:00"}
+{"level":"info","msg":"[GET] /static/image/instagram.png 127.0.0.1 | 200 | 2.026952ms","time":"2026-08-23T16:41:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.339216ms","level":"info","method":"GET","msg":"Request details","path":"/static/image/earth.png","status":200,"time":"2026-08-23T16:41:42+05:00"}
+{"level":"info","msg":"[GET] /static/image/earth.png 127.0.0.1 | 200 | 4.460122ms","time":"2026-08-23T16:41:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"43.962515ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:41:53+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 44.080214ms","time":"2026-08-23T16:41:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"17.744863ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:42:00+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 17.928938ms","time":"2026-08-23T16:42:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.616157ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:42:01+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 6.70039ms","time":"2026-08-23T16:42:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.803094ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:42:11+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.90158ms","time":"2026-08-23T16:42:11+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.92723773s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:42:22+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 10.927342284s","time":"2026-08-23T16:42:22+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.182465ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:42:22+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 7.769622ms","time":"2026-08-23T16:42:22+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.318254ms","level":"info","method":"GET","msg":"Request details","path":"/chat/1","status":200,"time":"2026-08-23T16:42:28+05:00"}
+{"level":"info","msg":"[GET] /chat/1 127.0.0.1 | 200 | 4.407192ms","time":"2026-08-23T16:42:28+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"15.175329236s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:42:43+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 15.175460011s","time":"2026-08-23T16:42:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"12.261733ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:42:43+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 12.372999ms","time":"2026-08-23T16:42:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.131115ms","level":"info","method":"GET","msg":"Request details","path":"/chat/1","status":200,"time":"2026-08-23T16:42:46+05:00"}
+{"level":"info","msg":"[GET] /chat/1 127.0.0.1 | 200 | 4.267317ms","time":"2026-08-23T16:42:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.430744401s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:42:48+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2.430888494s","time":"2026-08-23T16:42:48+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.939298ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:42:48+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.054869ms","time":"2026-08-23T16:42:48+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.882002ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:42:52+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 1.96572ms","time":"2026-08-23T16:42:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.681546373s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:42:54+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 1.681667462s","time":"2026-08-23T16:42:54+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.286471ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:42:54+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 8.399899ms","time":"2026-08-23T16:42:54+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.239373ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:42:56+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.358956ms","time":"2026-08-23T16:42:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.192922ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-23T16:43:15+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 5.293744ms","time":"2026-08-23T16:43:15+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.32612ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:43:38+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 6.445113ms","time":"2026-08-23T16:43:38+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.404973ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-23T16:44:15+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 6.557326ms","time":"2026-08-23T16:44:15+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.025428ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-23T16:44:55+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 7.171519ms","time":"2026-08-23T16:44:55+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.862309ms","level":"info","method":"POST","msg":"Request details","path":"/profile/edit/1","status":400,"time":"2026-08-23T16:44:57+05:00"}
+{"level":"info","msg":"[POST] /profile/edit/1 127.0.0.1 | 400 | 7.965119ms","time":"2026-08-23T16:44:57+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.698684ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:45:02+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.80537ms","time":"2026-08-23T16:45:02+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.749695ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:45:15+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 10.869468ms","time":"2026-08-23T16:45:15+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.934278ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-23T16:45:19+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 5.049047ms","time":"2026-08-23T16:45:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.03149ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:49:51+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.159653ms","time":"2026-08-23T16:49:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.061672ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:50:36+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 3.146973ms","time":"2026-08-23T16:50:36+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.454173338s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:50:40+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 4.454298234s","time":"2026-08-23T16:50:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.589368ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:50:41+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 5.739829ms","time":"2026-08-23T16:50:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.136909ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:50:43+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 8.271906ms","time":"2026-08-23T16:50:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.406617ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:52:08+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 7.506912ms","time":"2026-08-23T16:52:08+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.933146ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:52:09+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.015281ms","time":"2026-08-23T16:52:09+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.719483ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:55:00+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 7.84448ms","time":"2026-08-23T16:55:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.612032ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:55:02+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 6.720417ms","time":"2026-08-23T16:55:02+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"14.275883572s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:55:16+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 14.276040331s","time":"2026-08-23T16:55:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.063328ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:55:16+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.154219ms","time":"2026-08-23T16:55:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.305155ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:55:18+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 10.508562ms","time":"2026-08-23T16:55:18+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.08037ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:55:19+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 3.157608ms","time":"2026-08-23T16:55:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.025555ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:55:19+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 6.491244ms","time":"2026-08-23T16:55:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.881679ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:55:20+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 6.985331ms","time":"2026-08-23T16:55:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.811444ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-23T16:55:27+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 5.895878ms","time":"2026-08-23T16:55:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"36.737315ms","level":"info","method":"POST","msg":"Request details","path":"/profile/edit/1","status":302,"time":"2026-08-23T16:55:38+05:00"}
+{"level":"info","msg":"[POST] /profile/edit/1 127.0.0.1 | 302 | 36.840027ms","time":"2026-08-23T16:55:38+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.320714ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:55:38+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 8.423048ms","time":"2026-08-23T16:55:38+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.740632ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:55:44+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 6.835306ms","time":"2026-08-23T16:55:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.678529ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:55:45+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 8.793812ms","time":"2026-08-23T16:55:45+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.889022ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:55:52+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 4.982548ms","time":"2026-08-23T16:55:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.566545ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:55:56+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 3.651859ms","time":"2026-08-23T16:55:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"256ns","level":"info","method":"GET","msg":"Request details","path":"/favicon.ico","status":404,"time":"2026-08-23T16:55:58+05:00"}
+{"level":"info","msg":"[GET] /favicon.ico 127.0.0.1 | 404 | 141.074µs","time":"2026-08-23T16:55:58+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.311098ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:56:00+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 4.427117ms","time":"2026-08-23T16:56:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.720063ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:56:02+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 7.849322ms","time":"2026-08-23T16:56:02+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.834133ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:56:03+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.956919ms","time":"2026-08-23T16:56:03+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.123584252s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:56:05+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2.123727264s","time":"2026-08-23T16:56:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.19993ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:56:05+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.311628ms","time":"2026-08-23T16:56:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.689471ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:56:06+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 7.794149ms","time":"2026-08-23T16:56:06+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.22829ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:56:08+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 9.36853ms","time":"2026-08-23T16:56:08+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.537645ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:56:10+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 3.671015ms","time":"2026-08-23T16:56:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.449516ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:56:46+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.633655ms","time":"2026-08-23T16:56:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.796667ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:56:47+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 3.891822ms","time":"2026-08-23T16:56:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.912269ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:56:50+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 8.037386ms","time":"2026-08-23T16:56:50+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.329622ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T16:56:51+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 5.419802ms","time":"2026-08-23T16:56:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.324226ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T16:56:52+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 4.427063ms","time":"2026-08-23T16:56:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"875.980585ms","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T16:56:53+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 876.145268ms","time":"2026-08-23T16:56:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.798268ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:56:53+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 8.909017ms","time":"2026-08-23T16:56:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.579463ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:56:55+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.686248ms","time":"2026-08-23T16:56:55+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.179494ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:56:56+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 4.282652ms","time":"2026-08-23T16:56:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"12.138613ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:57:14+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 12.27434ms","time":"2026-08-23T16:57:14+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.926764ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:57:16+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 4.021955ms","time":"2026-08-23T16:57:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.736911ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:57:18+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.890935ms","time":"2026-08-23T16:57:18+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.565076ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T16:57:19+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.686203ms","time":"2026-08-23T16:57:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.898096ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-23T16:57:20+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 3.994993ms","time":"2026-08-23T16:57:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.385707ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T16:59:43+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 9.495948ms","time":"2026-08-23T16:59:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.786731ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T16:59:56+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 6.904992ms","time":"2026-08-23T16:59:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.167808ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T17:00:42+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 8.316694ms","time":"2026-08-23T17:00:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.46285ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T17:00:43+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 5.552284ms","time":"2026-08-23T17:00:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.225654ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T17:00:44+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 5.30263ms","time":"2026-08-23T17:00:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.976894ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T17:00:45+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 6.215909ms","time":"2026-08-23T17:00:45+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.151442221s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T17:00:49+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 4.151621515s","time":"2026-08-23T17:00:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.3263ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:00:49+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 8.445221ms","time":"2026-08-23T17:00:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.95472ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T17:00:50+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.033165ms","time":"2026-08-23T17:00:50+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.523671ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:04:33+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 10.696456ms","time":"2026-08-23T17:04:33+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.169196ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-23T17:04:34+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 4.264215ms","time":"2026-08-23T17:04:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"24.281881624s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T17:04:59+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 24.282019709s","time":"2026-08-23T17:04:59+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.063909ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-23T17:04:59+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 5.196729ms","time":"2026-08-23T17:04:59+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"5.560644ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-23T17:05:01+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.663629ms","time":"2026-08-23T17:05:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.413339ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes/new","status":200,"time":"2026-08-23T17:05:06+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes/new 127.0.0.1 | 200 | 5.575484ms","time":"2026-08-23T17:05:06+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"12.999437ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:07+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 13.171498ms","time":"2026-08-23T17:05:07+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.297891ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-23T17:05:09+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 4.40744ms","time":"2026-08-23T17:05:09+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"4.572932ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-23T17:05:10+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 4.699835ms","time":"2026-08-23T17:05:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.937888ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:12+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.059599ms","time":"2026-08-23T17:05:12+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"11.20399ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T17:05:14+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 11.351434ms","time":"2026-08-23T17:05:14+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.864183ms","level":"info","method":"GET","msg":"Request details","path":"/chat/1","status":200,"time":"2026-08-23T17:05:16+05:00"}
+{"level":"info","msg":"[GET] /chat/1 127.0.0.1 | 200 | 3.960786ms","time":"2026-08-23T17:05:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.777130515s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-23T17:05:26+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 10.777257952s","time":"2026-08-23T17:05:26+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.500531ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T17:05:27+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.590395ms","time":"2026-08-23T17:05:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.515474ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T17:05:29+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 8.639625ms","time":"2026-08-23T17:05:29+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.244416ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:30+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.37812ms","time":"2026-08-23T17:05:30+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.26483ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T17:05:31+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 6.35381ms","time":"2026-08-23T17:05:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.390108ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:42+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.96703ms","time":"2026-08-23T17:05:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.681926ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:45+05:00"}
+{"level":"info","msg":"[GET] /clothes/?page=2\u0026limit=12\u0026category=\u0026brand=\u0026size=\u0026min_price=\u0026max_price=\u0026sort= 127.0.0.1 | 200 | 7.794609ms","time":"2026-08-23T17:05:45+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.412904ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T17:05:46+05:00"}
+{"level":"info","msg":"[GET] /clothes/?page=1\u0026limit=12\u0026category=\u0026brand=\u0026size=\u0026min_price=\u0026max_price=\u0026sort= 127.0.0.1 | 200 | 8.530593ms","time":"2026-08-23T17:05:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.205116ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T17:05:52+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 9.319341ms","time":"2026-08-23T17:05:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"10.663591ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T17:05:53+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 10.794742ms","time":"2026-08-23T17:05:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.842497ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T17:05:59+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 8.955722ms","time":"2026-08-23T17:05:59+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.143173ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-23T17:06:00+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 4.257433ms","time":"2026-08-23T17:06:00+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.442578ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T19:34:46+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 5.845654ms","time":"2026-08-23T19:34:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.204074ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T19:34:47+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 7.322991ms","time":"2026-08-23T19:34:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"8.845605ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-23T19:34:48+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 8.945703ms","time":"2026-08-23T19:34:48+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.798028ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-23T19:34:55+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 7.911202ms","time":"2026-08-23T19:34:55+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.188718ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-23T19:34:57+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 7.310657ms","time":"2026-08-23T19:34:57+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.093834ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-25T22:11:31+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 5.980548ms","time":"2026-08-25T22:11:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"69.254µs","level":"info","method":"GET","msg":"Request details","path":"/static/css/style.css","status":304,"time":"2026-08-25T22:11:31+05:00"}
+{"level":"info","msg":"[GET] /static/css/style.css 127.0.0.1 | 304 | 221.757µs","time":"2026-08-25T22:11:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"56.851µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/whatsapp.png","status":304,"time":"2026-08-25T22:11:31+05:00"}
+{"level":"info","msg":"[GET] /static/image/whatsapp.png 127.0.0.1 | 304 | 119.246µs","time":"2026-08-25T22:11:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"44.058µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/instagram.png","status":304,"time":"2026-08-25T22:11:31+05:00"}
+{"level":"info","msg":"[GET] /static/image/instagram.png 127.0.0.1 | 304 | 80.672µs","time":"2026-08-25T22:11:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"46.389µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/2gis.png","status":304,"time":"2026-08-25T22:11:31+05:00"}
+{"level":"info","msg":"[GET] /static/image/2gis.png 127.0.0.1 | 304 | 78.66µs","time":"2026-08-25T22:11:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"9.029007ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:11:36+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 9.086761ms","time":"2026-08-25T22:11:36+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.878881ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-25T22:11:39+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 5.940712ms","time":"2026-08-25T22:11:39+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.075816ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:11:40+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 3.133283ms","time":"2026-08-25T22:11:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.814934ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-25T22:12:16+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 2.866475ms","time":"2026-08-25T22:12:16+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.703509ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:12:19+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 3.800526ms","time":"2026-08-25T22:12:19+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.075521ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-25T22:12:28+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 2.114691ms","time":"2026-08-25T22:12:28+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.616876ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-25T22:12:29+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 1.672468ms","time":"2026-08-25T22:12:29+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.984837ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:12:32+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 3.051809ms","time":"2026-08-25T22:12:32+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.699513ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-25T22:12:37+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 1.742526ms","time":"2026-08-25T22:12:37+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.388064ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-25T22:12:38+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 5.451386ms","time":"2026-08-25T22:12:38+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"110.828µs","level":"info","method":"GET","msg":"Request details","path":"/auth/logout","status":302,"time":"2026-08-25T22:12:40+05:00"}
+{"level":"info","msg":"[GET] /auth/logout 127.0.0.1 | 302 | 149.588µs","time":"2026-08-25T22:12:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.712506ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:12:40+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 2.770425ms","time":"2026-08-25T22:12:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"89.465µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:12:44+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 150.046µs","time":"2026-08-25T22:12:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.318222ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-25T22:12:45+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 1.40477ms","time":"2026-08-25T22:12:45+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"52.851547ms","level":"info","method":"POST","msg":"Request details","path":"/auth/login","status":302,"time":"2026-08-25T22:12:49+05:00"}
+{"level":"info","msg":"[POST] /auth/login 127.0.0.1 | 302 | 52.899043ms","time":"2026-08-25T22:12:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.055822ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:12:49+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 2.109392ms","time":"2026-08-25T22:12:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.398097ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-25T22:12:51+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 2.464338ms","time":"2026-08-25T22:12:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.740271ms","level":"info","method":"GET","msg":"Request details","path":"/helpdesk/","status":200,"time":"2026-08-25T22:12:52+05:00"}
+{"level":"info","msg":"[GET] /helpdesk/ 127.0.0.1 | 200 | 1.802378ms","time":"2026-08-25T22:12:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.47516ms","level":"info","method":"GET","msg":"Request details","path":"/orders/","status":200,"time":"2026-08-25T22:12:54+05:00"}
+{"level":"info","msg":"[GET] /orders/ 127.0.0.1 | 200 | 2.54193ms","time":"2026-08-25T22:12:54+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.591866ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:12:56+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 2.710902ms","time":"2026-08-25T22:12:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.750599ms","level":"info","method":"GET","msg":"Request details","path":"/profile/edit","status":200,"time":"2026-08-25T22:13:02+05:00"}
+{"level":"info","msg":"[GET] /profile/edit 127.0.0.1 | 200 | 1.812952ms","time":"2026-08-25T22:13:02+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.694564ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:13:04+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 7.752499ms","time":"2026-08-25T22:13:04+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.724071ms","level":"info","method":"GET","msg":"Request details","path":"/chat/2","status":200,"time":"2026-08-25T22:13:34+05:00"}
+{"level":"info","msg":"[GET] /chat/2 127.0.0.1 | 200 | 2.76862ms","time":"2026-08-25T22:13:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"15.147718855s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:13:49+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 15.147775051s","time":"2026-08-25T22:13:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.85823ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-25T22:13:49+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 1.924514ms","time":"2026-08-25T22:13:49+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"665.856µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:13:51+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 794.443µs","time":"2026-08-25T22:13:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.260905ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-25T22:22:01+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 4.615186ms","time":"2026-08-25T22:22:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.599615ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:22:03+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 2.66438ms","time":"2026-08-25T22:22:03+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.061564884s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:22:07+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 4.06163139s","time":"2026-08-25T22:22:07+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.397206ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:22:07+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 4.456686ms","time":"2026-08-25T22:22:07+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.960128ms","level":"info","method":"GET","msg":"Request details","path":"/chat/2","status":200,"time":"2026-08-25T22:22:09+05:00"}
+{"level":"info","msg":"[GET] /chat/2 127.0.0.1 | 200 | 3.063004ms","time":"2026-08-25T22:22:09+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"13.672718255s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:22:23+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 13.672776516s","time":"2026-08-25T22:22:23+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.690422ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:22:23+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 4.727514ms","time":"2026-08-25T22:22:23+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"110.94µs","level":"info","method":"GET","msg":"Request details","path":"/auth/logout","status":302,"time":"2026-08-25T22:23:20+05:00"}
+{"level":"info","msg":"[GET] /auth/logout 127.0.0.1 | 302 | 157.577µs","time":"2026-08-25T22:23:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.84732ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:23:20+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 4.903578ms","time":"2026-08-25T22:23:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.207739ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-25T22:23:21+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 1.245825ms","time":"2026-08-25T22:23:21+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"73.493632ms","level":"info","method":"POST","msg":"Request details","path":"/auth/login","status":302,"time":"2026-08-25T22:23:26+05:00"}
+{"level":"info","msg":"[POST] /auth/login 127.0.0.1 | 302 | 73.619488ms","time":"2026-08-25T22:23:26+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.501304ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-25T22:23:26+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 2.564945ms","time":"2026-08-25T22:23:26+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.043886ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:23:30+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 2.083164ms","time":"2026-08-25T22:23:30+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"974.977µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:23:32+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 1.012076ms","time":"2026-08-25T22:23:32+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"1.732816ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:23:36+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 1.774573ms","time":"2026-08-25T22:23:36+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.134259ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes/new","status":200,"time":"2026-08-25T22:23:40+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes/new 127.0.0.1 | 200 | 2.179234ms","time":"2026-08-25T22:23:40+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"1.713998ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:23:42+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 1.786481ms","time":"2026-08-25T22:23:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.638335ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes","status":200,"time":"2026-08-25T22:23:43+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes 127.0.0.1 | 200 | 2.6895ms","time":"2026-08-25T22:23:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.134787ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-25T22:23:43+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 1.17955ms","time":"2026-08-25T22:23:43+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"2.123019ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:23:44+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 2.1722ms","time":"2026-08-25T22:23:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.894103ms","level":"info","method":"GET","msg":"Request details","path":"/","status":200,"time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] / 127.0.0.1 | 200 | 2.960126ms","time":"2026-08-25T22:25:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.064509ms","level":"info","method":"GET","msg":"Request details","path":"/static/css/style.css","status":200,"time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] /static/css/style.css 127.0.0.1 | 200 | 3.176003ms","time":"2026-08-25T22:25:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"338.02µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/2gis.png","status":200,"time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] /static/image/2gis.png 127.0.0.1 | 200 | 448.064µs","time":"2026-08-25T22:25:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"452.406µs","level":"info","method":"GET","msg":"Request details","path":"/static/image/whatsapp.png","status":200,"time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] /static/image/whatsapp.png 127.0.0.1 | 200 | 540.065µs","time":"2026-08-25T22:25:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.566371ms","level":"info","method":"GET","msg":"Request details","path":"/static/image/instagram.png","status":200,"time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] /static/image/instagram.png 127.0.0.1 | 200 | 2.670581ms","time":"2026-08-25T22:25:05+05:00"}
+{"level":"info","msg":"[GET] /static/image/earth.png 127.0.0.1 | 429 | 25.929µs","time":"2026-08-25T22:25:06+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.266625ms","level":"info","method":"GET","msg":"Request details","path":"/auth/login","status":200,"time":"2026-08-25T22:25:07+05:00"}
+{"level":"info","msg":"[GET] /auth/login 127.0.0.1 | 200 | 1.335206ms","time":"2026-08-25T22:25:07+05:00"}
+{"level":"info","msg":"[GET] /static/image/earth.png 127.0.0.1 | 429 | 35.334µs","time":"2026-08-25T22:25:07+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"65.130679ms","level":"info","method":"POST","msg":"Request details","path":"/auth/login","status":302,"time":"2026-08-25T22:25:10+05:00"}
+{"level":"info","msg":"[POST] /auth/login 127.0.0.1 | 302 | 65.187545ms","time":"2026-08-25T22:25:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.44371ms","level":"info","method":"GET","msg":"Request details","path":"/clothes/","status":200,"time":"2026-08-25T22:25:10+05:00"}
+{"level":"info","msg":"[GET] /clothes/ 127.0.0.1 | 200 | 3.512576ms","time":"2026-08-25T22:25:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"31.802139ms","level":"info","method":"GET","msg":"Request details","path":"/static/image/earth.png","status":200,"time":"2026-08-25T22:25:10+05:00"}
+{"level":"info","msg":"[GET] /static/image/earth.png 127.0.0.1 | 200 | 31.888599ms","time":"2026-08-25T22:25:10+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.116224ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:25:12+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 1.18997ms","time":"2026-08-25T22:25:12+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"1.970218ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:25:31+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 2.035407ms","time":"2026-08-25T22:25:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"Error #01: template: admin_chats.html:46:17: executing \"admin_chats.html\" at \u003c.Active\u003e: can't evaluate field Active in type models.Chat\n","ip":"127.0.0.1","latency":"3.241373ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:25:34+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.597071ms","time":"2026-08-25T22:25:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.521754ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:30:41+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.60836ms","time":"2026-08-25T22:30:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.399666ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:30:41+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.469699ms","time":"2026-08-25T22:30:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.166396ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/1","status":200,"time":"2026-08-25T22:30:46+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/1 127.0.0.1 | 200 | 3.212552ms","time":"2026-08-25T22:30:46+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.266744119s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:30:50+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 3.266839438s","time":"2026-08-25T22:30:50+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.846323ms","level":"info","method":"POST","msg":"Request details","path":"/admin/chat/1/delete","status":302,"time":"2026-08-25T22:30:50+05:00"}
+{"level":"info","msg":"[POST] /admin/chat/1/delete 127.0.0.1 | 302 | 7.905972ms","time":"2026-08-25T22:30:50+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.009629ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:30:50+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.056685ms","time":"2026-08-25T22:30:50+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.385078ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/2","status":200,"time":"2026-08-25T22:30:51+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/2 127.0.0.1 | 200 | 2.439842ms","time":"2026-08-25T22:30:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.996031ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:31:20+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 4.074311ms","time":"2026-08-25T22:31:20+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.416344ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:31:23+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 3.499856ms","time":"2026-08-25T22:31:23+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"852.144µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:31:23+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 895.818µs","time":"2026-08-25T22:31:23+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1m0.703922365s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:31:52+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 1m0.704048088s","time":"2026-08-25T22:31:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.776256ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:31:52+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.933791ms","time":"2026-08-25T22:31:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.146407ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes/new","status":200,"time":"2026-08-25T22:31:54+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes/new 127.0.0.1 | 200 | 2.19586ms","time":"2026-08-25T22:31:54+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.693593ms","level":"info","method":"GET","msg":"Request details","path":"/admin/clothes","status":200,"time":"2026-08-25T22:31:55+05:00"}
+{"level":"info","msg":"[GET] /admin/clothes 127.0.0.1 | 200 | 2.763187ms","time":"2026-08-25T22:31:55+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"1.983201ms","level":"info","method":"GET","msg":"Request details","path":"/admin/","status":200,"time":"2026-08-25T22:31:56+05:00"}
+{"level":"info","msg":"[GET] /admin/ 127.0.0.1 | 200 | 2.061314ms","time":"2026-08-25T22:31:56+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.043077ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:31:57+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.20818ms","time":"2026-08-25T22:31:57+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.392725ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/2","status":200,"time":"2026-08-25T22:31:58+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/2 127.0.0.1 | 200 | 4.482078ms","time":"2026-08-25T22:31:58+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.215755184s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:32:01+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2.215830169s","time":"2026-08-25T22:32:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.762064ms","level":"info","method":"POST","msg":"Request details","path":"/admin/chat/2/close","status":302,"time":"2026-08-25T22:32:01+05:00"}
+{"level":"info","msg":"[POST] /admin/chat/2/close 127.0.0.1 | 302 | 6.844231ms","time":"2026-08-25T22:32:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.18453ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:32:01+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.309411ms","time":"2026-08-25T22:32:01+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.458224ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/2","status":200,"time":"2026-08-25T22:32:27+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/2 127.0.0.1 | 200 | 3.519676ms","time":"2026-08-25T22:32:27+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.450854006s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:32:31+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 3.450910599s","time":"2026-08-25T22:32:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.135134ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:32:31+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.195857ms","time":"2026-08-25T22:32:31+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2m8.88027188s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:33:32+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2m8.880367511s","time":"2026-08-25T22:33:32+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.555453ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:33:32+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 6.621241ms","time":"2026-08-25T22:33:32+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.044298ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:33:34+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 7.100754ms","time":"2026-08-25T22:33:34+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.501151ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:33:41+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 3.635806ms","time":"2026-08-25T22:33:41+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.031296ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/3","status":200,"time":"2026-08-25T22:33:44+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/3 127.0.0.1 | 200 | 4.090303ms","time":"2026-08-25T22:33:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.833622753s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:33:47+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 2.833691721s","time":"2026-08-25T22:33:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"6.016653ms","level":"info","method":"POST","msg":"Request details","path":"/admin/chat/3/close","status":302,"time":"2026-08-25T22:33:47+05:00"}
+{"level":"info","msg":"[POST] /admin/chat/3/close 127.0.0.1 | 302 | 6.136134ms","time":"2026-08-25T22:33:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.32423ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:33:47+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 4.395402ms","time":"2026-08-25T22:33:47+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"17.558017812s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:33:51+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 17.558095844s","time":"2026-08-25T22:33:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.069007ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:33:51+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 3.131552ms","time":"2026-08-25T22:33:51+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.963163ms","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:33:53+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 6.030026ms","time":"2026-08-25T22:33:53+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.668033ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:33:59+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 2.731539ms","time":"2026-08-25T22:33:59+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.65248ms","level":"info","method":"POST","msg":"Request details","path":"/admin/chat/3/delete","status":302,"time":"2026-08-25T22:34:05+05:00"}
+{"level":"info","msg":"[POST] /admin/chat/3/delete 127.0.0.1 | 302 | 5.791637ms","time":"2026-08-25T22:34:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.79252ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:34:05+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.884177ms","time":"2026-08-25T22:34:05+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"7.398769ms","level":"info","method":"POST","msg":"Request details","path":"/admin/chat/2/delete","status":302,"time":"2026-08-25T22:34:06+05:00"}
+{"level":"info","msg":"[POST] /admin/chat/2/delete 127.0.0.1 | 302 | 7.477527ms","time":"2026-08-25T22:34:06+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"3.95131ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:34:07+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 4.025315ms","time":"2026-08-25T22:34:07+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"2.594468ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chat/4","status":200,"time":"2026-08-25T22:34:11+05:00"}
+{"level":"info","msg":"[GET] /admin/chat/4 127.0.0.1 | 200 | 2.641675ms","time":"2026-08-25T22:34:11+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"49.505228843s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:34:42+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 49.505315557s","time":"2026-08-25T22:34:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"4.439166ms","level":"info","method":"GET","msg":"Request details","path":"/profile/","status":200,"time":"2026-08-25T22:34:42+05:00"}
+{"level":"info","msg":"[GET] /profile/ 127.0.0.1 | 200 | 4.543669ms","time":"2026-08-25T22:34:42+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"902.263µs","level":"info","method":"GET","msg":"Request details","path":"/api/chat/active","status":200,"time":"2026-08-25T22:34:44+05:00"}
+{"level":"info","msg":"[GET] /api/chat/active 127.0.0.1 | 200 | 950.135µs","time":"2026-08-25T22:34:44+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"41.26297942s","level":"info","method":"GET","msg":"Request details","path":"/wss","status":200,"time":"2026-08-25T22:34:52+05:00"}
+{"level":"info","msg":"[GET] /wss 127.0.0.1 | 200 | 41.263049803s","time":"2026-08-25T22:34:52+05:00"}
+{"agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0","error":"","ip":"127.0.0.1","latency":"5.256837ms","level":"info","method":"GET","msg":"Request details","path":"/admin/chats","status":200,"time":"2026-08-25T22:34:52+05:00"}
+{"level":"info","msg":"[GET] /admin/chats 127.0.0.1 | 200 | 5.352584ms","time":"2026-08-25T22:34:52+05:00"}
