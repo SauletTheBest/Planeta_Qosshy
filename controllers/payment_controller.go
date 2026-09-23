@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	
+	"fmt"
 	"html/template"
 	"net/http"
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,12 +37,13 @@ func PaymentPage(c *gin.Context) {
 func ProcessPayment(c *gin.Context) {
 	userID, _ := c.Get("userID")
 	var request struct {
-		CardName   string  `form:"card_name"`
-		CardNumber string  `form:"card_number"`
-		ExpiryDate string  `form:"expiry_date"`
-		CVV        string  `form:"cvv"`
-		ClothesID  uint    `form:"clothes_id"`
-		Amount     float64 `form:"amount"`
+		CardName      string  `form:"card_name"`
+		CardNumber    string  `form:"card_number"`
+		ExpiryDate    string  `form:"expiry_date"`
+		CVV           string  `form:"cvv"`
+		ClothesID     uint    `form:"clothes_id"`
+		Amount        float64 `form:"amount"`
+		PaymentMethod string  `form:"payment_method"`
 	}
 
 	if err := c.ShouldBind(&request); err != nil {
@@ -61,13 +63,19 @@ func ProcessPayment(c *gin.Context) {
 		return
 	}
 
+	// Resolve payment method (default to "card")
+	method := request.PaymentMethod
+	if method == "" {
+		method = "card"
+	}
+
 	transaction := models.Transaction{
 		Title:         item.Title,
 		UserName:      user.Username,
 		Price:         item.Price,
 		Quantity:      1,
 		TotalAmount:   item.Price,
-		PaymentMethod: "card",
+		PaymentMethod: method,
 		Status:        "pending",
 	}
 	database.DB.Create(&transaction)
@@ -88,5 +96,31 @@ func ProcessPayment(c *gin.Context) {
 		ClothesID: item.ID,
 	})
 
-	c.JSON(http.StatusOK, gin.H{"message": "Payment successful", "transaction": transaction})
+	// Redirect to receipt/success page
+	c.Redirect(http.StatusSeeOther, "/payment/success/"+uintToStr(transaction.ID))
+}
+
+func PaymentSuccess(c *gin.Context) {
+	txIDStr := c.Param("transaction_id")
+
+	var tx models.Transaction
+	if err := database.DB.First(&tx, txIDStr).Error; err != nil {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Transaction not found"})
+		return
+	}
+
+	t, err := template.ParseFiles("templates/payment_success.html")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	t.Execute(c.Writer, gin.H{
+		"transaction": tx,
+	})
+}
+
+// uintToStr converts uint to string without importing strconv at the top level
+func uintToStr(n uint) string {
+	return fmt.Sprintf("%d", n)
 }

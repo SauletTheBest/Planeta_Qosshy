@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17
     container_name: planeta_qosshy_postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: planeta_qosshy
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
     ports:
       - "5432:5432"
     volumes:
@@ -28,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=host=postgres port=5432 user=postgres password=postgrespassword dbname=planeta_qosshy sslmode=disable
+      - DATABASE_URL=host=postgres port=5432 user=postgres password=password dbname=mydb sslmode=disable
       - COOKIE_SECRET=hqoirkqd
       - VERIFICATION_ADDRESS=http://localhost:8080
       - SMTP_HOST=smtp.gmail.com
@@ -74,4 +72,5 @@ services:
 
 volumes:
   postgres_data:
+    external: true
   kafka_data: 

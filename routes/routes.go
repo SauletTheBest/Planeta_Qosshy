@@ -114,6 +114,7 @@ func SetupRouter() *gin.Engine {
 	{
 		payment.GET("/:clothes_id", controllers.PaymentPage)
 		payment.POST("/", controllers.ProcessPayment)
+		payment.GET("/success/:transaction_id", controllers.PaymentSuccess)
 	}
 
 	// User Profile routes

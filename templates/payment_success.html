@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заказ оформлен — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+  <style>
+    /* ── Success wrapper ──────────────────────────────────────── */
+    .success-wrapper {
+      max-width: 520px;
+      margin: 60px auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ── Checkmark animation ──────────────────────────────────── */
+    .checkmark-circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: #dcfce7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 40px;
+      animation: pop-in .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pop-in {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #16a34a;
+      margin-bottom: 6px;
+    }
+    .success-subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 32px;
+    }
+
+    /* ── Receipt card ─────────────────────────────────────────── */
+    .receipt {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    }
+    .receipt-header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .receipt-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+    .receipt-header p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+    }
+    .receipt-badge {
+      background: #16a34a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: .5px;
+      white-space: nowrap;
+    }
+
+    .receipt-body {
+      padding: 0 24px;
+    }
+
+    /* ── Receipt row ──────────────────────────────────────────── */
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+    }
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .rr-label { color: #64748b; }
+    .receipt-row .rr-value { font-weight: 600; color: #1e293b; text-align: right; }
+
+    /* ── Total row ────────────────────────────────────────────── */
+    .receipt-total {
+      background: #f8fafc;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px dashed #e2e8f0;
+    }
+    .receipt-total .rt-label { font-size: 16px; font-weight: 700; color: #1e293b; }
+    .receipt-total .rt-amount { font-size: 24px; font-weight: 800; color: #16a34a; }
+
+    /* ── Payment method badge ─────────────────────────────────── */
+    .method-card   { background:#eff6ff; color:#1d4ed8; }
+    .method-kaspi  { background:#fef2f2; color:#ef3b39; }
+    .method-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    /* ── Actions ──────────────────────────────────────────────── */
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    /* ── Transaction ID ───────────────────────────────────────── */
+    .tx-id {
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+
+<div class="page-content">
+  <div class="success-wrapper">
+
+    <!-- Checkmark -->
+    <div class="checkmark-circle">✅</div>
+    <h1 class="success-title">Заказ оформлен!</h1>
+    <p class="success-subtitle">
+      Спасибо за покупку. Ваш заказ успешно обработан.
+    </p>
+
+    <!-- Receipt -->
+    <div class="receipt">
+      <div class="receipt-header">
+        <div>
+          <h3>Чек об оплате</h3>
+          <p>{{.transaction.CreatedAt.Format "02.01.2006 15:04"}}</p>
+        </div>
+        <span class="receipt-badge">ОПЛАЧЕНО</span>
+      </div>
+
+      <div class="receipt-body">
+        <div class="receipt-row">
+          <span class="rr-label">Товар</span>
+          <span class="rr-value">{{.transaction.Title}}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="rr-label">Покупатель</span>
+          <span class="rr-value">{{.transaction.UserName}}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="rr-label">Количество</span>
+          <span class="rr-value">{{.transaction.Quantity}} шт.</span>
+        </div>
+        <div class="receipt-row">
+          <span class="rr-label">Метод оплаты</span>
+          <span class="rr-value">
+            {{if eq .transaction.PaymentMethod "kaspi_qr"}}
+              <span class="method-badge method-kaspi">Kaspi QR</span>
+            {{else}}
+              <span class="method-badge method-card">💳 Карта</span>
+            {{end}}
+          </span>
+        </div>
+        <div class="receipt-row">
+          <span class="rr-label">Статус</span>
+          <span class="rr-value" style="color:#16a34a;">✓ {{.transaction.Status}}</span>
+        </div>
+      </div>
+
+      <div class="receipt-total">
+        <span class="rt-label">Итого</span>
+        <span class="rt-amount">{{printf "%.0f" .transaction.TotalAmount}} ₸</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="success-actions">
+      <a href="/orders" class="btn btn-primary btn-block">Мои заказы</a>
+      <a href="/clothes" class="btn btn-ghost btn-block">Продолжить покупки</a>
+    </div>
+
+    <!-- TX ID -->
+    <p class="tx-id">ID транзакции: #{{.transaction.ID}}</p>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h3>PLANETA QOSSHY</h3>
+      <p>Стиль и комфорт на каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Навигация</h4>
+      <a href="/">Главная</a>
+      <a href="/clothes">Каталог</a>
+      <a href="/about">О нас</a>
+    </div>
+    <div class="footer-links">
+      <h4>Аккаунт</h4>
+      <a href="/orders">Мои заказы</a>
+      <a href="/profile">Профиль</a>
+      <a href="/auth/logout">Выйти</a>
+    </div>
+    <div class="footer-links">
+      <h4>Контакты</h4>
+      <p>support@planetaqosshy.kz</p>
+      <p>+7 (777) 888-80-80</p>
+      <p>Улица Республики, 77</p>
+      <div class="social-links" style="margin-top:12px;">
+        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
+          <img src="/static/image/2gis.png" alt="2GIS">
+        </a>
+        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
+          <img src="/static/image/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
+          <img src="/static/image/whatsapp.png" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
+</body>
+</html>
