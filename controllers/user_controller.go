@@ -98,6 +98,10 @@ func UpdateProfile(c *gin.Context) {
 	}
 
 	if input.Password != "" {
+		if msg := util.ValidatePassword(input.Password); msg != "" {
+			c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": msg})
+			return
+		}
 		updates["password"] = util.HashPassword(input.Password)
 	}
 

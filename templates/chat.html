@@ -56,7 +56,14 @@
     var chatBox = document.getElementById('chat-box');
     var div = document.createElement('div');
     div.className = 'chat-message';
-    div.innerHTML = '<strong>' + message.sender_id + '</strong><div class="chat-bubble">' + message.content + '</div>';
+    // textContent shows text as-is; innerHTML would run any <script>/<img onerror> sent in a message (XSS)
+    var name = document.createElement('strong');
+    name.textContent = message.sender_id;
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = message.content;
+    div.appendChild(name);
+    div.appendChild(bubble);
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   };
