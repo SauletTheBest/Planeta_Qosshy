@@ -77,9 +77,14 @@ func SetupRouter() *gin.Engine {
 	orders := r.Group("/orders")
 	orders.Use(middleware.AuthRequired)
 	{
-		orders.POST("/:id", controllers.ProcessPayment)
 		orders.GET("/", controllers.GetUserOrders)
+		orders.GET("/:id/result", controllers.OrderResult) // the bank sends the buyer back here
+		orders.POST("/:id/pay", controllers.RetryPayment)
 	}
+
+	// Payment provider webhooks: no session (the bank isn't a logged-in user),
+	// authenticated by the HMAC signature in the handler.
+	r.POST("/payments/webhook", controllers.PaymentWebhook)
 
 	// Admin control panel routes.
 	// Order matters: AuthRequired loads the user from the DB, then RequireAdmin checks its role.
@@ -115,8 +120,8 @@ func SetupRouter() *gin.Engine {
 	payment := r.Group("/payment")
 	payment.Use(middleware.AuthRequired)
 	{
-		payment.GET("/:clothes_id", controllers.PaymentPage)
-		payment.POST("/", controllers.ProcessPayment)
+		payment.GET("/:clothes_id", controllers.PaymentPage) // checkout page
+		payment.POST("/:clothes_id", controllers.Checkout)   // reserve + go to the bank
 	}
 
 	// User Profile routes

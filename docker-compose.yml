@@ -38,9 +38,37 @@ services:
       - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASS=${SMTP_PASS:-}
+      # Containers reach each other by service name ("payments"), browsers use localhost.
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:8080}
+      - PAYMENT_API_URL=http://payments:8081
+      - PAYMENT_API_KEY=${PAYMENT_API_KEY:?set PAYMENT_API_KEY in .env}
+      - PAYMENT_WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
+      - ORDER_RESERVATION_TTL=${ORDER_RESERVATION_TTL:-15m}
     depends_on:
       postgres:
         condition: service_healthy
+      payments:
+        condition: service_started
+
+  # Qosshy Pay — the test bank. Its code is the planeta_qosshy_microservice repository,
+  # which must be cloned next to this one (../planeta_qosshy_microservice).
+  payments:
+    build:
+      context: ../planeta_qosshy_microservice
+    container_name: planeta_qosshy_payments
+    restart: always
+    ports:
+      - "127.0.0.1:8081:8081"   # the buyer's browser opens the payment page here
+    environment:
+      - PUBLIC_URL=http://localhost:8081
+      - API_KEY=${PAYMENT_API_KEY:?set PAYMENT_API_KEY in .env}
+      - WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
+      - MERCHANT_WEBHOOK_URL=http://api:8080/payments/webhook
+      - MERCHANT_SITE_URL=${PUBLIC_URL:-http://localhost:8080}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
 
   kafka:
     image: apache/kafka:latest

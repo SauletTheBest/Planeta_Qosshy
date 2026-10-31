@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {{if .waiting}}<meta http-equiv="refresh" content="3">{{end}}
+  <title>Заказ №{{.order.ID}} — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+<body>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/orders" class="active">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content" style="max-width:720px;">
+  <h1 class="page-title">Заказ №{{.order.ID}}</h1>
+
+  <div style="border:1px solid #ebebeb;border-radius:12px;padding:20px;margin-bottom:20px;">
+    {{if eq .order.Status "paid"}}
+      <h2 style="margin-top:0;">✅ Оплачен</h2>
+      {{with .paid}}
+        <p>Карта **** {{.CardLast4}}.{{if .ReceiptURL}} <a href="{{.ReceiptURL}}">Скачать чек (PDF)</a>{{end}}</p>
+      {{end}}
+    {{else if eq .order.Status "cancelled"}}
+      <h2 style="margin-top:0;">Заказ отменён</h2>
+      <p>Время на оплату истекло, товар вернулся в продажу. Оформите заказ заново из каталога.</p>
+    {{else if eq .order.Status "pending"}}
+      {{if .waiting}}
+        <h2 style="margin-top:0;">⏳ Ждём подтверждения от банка…</h2>
+        <p>Страница обновится сама.
+          {{with .payment}}{{if .PaymentURL}}Если вы ещё не оплатили — <a href="{{.PaymentURL}}">вернуться на страницу оплаты</a>.{{end}}{{end}}</p>
+      {{else}}
+        <h2 style="margin-top:0;">Ожидает оплаты</h2>
+        {{with .payment}}{{if eq .Status "failed"}}<p style="color:#b91c1c;">Оплата не прошла: {{.FailureText}}.</p>{{end}}{{end}}
+        <form action="/orders/{{.order.ID}}/pay" method="POST" style="margin:0;">
+          <button type="submit" class="btn btn-primary">{{if .payment}}Оплатить снова{{else}}Перейти к оплате{{end}}</button>
+        </form>
+      {{end}}
+      {{with .order.ExpiresAt}}<p style="color:#777;margin-bottom:0;">Товар зарезервирован до {{.Local.Format "15:04"}}.</p>{{end}}
+    {{else}}
+      <h2 style="margin-top:0;">{{.order.Status.Label}}</h2>
+    {{end}}
+  </div>
+
+  {{range .order.Items}}
+  <div class="order-item">
+    {{if and .Clothes .Clothes.ImageURL}}<img src="{{.Clothes.ImageURL}}" alt="{{.Title}}">{{else}}<img src="" alt="" style="background:#f0f0f0;">{{end}}
+    <div class="order-item-info">
+      <h4>{{.Title}}</h4>
+      <p>{{if .Size}}Размер: {{.Size}} &mdash; {{end}}{{.Quantity}} шт.</p>
+    </div>
+    <div class="order-item-price">{{.UnitPriceTiyn}} ₸</div>
+  </div>
+  {{end}}
+  <div style="text-align:right;font-weight:600;margin-top:8px;">Итого: {{.order.TotalTiyn}} ₸</div>
+  <p><a href="/orders">← Все заказы</a></p>
+</div>
+</body>
+</html>
