@@ -29,9 +29,12 @@ func GetClothes(c *gin.Context) {
 	}
 
 	// Filter by Size (e.g. S, M, L, XL)
+	// EXISTS: "the product has at least one such row" — no JOIN, so no duplicate products.
 	size := c.Query("size")
 	if size != "" {
-		query = query.Where("size = ?", size)
+		query = query.Where(
+			"EXISTS (SELECT 1 FROM clothes_variants v WHERE v.clothes_id = clothes.id AND v.size = ? AND v.stock > 0)",
+			size)
 	}
 
 	// Filter by Price range: the user types tenge, the DB stores tiyn
@@ -69,7 +72,7 @@ func GetClothes(c *gin.Context) {
 	var totalItems int64
 	query.Model(&models.Clothes{}).Count(&totalItems)
 
-	query.Offset(offset).Limit(limit).Find(&clothes)
+	query.Preload("Variants").Offset(offset).Limit(limit).Find(&clothes)
 
 	isLoggedIn, _ := c.Get("isLoggedIn")
 	username, _ := c.Get("username")
@@ -99,7 +102,7 @@ func GetClothesByID(c *gin.Context) {
 	var item models.Clothes
 	id := c.Param("id")
 
-	if err := database.DB.First(&item, id).Error; err != nil {
+	if err := database.DB.Preload("Variants").First(&item, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Clothing item not found"})
 		return
 	}

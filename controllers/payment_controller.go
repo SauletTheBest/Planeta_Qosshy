@@ -20,7 +20,7 @@ func PaymentPage(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	var item models.Clothes
-	if err := database.DB.First(&item, clothesID).Error; err != nil {
+	if err := database.DB.Preload("Variants").First(&item, clothesID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Clothing item not found"})
 		return
 	}
@@ -36,7 +36,7 @@ func PaymentPage(c *gin.Context) {
 		"clothesID":    clothesID,
 		"amount":       item.PriceTiyn,
 		"item":         item,
-		"selectedSize": pickSize(item, c.Query("size")),
+		"selectedSize": sizeToShow(item, c.Query("size")),
 	})
 }
 
@@ -57,21 +57,24 @@ func ProcessPayment(c *gin.Context) {
 	}
 
 	var item models.Clothes
-	if err := database.DB.First(&item, request.ClothesID).Error; err != nil {
+	if err := database.DB.Preload("Variants").First(&item, request.ClothesID).Error; err != nil {
 		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
+		return
+	}
+
+	size, ok := sizeToBuy(item, request.Size)
+	if !ok {
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Выберите размер"})
 		return
 	}
 
 	// One DB transaction: stock, order, its items and the payment are saved together or not at all.
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		// Check and decrement in ONE statement, so two buyers can't both take the last item.
-		// Inside SET, "stock" is the value before the update, so in_stock = (old stock - 1 > 0).
-		res := tx.Model(&models.Clothes{}).
-			Where("id = ? AND stock > 0", item.ID).
-			Updates(map[string]interface{}{
-				"stock":    gorm.Expr("stock - 1"),
-				"in_stock": gorm.Expr("stock - 1 > 0"),
-			})
+		// Check and decrement the chosen size in ONE statement, so two buyers can't both
+		// take the last M. clothes.stock / in_stock are then updated by the DB trigger.
+		res := tx.Model(&models.ClothesVariant{}).
+			Where("clothes_id = ? AND size = ? AND stock > 0", item.ID, size).
+			Update("stock", gorm.Expr("stock - 1"))
 		if res.Error != nil {
 			return res.Error
 		}
@@ -90,7 +93,7 @@ func ProcessPayment(c *gin.Context) {
 			Items: []models.OrderItem{{
 				ClothesID:     &item.ID,
 				Title:         item.Title,
-				Size:          pickSize(item, request.Size),
+				Size:          size,
 				UnitPriceTiyn: item.PriceTiyn,
 				Quantity:      1,
 			}},
@@ -123,17 +126,30 @@ func ProcessPayment(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/orders")
 }
 
-// pickSize returns the requested size only if the item really has it, otherwise "".
-// item.Size is either one size ("M") or a list with per-size stock ("S:2,M:0,L:3").
-func pickSize(item models.Clothes, requested string) string {
+// sizeToBuy decides which variant a purchase is for: the requested size if the product
+// has it, or the only size when there is exactly one. Whether it's still in stock is
+// checked later by the atomic UPDATE, not here (it could change between the two).
+func sizeToBuy(item models.Clothes, requested string) (string, bool) {
 	requested = strings.TrimSpace(requested)
-	if requested == "" {
-		return ""
+	if requested != "" {
+		_, ok := item.Variant(requested)
+		return requested, ok
 	}
-	for _, part := range strings.Split(item.Size, ",") {
-		name, _, _ := strings.Cut(strings.TrimSpace(part), ":")
-		if name == requested {
-			return name
+	if len(item.Variants) == 1 {
+		return item.Variants[0].Size, true
+	}
+	return "", false
+}
+
+// sizeToShow picks the size for the payment page: the requested one if it's in stock,
+// otherwise the first size that is. The URL can be edited, so it's never trusted as is.
+func sizeToShow(item models.Clothes, requested string) string {
+	if v, ok := item.Variant(strings.TrimSpace(requested)); ok && v.Stock > 0 {
+		return v.Size
+	}
+	for _, v := range item.SortedVariants() {
+		if v.Stock > 0 {
+			return v.Size
 		}
 	}
 	return ""
