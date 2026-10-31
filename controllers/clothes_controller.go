@@ -6,6 +6,7 @@ import (
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+	"planeta_qosshy/money"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,30 +34,27 @@ func GetClothes(c *gin.Context) {
 		query = query.Where("size = ?", size)
 	}
 
-	// Filter by Price range
+	// Filter by Price range: the user types tenge, the DB stores tiyn
 	minPrice := c.Query("min_price")
 	if minPrice != "" {
-		if minPriceFloat, err := strconv.ParseFloat(minPrice, 64); err == nil {
-			query = query.Where("price >= ?", minPriceFloat)
+		if minTiyn, err := money.ParseTenge(minPrice); err == nil {
+			query = query.Where("price_tiyn >= ?", minTiyn)
 		}
 	}
 	maxPrice := c.Query("max_price")
 	if maxPrice != "" {
-		if maxPriceFloat, err := strconv.ParseFloat(maxPrice, 64); err == nil {
-			query = query.Where("price <= ?", maxPriceFloat)
+		if maxTiyn, err := money.ParseTenge(maxPrice); err == nil {
+			query = query.Where("price_tiyn <= ?", maxTiyn)
 		}
-	}
-	if maxPrice == "0" {
-
 	}
 
 	// Sorting
 	sort := c.Query("sort")
 	switch sort {
 	case "price_asc":
-		query = query.Order("price ASC")
+		query = query.Order("price_tiyn ASC")
 	case "price_desc":
-		query = query.Order("price DESC")
+		query = query.Order("price_tiyn DESC")
 	case "newest":
 		query = query.Order("created_at DESC")
 	default:

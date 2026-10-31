@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
@@ -30,10 +32,11 @@ func PaymentPage(c *gin.Context) {
 	}
 
 	t.Execute(c.Writer, gin.H{
-		"userID":    userID,
-		"clothesID": clothesID,
-		"amount":    item.Price,
-		"item":      item,
+		"userID":       userID,
+		"clothesID":    clothesID,
+		"amount":       item.PriceTiyn,
+		"item":         item,
+		"selectedSize": pickSize(item, c.Query("size")),
 	})
 }
 
@@ -41,41 +44,25 @@ var errOutOfStock = errors.New("out of stock")
 
 func ProcessPayment(c *gin.Context) {
 	userID := c.GetUint("userID")
-	// Only the item ID is read from the form. Card fields are not bound at all, and the
-	// price always comes from the DB: a hidden "amount" input can be edited in the browser.
+	// Only the item and size are read from the form. Card fields are not bound at all, and
+	// the price always comes from the DB: a hidden "amount" input can be edited in the browser.
 	var request struct {
-		ClothesID uint `form:"clothes_id"`
+		ClothesID uint   `form:"clothes_id"`
+		Size      string `form:"size"`
 	}
 
 	if err := c.ShouldBind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request parameters"})
-		return
-	}
-
-	var user models.User
-	if err := database.DB.First(&user, userID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid request parameters"})
 		return
 	}
 
 	var item models.Clothes
 	if err := database.DB.First(&item, request.ClothesID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Clothing item not found"})
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
 		return
 	}
 
-	transaction := models.Transaction{
-		Title:         item.Title,
-		UserName:      user.Username,
-		Price:         item.Price,
-		Quantity:      1,
-		TotalAmount:   item.Price,
-		PaymentMethod: "card",
-		Status:        "Paid", // the payment itself is still simulated; a real flow comes with the payment service
-	}
-
-	// One DB transaction: either stock goes down AND the payment and order are saved,
-	// or nothing is saved. No more "stock decreased but the order is missing".
+	// One DB transaction: stock, order, its items and the payment are saved together or not at all.
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		// Check and decrement in ONE statement, so two buyers can't both take the last item.
 		// Inside SET, "stock" is the value before the update, so in_stock = (old stock - 1 > 0).
@@ -92,21 +79,62 @@ func ProcessPayment(c *gin.Context) {
 			return errOutOfStock // returning an error rolls the whole transaction back
 		}
 
-		if err := tx.Create(&transaction).Error; err != nil {
+		now := time.Now()
+		order := models.Order{
+			UserID: userID,
+			// The payment is still simulated, so the order is paid right away.
+			// With a real payment service it will start as OrderPending.
+			Status:    models.OrderPaid,
+			TotalTiyn: item.PriceTiyn,
+			PaidAt:    &now,
+			Items: []models.OrderItem{{
+				ClothesID:     &item.ID,
+				Title:         item.Title,
+				Size:          pickSize(item, request.Size),
+				UnitPriceTiyn: item.PriceTiyn,
+				Quantity:      1,
+			}},
+		}
+		// GORM inserts the order, then its Items with order_id filled in, in this same transaction.
+		if err := tx.Create(&order).Error; err != nil {
 			return err
 		}
-		return tx.Create(&models.Order{UserID: user.ID, ClothesID: item.ID}).Error
+
+		return tx.Create(&models.Payment{
+			OrderID:    order.ID,
+			AmountTiyn: order.TotalTiyn,
+			Method:     "card",
+			Status:     models.PaymentSucceeded,
+		}).Error
 	})
 
 	if errors.Is(err, errOutOfStock) {
-		c.JSON(http.StatusConflict, gin.H{"error": "Clothing item is out of stock"})
+		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "К сожалению, товар закончился"})
 		return
 	}
 	if err != nil {
 		log.Println("payment failed:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Payment failed, please try again"})
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось оформить заказ, попробуйте ещё раз"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Payment successful", "transaction": transaction})
+	// Post/Redirect/Get: after a successful POST, send the browser to a GET page,
+	// so pressing "refresh" doesn't submit the purchase a second time.
+	c.Redirect(http.StatusSeeOther, "/orders")
+}
+
+// pickSize returns the requested size only if the item really has it, otherwise "".
+// item.Size is either one size ("M") or a list with per-size stock ("S:2,M:0,L:3").
+func pickSize(item models.Clothes, requested string) string {
+	requested = strings.TrimSpace(requested)
+	if requested == "" {
+		return ""
+	}
+	for _, part := range strings.Split(item.Size, ",") {
+		name, _, _ := strings.Cut(strings.TrimSpace(part), ":")
+		if name == requested {
+			return name
+		}
+	}
+	return ""
 }

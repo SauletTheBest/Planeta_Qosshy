@@ -310,8 +310,8 @@
           </div>
           <div class="form-group">
             <label for="price">Цена (₸)</label>
-            <input type="number" id="price" name="price" value="{{if .clothes}}{{printf " %.0f" .clothes.Price}}{{end}}"
-              placeholder="9999" min="0" step="1" required>
+            <input type="number" id="price" name="price" value="{{if .clothes}}{{.clothes.PriceTiyn.InputValue}}{{end}}"
+              placeholder="9999" min="0" step="0.01" required>
           </div>
           <div class="form-group">
             <label for="image_url">Ссылка на изображение</label>

@@ -6,6 +6,7 @@ import (
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+	"planeta_qosshy/money"
 
 	"github.com/gin-gonic/gin"
 )
@@ -50,6 +51,18 @@ func AdminCreateClothes(c *gin.Context) {
 		})
 		return
 	}
+
+	price, err := money.ParseTenge(c.PostForm("price"))
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Цена указана неверно: нужно число, например 15000 или 1999.50",
+			"action":  "/admin/clothes",
+			"method":  "POST",
+			"clothes": input,
+		})
+		return
+	}
+	input.PriceTiyn = price
 
 	if input.Stock > 0 {
 		input.InStock = true
@@ -111,6 +124,18 @@ func AdminUpdateClothes(c *gin.Context) {
 		return
 	}
 
+	price, err := money.ParseTenge(c.PostForm("price"))
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "ADMIN_clothes_form.html", gin.H{
+			"error":   "Цена указана неверно: нужно число, например 15000 или 1999.50",
+			"action":  "/admin/clothes/" + strconv.Itoa(itemID),
+			"method":  "POST",
+			"clothes": item,
+		})
+		return
+	}
+	item.PriceTiyn = price
+
 	item.InStock = item.Stock > 0
 	if err := database.DB.Save(&item).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "ADMIN_clothes_form.html", gin.H{
@@ -133,28 +158,10 @@ func AdminDeleteClothes(c *gin.Context) {
 		return
 	}
 
-	tx := database.DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Where("clothes_id = ?", itemID).Delete(&models.Order{}).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete related orders"})
-		return
-	}
-
-	if err := tx.Delete(&models.Clothes{}, itemID).Error; err != nil {
-		tx.Rollback()
+	// Orders are no longer deleted together with the product: order_items keep a copy of
+	// the title and price, and the DB sets their clothes_id to NULL (ON DELETE SET NULL).
+	if err := database.DB.Delete(&models.Clothes{}, itemID).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete clothing item"})
-		return
-	}
-
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
 		return
 	}
 

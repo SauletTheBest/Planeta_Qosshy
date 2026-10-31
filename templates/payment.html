@@ -45,11 +45,10 @@
             <input type="text" id="cvv" name="cvv" maxlength="3" placeholder="123" required oninput="this.value=this.value.replace(/\D/g,'')">
           </div>
         </div>
-        <input type="hidden" name="user_id"    value="{{.userID}}">
         <input type="hidden" name="clothes_id" value="{{.clothesID}}">
-        <input type="hidden" name="amount"     value="{{.amount}}">
+        <input type="hidden" name="size"       value="{{.selectedSize}}">
         <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">
-          Оплатить — {{printf "%.0f" .amount}} ₸
+          Оплатить — {{.amount}} ₸
         </button>
       </form>
       <div style="margin-top:16px;">
@@ -65,7 +64,7 @@
       <div class="summary-row"><span>Бренд</span><span>{{.item.Brand}}</span></div>
       <div class="summary-row"><span>Размер</span><span id="displayPaymentSize">{{if .selectedSize}}{{.selectedSize}}{{else}}{{.item.Size}}{{end}}</span></div>
       <div class="summary-row"><span>Цвет</span><span>{{.item.Color}}</span></div>
-      <div class="summary-row total"><span>Итого</span><span>{{printf "%.0f" .amount}} ₸</span></div>
+      <div class="summary-row total"><span>Итого</span><span>{{.amount}} ₸</span></div>
     </div>
   </div>
 </div>
