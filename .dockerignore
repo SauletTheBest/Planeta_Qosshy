@@ -1,0 +1,7 @@
+.env
+.git
+.idea
+*.log
+uploads/
+docs/
+tests/

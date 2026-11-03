@@ -9,6 +9,7 @@ import (
 
 func main() {
 	database.Connect()
+	middleware.GetStore() // fail at startup (not on the first request) if COOKIE_SECRET is weak
 	middleware.SetupLogger()
 
 	r := routes.SetupRouter()

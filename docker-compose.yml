@@ -7,10 +7,12 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
+      # Secrets come from the .env file next to this compose file (see .env.example)
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: planeta_qosshy
     ports:
-      - "5432:5432"
+      # 127.0.0.1 = reachable only from this computer, not from the whole network
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,14 +30,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=host=postgres port=5432 user=postgres password=postgrespassword dbname=planeta_qosshy sslmode=disable
-      - COOKIE_SECRET=hqoirkqd
-      - VERIFICATION_ADDRESS=http://localhost:8080
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=587
-      - SMTP_USER=
-      - SMTP_PASS=
-      - STRIPE_SECRET_KEY=sk_test_yourkey
+      - DATABASE_URL=host=postgres port=5432 user=postgres password=${POSTGRES_PASSWORD} dbname=planeta_qosshy sslmode=disable
+      - COOKIE_SECRET=${COOKIE_SECRET:?set COOKIE_SECRET in .env}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - VERIFICATION_ADDRESS=${VERIFICATION_ADDRESS:-http://localhost:8080}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
     depends_on:
       postgres:
         condition: service_healthy

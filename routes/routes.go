@@ -36,13 +36,18 @@ func SetupRouter() *gin.Engine {
 	r.GET("/", middleware.OptionalAuth, controllers.GetHomePage)
 	r.GET("/about", middleware.OptionalAuth, controllers.GetAboutPage)
 
-	// WebSocket routes for support chat
-	r.GET("/wss", controllers.HandleConnections)
+	// WebSocket routes for support chat (logged-in users only)
+	r.GET("/wss", middleware.AuthRequired, controllers.HandleConnections)
 	go controllers.HandleMessages()
 	r.GET("/api/chat/active", middleware.OptionalAuth, controllers.APIGetActiveChat)
-	r.POST("/chat/start/:id", controllers.StartChat)
-	r.GET("/chat/:chatID", controllers.ChatPage)
-	r.POST("/chat/:chatID/send", controllers.SendMessage)
+
+	chat := r.Group("/chat")
+	chat.Use(middleware.AuthRequired)
+	{
+		chat.POST("/start/:id", controllers.StartChat)
+		chat.GET("/:chatID", controllers.ChatPage)
+		chat.POST("/:chatID/send", controllers.SendMessage)
+	}
 
 	// Auth routes
 	auth := r.Group("/auth")
@@ -76,13 +81,11 @@ func SetupRouter() *gin.Engine {
 		orders.GET("/", controllers.GetUserOrders)
 	}
 
-	r.GET("/execute-query", controllers.ExecuteQueryHTML)
-	r.POST("/execute-query", controllers.ExecuteQuery)
-
-	// Admin control panel routes
+	// Admin control panel routes.
+	// Order matters: AuthRequired loads the user from the DB, then RequireAdmin checks its role.
 	admin := r.Group("/admin")
-	admin.Use(middleware.RequireAdmin)
 	admin.Use(middleware.AuthRequired)
+	admin.Use(middleware.RequireAdmin)
 	{
 		admin.GET("/clothes", controllers.AdminListClothes)
 		admin.GET("/clothes/new", controllers.AdminNewClothes)

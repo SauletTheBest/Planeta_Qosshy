@@ -1,32 +1,15 @@
 package middleware
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-// AdminMiddleware Middleware to check if the user is an admin
+// RequireAdmin must run after AuthRequired. It trusts only the role that AuthRequired
+// loaded from the DB, never a role stored in the cookie, so a demoted admin loses access at once.
 func RequireAdmin(c *gin.Context) {
-	session, err := GetSession(c.Request)
-
-	if err != nil {
-		fmt.Println("Error retrieving session:", err)
-		c.Redirect(http.StatusFound, "/auth/login")
-		c.Abort()
-		return
-	}
-
-	userRole, ok := session.Values["role"].(string)
-	if !ok {
-		c.HTML(http.StatusForbidden, "error.html", gin.H{"error": "Access denied"})
-		c.Abort()
-		return
-	}
-
-	fmt.Println(userRole)
-
-	if userRole != "admin" {
+	if c.GetString("role") != "admin" {
 		c.HTML(http.StatusForbidden, "error.html", gin.H{"error": "Access denied"})
 		c.Abort()
 		return

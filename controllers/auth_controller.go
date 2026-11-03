@@ -7,7 +7,6 @@ import (
 	"planeta_qosshy/util"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -29,9 +28,6 @@ func Register(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
-	println(username)
-	println(email)
-	println(password)
 	// Validate input
 	if username == "" || email == "" || password == "" {
 		c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "All fields are required."})
@@ -47,8 +43,8 @@ func Register(c *gin.Context) {
 			"The length should be between idk and 100. No one ever will see this"})
 		return
 	}
-	if len(password) > 100 || len(password) < 3 {
-		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "Password is too short or too long. Should be between 3 and 100"})
+	if msg := util.ValidatePassword(password); msg != "" {
+		c.HTML(http.StatusConflict, "error.html", gin.H{"error": msg})
 		return
 	}
 
@@ -56,8 +52,6 @@ func Register(c *gin.Context) {
 		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "Email is invalid."})
 		return
 	}
-
-	println("password length: ", len(password))
 
 	var existingUser models.User
 	database.DB.Where("email = ?", email).First(&existingUser)
@@ -134,14 +128,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Only the user ID goes into the cookie; the role is always re-read from the DB by AuthRequired.
 	session, _ := middleware.GetSession(c.Request)
-	fmt.Println(user.Role, " ", user.ID)
 	session.Values["userID"] = user.ID
-	session.Values["role"] = user.Role
 
-	err := session.Save(c.Request, c.Writer)
-	if err != nil {
-		println("session error", err.Error())
+	if err := session.Save(c.Request, c.Writer); err != nil {
+		log.Println("session save error:", err)
+		c.HTML(http.StatusInternalServerError, "login.html", gin.H{"error": "Login failed, please try again."})
 		return
 	}
 
@@ -154,11 +147,12 @@ func Login(c *gin.Context) {
 
 func Logout(c *gin.Context) {
 	session, _ := middleware.GetSession(c.Request)
-	delete(session.Values, "userID")
-	err := session.Save(c.Request, c.Writer)
-	if err != nil {
-		log.Fatal(err)
-		return
+	session.Values = map[interface{}]interface{}{}
+	session.Options.MaxAge = -1 // tells the browser to delete the cookie
+
+	// log.Fatal here used to stop the whole server because of one broken cookie
+	if err := session.Save(c.Request, c.Writer); err != nil {
+		log.Println("logout: session save error:", err)
 	}
 
 	c.Redirect(http.StatusFound, "/clothes")
