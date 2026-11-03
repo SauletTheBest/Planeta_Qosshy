@@ -26,8 +26,8 @@
   {{range .orders}}
   <div style="border:1px solid #ebebeb;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
     <div style="display:flex;justify-content:space-between;color:#777;font-size:0.9rem;margin-bottom:4px;">
-      <span>Заказ №{{.ID}} от {{.CreatedAt.Format "02.01.2006"}}</span>
-      <strong>{{.Status.Label}}</strong>
+      <a href="/orders/{{.ID}}/result">Заказ №{{.ID}} от {{.CreatedAt.Format "02.01.2006"}}</a>
+      <strong>{{.Status.Label}}{{if eq .Status "pending"}} — <a href="/orders/{{.ID}}/result">оплатить</a>{{end}}</strong>
     </div>
     {{range .Items}}
     <div class="order-item">

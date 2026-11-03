@@ -39,10 +39,30 @@ type Order struct {
 	Status    OrderStatus `gorm:"not null"`
 	TotalTiyn money.Tiyn  `gorm:"not null"`
 	PaidAt    *time.Time  // nil until the order is paid
+	ExpiresAt *time.Time  // pending orders only: the reserved stock is released after this
 	CreatedAt time.Time   `gorm:"autoCreateTime"`
 	UpdatedAt time.Time   `gorm:"autoUpdateTime"`
 
-	Items []OrderItem `gorm:"foreignKey:OrderID"`
+	Items    []OrderItem `gorm:"foreignKey:OrderID"`
+	Payments []Payment   `gorm:"foreignKey:OrderID"` // load newest first to use LastPayment
+}
+
+// LastPayment is the newest attempt, if Payments were loaded newest first.
+func (o Order) LastPayment() *Payment {
+	if len(o.Payments) == 0 {
+		return nil
+	}
+	return &o.Payments[0]
+}
+
+// SucceededPayment is the attempt that actually took the money, if any.
+func (o Order) SucceededPayment() *Payment {
+	for i := range o.Payments {
+		if o.Payments[i].Status == PaymentSucceeded {
+			return &o.Payments[i]
+		}
+	}
+	return nil
 }
 
 // OrderItem is a snapshot of one purchased product. Title and price are copied at
