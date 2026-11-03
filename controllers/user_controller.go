@@ -19,22 +19,23 @@ func Profile(c *gin.Context) {
 		return
 	}
 
-	var purchases []models.Order
-	if err := database.DB.Preload("Clothes").Where("user_id = ?", sessionUserID).Find(&purchases).Error; err != nil {
+	// Every item the user has bought, newest first. The JOIN is needed because
+	// order_items has no user_id: ownership is known only through orders.
+	var purchases []models.OrderItem
+	if err := database.DB.Preload("Clothes").
+		Joins("JOIN orders ON orders.id = order_items.order_id").
+		Where("orders.user_id = ?", sessionUserID).
+		Order("orders.created_at DESC").
+		Find(&purchases).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch purchase history"})
 		return
-	}
-
-	var purchasedClothes []models.Clothes
-	for _, purchase := range purchases {
-		purchasedClothes = append(purchasedClothes, purchase.Clothes)
 	}
 
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
 		"user":             user,
-		"purchasedClothes": purchasedClothes,
+		"purchases":        purchases,
 		"sessionUserID":    sessionUserID,
 		"chatID":           chatID,
 		"chatActive":       chatStatus == "active",

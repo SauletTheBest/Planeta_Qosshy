@@ -25,7 +25,7 @@ func TestAdminNewClothes(t *testing.T) {
 		"ceil": func(a float64) int { return int(math.Ceil(a)) },
 	})
 
-	router.LoadHTMLGlob("../templates/*")
+	router.LoadHTMLGlob("../templates/*.html") // "*" also matched the static/ folder and panicked
 
 	router.GET("admin/clothes/new", controllers.AdminNewClothes)
 

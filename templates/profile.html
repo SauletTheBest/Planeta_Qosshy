@@ -51,15 +51,15 @@
 
   <div class="profile-card">
     <h2>История покупок</h2>
-    {{if .purchasedClothes}}
-      {{range .purchasedClothes}}
+    {{if .purchases}}
+      {{range .purchases}}
       <div class="order-item">
-        {{if .ImageURL}}<img src="{{.ImageURL}}" alt="{{.Title}}">{{else}}<img src="" alt="" style="background:#f0f0f0;">{{end}}
+        {{if and .Clothes .Clothes.ImageURL}}<img src="{{.Clothes.ImageURL}}" alt="{{.Title}}">{{else}}<img src="" alt="" style="background:#f0f0f0;">{{end}}
         <div class="order-item-info">
           <h4>{{.Title}}</h4>
-          <p>{{.Brand}} &mdash; Размер: {{.Size}}, Цвет: {{.Color}}</p>
+          <p>{{with .Clothes}}{{.Brand}}{{end}}{{if .Size}} &mdash; Размер: {{.Size}}{{end}}</p>
         </div>
-        <div class="order-item-price">{{printf "%.0f" .Price}} ₸</div>
+        <div class="order-item-price">{{.UnitPriceTiyn}} ₸</div>
       </div>
       {{end}}
     {{else}}

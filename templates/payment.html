@@ -45,11 +45,10 @@
             <input type="text" id="cvv" name="cvv" maxlength="3" placeholder="123" required oninput="this.value=this.value.replace(/\D/g,'')">
           </div>
         </div>
-        <input type="hidden" name="user_id"    value="{{.userID}}">
         <input type="hidden" name="clothes_id" value="{{.clothesID}}">
-        <input type="hidden" name="amount"     value="{{.amount}}">
+        <input type="hidden" name="size"       value="{{.selectedSize}}">
         <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">
-          Оплатить — {{printf "%.0f" .amount}} ₸
+          Оплатить — {{.amount}} ₸
         </button>
       </form>
       <div style="margin-top:16px;">
@@ -63,31 +62,14 @@
       {{end}}
       <div class="summary-row"><span>Товар</span><span>{{.item.Title}}</span></div>
       <div class="summary-row"><span>Бренд</span><span>{{.item.Brand}}</span></div>
-      <div class="summary-row"><span>Размер</span><span id="displayPaymentSize">{{if .selectedSize}}{{.selectedSize}}{{else}}{{.item.Size}}{{end}}</span></div>
+      <div class="summary-row"><span>Размер</span><span id="displayPaymentSize">{{if .selectedSize}}{{.selectedSize}}{{else}}нет в наличии{{end}}</span></div>
       <div class="summary-row"><span>Цвет</span><span>{{.item.Color}}</span></div>
-      <div class="summary-row total"><span>Итого</span><span>{{printf "%.0f" .amount}} ₸</span></div>
+      <div class="summary-row total"><span>Итого</span><span>{{.amount}} ₸</span></div>
     </div>
   </div>
 </div>
-<script>
-  (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sz = urlParams.get('size');
-    const el = document.getElementById('displayPaymentSize');
-    if (sz && el) {
-      el.innerText = sz;
-    } else if (el) {
-      const raw = el.innerText;
-      if (raw.includes(':')) {
-        const parts = raw.split(',').map(s => s.trim());
-        const avail = parts.find(p => !p.endsWith(':0'));
-        if (avail) {
-          el.innerText = avail.split(':')[0].trim();
-        }
-      }
-    }
-  })();
-</script>
+<!-- The size shown above is chosen and checked on the server (sizeToShow);
+     it used to be read here from the URL, which showed sizes the product doesn't have. -->
 <footer class="footer">
   <div class="footer-content">
     <div>

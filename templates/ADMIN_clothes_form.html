@@ -113,7 +113,7 @@
             <small style="color:#666;display:block;margin-bottom:12px;">Укажите сколько штук каждого размера есть в
               наличии. Если размера нет — оставьте 0.</small>
 
-            <input type="hidden" id="size" name="size" value="{{if .clothes}}{{.clothes.Size}}{{else}}M:1{{end}}">
+            <input type="hidden" id="size" name="size" value="{{if .clothes}}{{.clothes.SizeSummary}}{{else}}M:1{{end}}">
             <input type="hidden" id="stock" name="stock" value="{{if .clothes}}{{.clothes.Stock}}{{else}}1{{end}}">
             <!-- Сетка размеров для ОДЕЖДЫ -->
             <div id="apparelSizeGrid"
@@ -274,11 +274,34 @@
               parts.forEach(p => {
                 if (p.includes(':')) {
                   const [sz, cnt] = p.split(':');
-                  const inp = document.querySelector(`.size-stock-val[data-size="${sz.trim()}"]`);
-                  if (inp) inp.value = parseInt(cnt) || 0;
+                  let inp = document.querySelector(`.size-stock-val[data-size="${sz.trim()}"]`);
+                  // A size the grid doesn't have (e.g. "One size" from older data) gets its own
+                  // cell; before, it was silently dropped and its stock was lost on save.
+                  if (!inp) inp = addSizeCell(sz.trim());
+                  inp.value = parseInt(cnt) || 0;
                 }
               });
               calculateSizeStock();
+            }
+            function addSizeCell(sizeName) {
+              const selectedCat = document.querySelector('input[name="category"]:checked')?.value || '';
+              const grid = document.getElementById(selectedCat === 'Обувь' ? 'shoesSizeGrid' : 'apparelSizeGrid');
+              const cell = document.createElement('div');
+              cell.style.cssText = 'background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;';
+              const label = document.createElement('span');
+              label.style.cssText = 'font-weight:700;font-size:0.9rem;';
+              label.textContent = sizeName;   // textContent, not innerHTML: no HTML from data
+              const input = document.createElement('input');
+              input.type = 'number';
+              input.min = '0';
+              input.value = '0';
+              input.className = 'size-stock-val';
+              input.dataset.size = sizeName;
+              input.oninput = calculateSizeStock;
+              input.style.cssText = 'width:60px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid #ccc;';
+              cell.append(label, input);
+              grid.appendChild(cell);
+              return input;
             }
             function calculateSizeStock() {
               const selectedCat = document.querySelector('input[name="category"]:checked')?.value || '';
@@ -310,8 +333,8 @@
           </div>
           <div class="form-group">
             <label for="price">Цена (₸)</label>
-            <input type="number" id="price" name="price" value="{{if .clothes}}{{printf " %.0f" .clothes.Price}}{{end}}"
-              placeholder="9999" min="0" step="1" required>
+            <input type="number" id="price" name="price" value="{{if .clothes}}{{.clothes.PriceTiyn.InputValue}}{{end}}"
+              placeholder="9999" min="0" step="0.01" required>
           </div>
           <div class="form-group">
             <label for="image_url">Ссылка на изображение</label>

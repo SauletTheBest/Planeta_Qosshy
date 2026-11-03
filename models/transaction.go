@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+// Deprecated: the code no longer writes transactions; Payment replaced it in
+// migration 000003. The table is kept only as a read-only archive of old purchases.
 type Transaction struct {
 	ID            uint      `gorm:"primaryKey"`
 	Title         string    `gorm:"not null"`

@@ -1,12 +1,18 @@
 package controllers
 
 import (
-	
+	"errors"
 	"html/template"
+	"log"
 	"net/http"
+	"strings"
+	"time"
+
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
+
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func PaymentPage(c *gin.Context) {
@@ -14,7 +20,7 @@ func PaymentPage(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	var item models.Clothes
-	if err := database.DB.First(&item, clothesID).Error; err != nil {
+	if err := database.DB.Preload("Variants").First(&item, clothesID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Clothing item not found"})
 		return
 	}
@@ -26,67 +32,125 @@ func PaymentPage(c *gin.Context) {
 	}
 
 	t.Execute(c.Writer, gin.H{
-		"userID":    userID,
-		"clothesID": clothesID,
-		"amount":    item.Price,
-		"item":      item,
+		"userID":       userID,
+		"clothesID":    clothesID,
+		"amount":       item.PriceTiyn,
+		"item":         item,
+		"selectedSize": sizeToShow(item, c.Query("size")),
 	})
 }
 
+var errOutOfStock = errors.New("out of stock")
+
 func ProcessPayment(c *gin.Context) {
-	userID, _ := c.Get("userID")
+	userID := c.GetUint("userID")
+	// Only the item and size are read from the form. Card fields are not bound at all, and
+	// the price always comes from the DB: a hidden "amount" input can be edited in the browser.
 	var request struct {
-		CardName   string  `form:"card_name"`
-		CardNumber string  `form:"card_number"`
-		ExpiryDate string  `form:"expiry_date"`
-		CVV        string  `form:"cvv"`
-		ClothesID  uint    `form:"clothes_id"`
-		Amount     float64 `form:"amount"`
+		ClothesID uint   `form:"clothes_id"`
+		Size      string `form:"size"`
 	}
 
 	if err := c.ShouldBind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request parameters"})
-		return
-	}
-
-	var user models.User
-	if err := database.DB.First(&user, userID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid request parameters"})
 		return
 	}
 
 	var item models.Clothes
-	if err := database.DB.First(&item, request.ClothesID).Error; err != nil || item.Stock <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Clothing item is out of stock"})
+	if err := database.DB.Preload("Variants").First(&item, request.ClothesID).Error; err != nil {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
 		return
 	}
 
-	transaction := models.Transaction{
-		Title:         item.Title,
-		UserName:      user.Username,
-		Price:         item.Price,
-		Quantity:      1,
-		TotalAmount:   item.Price,
-		PaymentMethod: "card",
-		Status:        "pending",
+	size, ok := sizeToBuy(item, request.Size)
+	if !ok {
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Выберите размер"})
+		return
 	}
-	database.DB.Create(&transaction)
 
-	// Simulate payment processing / gateway update
-	database.DB.Model(&models.Transaction{}).Where("id = ?", transaction.ID).Update("Status", "Paid")
+	// One DB transaction: stock, order, its items and the payment are saved together or not at all.
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
+		// Check and decrement the chosen size in ONE statement, so two buyers can't both
+		// take the last M. clothes.stock / in_stock are then updated by the DB trigger.
+		res := tx.Model(&models.ClothesVariant{}).
+			Where("clothes_id = ? AND size = ? AND stock > 0", item.ID, size).
+			Update("stock", gorm.Expr("stock - 1"))
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected == 0 {
+			return errOutOfStock // returning an error rolls the whole transaction back
+		}
 
-	// Update item inventory stock
-	item.Stock -= 1
-	if item.Stock <= 0 {
-		item.InStock = false
-	}
-	database.DB.Save(&item)
+		now := time.Now()
+		order := models.Order{
+			UserID: userID,
+			// The payment is still simulated, so the order is paid right away.
+			// With a real payment service it will start as OrderPending.
+			Status:    models.OrderPaid,
+			TotalTiyn: item.PriceTiyn,
+			PaidAt:    &now,
+			Items: []models.OrderItem{{
+				ClothesID:     &item.ID,
+				Title:         item.Title,
+				Size:          size,
+				UnitPriceTiyn: item.PriceTiyn,
+				Quantity:      1,
+			}},
+		}
+		// GORM inserts the order, then its Items with order_id filled in, in this same transaction.
+		if err := tx.Create(&order).Error; err != nil {
+			return err
+		}
 
-	// Create user order record
-	database.DB.Create(&models.Order{
-		UserID:    user.ID,
-		ClothesID: item.ID,
+		return tx.Create(&models.Payment{
+			OrderID:    order.ID,
+			AmountTiyn: order.TotalTiyn,
+			Method:     "card",
+			Status:     models.PaymentSucceeded,
+		}).Error
 	})
 
-	c.JSON(http.StatusOK, gin.H{"message": "Payment successful", "transaction": transaction})
+	if errors.Is(err, errOutOfStock) {
+		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "К сожалению, товар закончился"})
+		return
+	}
+	if err != nil {
+		log.Println("payment failed:", err)
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось оформить заказ, попробуйте ещё раз"})
+		return
+	}
+
+	// Post/Redirect/Get: after a successful POST, send the browser to a GET page,
+	// so pressing "refresh" doesn't submit the purchase a second time.
+	c.Redirect(http.StatusSeeOther, "/orders")
+}
+
+// sizeToBuy decides which variant a purchase is for: the requested size if the product
+// has it, or the only size when there is exactly one. Whether it's still in stock is
+// checked later by the atomic UPDATE, not here (it could change between the two).
+func sizeToBuy(item models.Clothes, requested string) (string, bool) {
+	requested = strings.TrimSpace(requested)
+	if requested != "" {
+		_, ok := item.Variant(requested)
+		return requested, ok
+	}
+	if len(item.Variants) == 1 {
+		return item.Variants[0].Size, true
+	}
+	return "", false
+}
+
+// sizeToShow picks the size for the payment page: the requested one if it's in stock,
+// otherwise the first size that is. The URL can be edited, so it's never trusted as is.
+func sizeToShow(item models.Clothes, requested string) string {
+	if v, ok := item.Variant(strings.TrimSpace(requested)); ok && v.Stock > 0 {
+		return v.Size
+	}
+	for _, v := range item.SortedVariants() {
+		if v.Stock > 0 {
+			return v.Size
+		}
+	}
+	return ""
 }

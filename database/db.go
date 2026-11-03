@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"planeta_qosshy/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -41,21 +40,13 @@ func Connect() {
 		log.Fatalf("Could not connect to database after %d attempts: %v", maxRetries, err)
 	}
 
-	err = db.AutoMigrate(
-		&models.User{}, 
-		&models.Clothes{}, 
-		&models.Order{}, 
-		&models.Payment{}, 
-		&models.Transaction{},
-		&models.Chat{}, 
-		&models.Message{},
-	)
-
-	if err != nil {
-		log.Println("Database Migration Error: ", err.Error())
-		return
+	// The schema is owned by versioned SQL files in migrations/, not by AutoMigrate:
+	// AutoMigrate never drops or renames columns and leaves no history of what changed.
+	// Before, a failed migration only logged and left DB nil, so the first request panicked.
+	if err := runMigrations(dsn); err != nil {
+		log.Fatalf("Database migration failed: %v", err)
 	}
-	
+
 	DB = db
 }
 

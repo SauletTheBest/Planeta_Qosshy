@@ -116,10 +116,10 @@
           <h3>{{.Title}}</h3>
           <div class="meta">
             <span class="tag">{{.Category}}</span>
-            <span class="tag clean-size-tag" data-raw-size="{{.Size}}">{{.Size}}</span>
+            <span class="tag clean-size-tag" data-raw-size="{{.SizeSummary}}">{{.AvailableSizes}}</span>
             <span class="tag">{{.Color}}</span>
           </div>
-          <p class="price">{{printf "%.0f" .Price}} ₸</p>
+          <p class="price">{{.PriceTiyn}} ₸</p>
           <a href="/clothes/{{.ID}}" class="btn btn-primary btn-block">Подробнее</a>
         </div>
       </div>

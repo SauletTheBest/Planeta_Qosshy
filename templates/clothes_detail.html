@@ -41,7 +41,7 @@
     <div class="detail-info">
       <p class="brand">{{.item.Brand}} &mdash; {{.item.Category}}</p>
       <h1>{{.item.Title}}</h1>
-      <p class="price">{{printf "%.0f" .item.Price}} ₸</p>
+      <p class="price">{{.item.PriceTiyn}} ₸</p>
       <div class="detail-tags" style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;">
         <div style="width:100%;">
           <span style="font-size:0.9rem;color:#444;font-weight:700;display:block;margin-bottom:8px;">Размеры в наличии:</span>
@@ -56,7 +56,7 @@
       </div>
       <script>
         (function() {
-          const rawSize = "{{.item.Size}}";
+          const rawSize = "{{.item.SizeSummary}}";
           const container = document.getElementById('detailSizeChips');
           const selectedSizeInput = document.getElementById('selected_size');
 
@@ -128,7 +128,7 @@
         {{if .isLoggedIn}}
           <form action="/payment/{{.item.ID}}" method="GET" style="margin:0;">
             <input type="hidden" id="selected_size" name="size" value="">
-            <button type="submit" class="btn btn-primary btn-block">Купить — {{printf "%.0f" .item.Price}} ₸</button>
+            <button type="submit" class="btn btn-primary btn-block">Купить — {{.item.PriceTiyn}} ₸</button>
           </form>
         {{else}}
           <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>
