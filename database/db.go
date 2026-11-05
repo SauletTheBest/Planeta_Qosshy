@@ -1,8 +1,10 @@
 package database
 
 import (
+	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -60,6 +62,43 @@ func Connect() {
 		log.Fatalf("Database migration failed: %v", err)
 	}
 
+	// Connection pool. Without limits a traffic spike opens connection after connection
+	// until Postgres refuses with "too many clients" (its max_connections is 100 by default).
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatalf("database pool: %v", err)
+	}
+	sqlDB.SetMaxOpenConns(intEnv("DB_MAX_OPEN_CONNS", 20))
+	sqlDB.SetMaxIdleConns(10)                  // kept open between requests, ready to use
+	sqlDB.SetConnMaxLifetime(30 * time.Minute) // recycled now and then (e.g. after a DB failover)
+
 	DB = db
+}
+
+// Migrate brings the schema at dsn up to date. Used by the integration tests,
+// which run against their own throw-away database.
+func Migrate(dsn string) error { return runMigrations(dsn) }
+
+// Ping checks that the database answers, for the /readyz health check.
+func Ping(ctx context.Context) error {
+	sqlDB, err := DB.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.PingContext(ctx)
+}
+
+// Close closes the pool at shutdown, so Postgres doesn't wait for dead connections.
+func Close() {
+	if sqlDB, err := DB.DB(); err == nil {
+		_ = sqlDB.Close()
+	}
+}
+
+func intEnv(key string, fallback int) int {
+	if v, err := strconv.Atoi(os.Getenv(key)); err == nil && v > 0 {
+		return v
+	}
+	return fallback
 }
 

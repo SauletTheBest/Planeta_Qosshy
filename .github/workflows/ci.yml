@@ -1,0 +1,49 @@
+# Runs on every pull request and on every push to main.
+# A red cross on the PR means: don't merge yet, something broke.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # A throw-away PostgreSQL for the integration tests (shop/integration_test.go).
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: shop_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d shop_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: host=localhost port=5432 user=postgres password=test dbname=shop_test sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod   # the same Go version as go.mod says
+
+      - name: go vet
+        run: |
+          go vet ./...
+          go vet -tags=integration ./...
+
+      # -race: the race detector. It needs cgo, which the Linux runner has
+      # (on a Windows machine without a C compiler it can't run).
+      # -tags=integration also runs the tests against the real database.
+      - name: Tests (unit + integration, race detector on)
+        run: go test -race -count=1 -tags=integration ./...
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the production image
+        run: docker build -t planeta-qosshy:ci .

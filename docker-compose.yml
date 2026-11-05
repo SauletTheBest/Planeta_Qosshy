@@ -1,5 +1,4 @@
-version: '3.8'
-
+# (no "version:" line: Docker Compose v2 ignores it and warns)
 services:
   postgres:
     image: postgres:16-alpine
@@ -57,7 +56,7 @@ services:
       postgres:
         condition: service_healthy
       payments:
-        condition: service_started
+        condition: service_healthy   # its Dockerfile HEALTHCHECK answers on /healthz
 
   # Qosshy Pay — the test bank. Its code is the planeta_qosshy_microservice repository,
   # which must be cloned next to this one (../planeta_qosshy_microservice).
@@ -78,6 +77,10 @@ services:
       - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASS=${SMTP_PASS:-}
+    volumes:
+      # Payments and PDF receipts survive a restart of the bank container.
+      - bank_data:/app/data
+      - receipts:/app/receipts
 
   kafka:
     image: apache/kafka:latest
@@ -115,3 +118,5 @@ volumes:
   postgres_data:
   kafka_data:
   uploads:
+  bank_data:
+  receipts:

@@ -43,7 +43,12 @@ func Logger() gin.HandlerFunc {
 
 		c.Next()
 
+		// Docker asks /healthz every few seconds: thousands of identical lines a day hide
+		// the interesting ones. Failed checks are still logged.
 		status := c.Writer.Status()
+		if (c.Request.URL.Path == "/healthz" || c.Request.URL.Path == "/readyz") && status == 200 {
+			return
+		}
 		entry := log.WithFields(logrus.Fields{
 			"request_id": id,
 			"status":     status,

@@ -59,6 +59,10 @@ func SetupRouter() *gin.Engine {
 
 	r.SetFuncMap(TemplateFuncs)
 
+	// Health checks for Docker (and any load balancer), see controllers/health.go.
+	r.GET("/healthz", controllers.Healthz)
+	r.GET("/readyz", controllers.Readyz)
+
 	r.LoadHTMLGlob("templates/*.html")
 
 	// Homepage with optional auth context & DB products
