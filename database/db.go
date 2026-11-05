@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
@@ -25,9 +26,21 @@ func Connect() {
 	var db *gorm.DB
 	var err error
 
+	// GORM's default logger printed whole SQL with the values filled in, e.g.
+	//   SELECT * FROM users WHERE verification_token = 'secret-from-the-email'
+	// so secrets from email links ended up in the log. Now it prints "$1" instead,
+	// and "no such row" (a normal answer, not a failure) is not logged at all.
+	gormLogger := logger.New(log.New(os.Stdout, "", log.LstdFlags), logger.Config{
+		SlowThreshold:             500 * time.Millisecond, // still warn about slow queries
+		LogLevel:                  logger.Warn,
+		IgnoreRecordNotFoundError: true,
+		ParameterizedQueries:      true,
+		Colorful:                  false, // colour codes are garbage in Docker logs
+	})
+
 	maxRetries := 10
 	for i := 1; i <= maxRetries; i++ {
-		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: gormLogger})
 		if err == nil {
 			log.Println("Successfully connected to PostgreSQL database!")
 			break

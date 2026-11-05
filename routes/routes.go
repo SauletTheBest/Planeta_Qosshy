@@ -2,8 +2,10 @@ package routes
 
 import (
 	"html/template"
-	"math"
 	"net/http"
+	"os"
+	"strings"
+	"time"
 
 	"planeta_qosshy/controllers"
 	"planeta_qosshy/middleware"
@@ -11,23 +13,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
-	r := gin.Default()
+// Per-IP limits only where guessing or spamming is possible.
+// Catalog pages, pictures and bank webhooks are not limited at all.
+var (
+	loginLimit    = middleware.NewIPLimiter(12*time.Second, 5) // ~5 attempts per minute
+	registerLimit = middleware.NewIPLimiter(time.Minute, 3)
+	helpdeskLimit = middleware.NewIPLimiter(5*time.Minute, 3) // every message is an email to support
+)
 
-	r.Use(middleware.LoggerBad())
-	r.Use(middleware.RateLimit())
+func SetupRouter() *gin.Engine {
+	// gin.New() instead of gin.Default(): Default adds its own text logger,
+	// so every request used to be logged three times.
+	r := gin.New()
+	r.Use(gin.Recovery()) // a panic in one handler returns 500 instead of killing the server
 	r.Use(middleware.Logger())
+
+	// c.ClientIP() believes the X-Forwarded-For header only from these addresses.
+	// Gin trusts every address by default, so anyone could send "X-Forwarded-For: <random>"
+	// and get a fresh rate-limit bucket on every request. Empty = no proxy in front.
+	// Behind nginx set TRUSTED_PROXIES=<nginx IP>.
+	if err := r.SetTrustedProxies(splitList(os.Getenv("TRUSTED_PROXIES"))); err != nil {
+		middleware.Log().Fatalf("TRUSTED_PROXIES: %v", err)
+	}
 
 	r.Static("/static", "./templates/static")
 	r.Static("/image", "./templates/image")
 
 	// Template helper math functions
 	r.SetFuncMap(template.FuncMap{
-		"add":  func(a, b int) int { return a + b },
-		"sub":  func(a, b int) int { return a - b },
-		"mul":  func(a, b int) int { return a * b },
-		"div":  func(a, b int) float64 { return float64(a / b) },
-		"ceil": func(a float64) int { return int(math.Ceil(a)) },
+		"add": func(a, b int) int { return a + b },
+		"sub": func(a, b int) int { return a - b },
 	})
 
 	r.LoadHTMLGlob("templates/*.html")
@@ -52,8 +67,8 @@ func SetupRouter() *gin.Engine {
 	// Auth routes
 	auth := r.Group("/auth")
 	{
-		auth.POST("/register", controllers.Register)
-		auth.POST("/login", controllers.Login)
+		auth.POST("/register", registerLimit.Middleware(), controllers.Register)
+		auth.POST("/login", loginLimit.Middleware(), controllers.Login)
 		auth.POST("/logout", controllers.Logout)
 		auth.GET("/logout", controllers.Logout)
 		auth.GET("/verify", controllers.VerifyEmail)
@@ -112,8 +127,8 @@ func SetupRouter() *gin.Engine {
 	helpdesk := r.Group("/helpdesk")
 	helpdesk.Use(middleware.AuthRequired)
 	{
-		helpdesk.POST("/send", controllers.HelpdeskController)
-		helpdesk.GET("/", func(c *gin.Context) { c.HTML(http.StatusOK, "helpdesk.html", nil) })
+		helpdesk.POST("/send", helpdeskLimit.Middleware(), controllers.HelpdeskController)
+		helpdesk.GET("/", controllers.HelpdeskPage)
 	}
 
 	// Checkout & Payment routes
@@ -130,8 +145,20 @@ func SetupRouter() *gin.Engine {
 	{
 		profile.GET("/", controllers.Profile)
 		profile.GET("/edit", controllers.UpdateProfilePage)
-		profile.POST("/edit/:id", controllers.UpdateProfile)
+		// No :id in the URL: you can only ever edit yourself, the ID comes from the session.
+		profile.POST("/edit", controllers.UpdateProfile)
 	}
 
 	return r
+}
+
+// splitList turns "a, b,,c" into [a b c]; an empty string gives nil.
+func splitList(s string) []string {
+	var out []string
+	for _, part := range strings.Split(s, ",") {
+		if part = strings.TrimSpace(part); part != "" {
+			out = append(out, part)
+		}
+	}
+	return out
 }

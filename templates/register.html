@@ -27,11 +27,11 @@
     <form action="/auth/register" method="POST">
       <div class="form-group">
         <label for="username">Имя пользователя</label>
-        <input type="text" id="username" name="username" placeholder="ivan_ivanov" required />
+        <input type="text" id="username" name="username" placeholder="ivan_ivanov" value="{{.username}}" required />
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        <input type="email" id="email" name="email" placeholder="you@example.com" value="{{.email}}" required />
       </div>
       <div class="form-group">
         <label for="password">Пароль</label>

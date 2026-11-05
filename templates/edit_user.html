@@ -29,7 +29,7 @@
       <div class="alert alert-error" style="margin-bottom:20px;border-radius:10px;">{{.error}}</div>
     {{end}}
 
-    <form action="/profile/edit/{{.user.ID}}" method="POST">
+    <form action="/profile/edit" method="POST">
       <!-- Секция: Личные данные -->
       <div style="background:#fff;border-radius:14px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.04);border:1px solid #ebebeb;margin-bottom:24px;">
         <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:18px;color:#111;display:flex;align-items:center;gap:8px;">
@@ -44,6 +44,7 @@
         <div class="form-group" style="margin-bottom:0;">
           <label for="email" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Email адрес</label>
           <input type="email" id="email" name="email" value="{{.user.Email}}" required style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+          <p style="font-size:0.8rem;color:#777;margin-top:6px;">На новый email придёт письмо для подтверждения.</p>
         </div>
       </div>
 
@@ -56,9 +57,14 @@
           Заполняйте поле ниже <strong>только если хотите сменить пароль</strong>. Если пароль менять не требуется, просто оставьте его пустым.
         </p>
 
-        <div class="form-group" style="margin-bottom:0;">
+        <div class="form-group" style="margin-bottom:18px;">
           <label for="password" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Новый пароль</label>
-          <input type="password" id="password" name="password" placeholder="Введите новый пароль (необязательно)" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+          <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Введите новый пароль (необязательно)" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="current_password" style="font-weight:600;font-size:0.9rem;margin-bottom:6px;display:block;">Текущий пароль</label>
+          <input type="password" id="current_password" name="current_password" autocomplete="current-password" placeholder="Нужен, если меняете email или пароль" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;font-size:0.95rem;">
         </div>
       </div>
 

@@ -38,6 +38,8 @@ services:
       - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASS=${SMTP_PASS:-}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
+      - TRUSTED_PROXIES=${TRUSTED_PROXIES:-}
       # Containers reach each other by service name ("payments"), browsers use localhost.
       - PUBLIC_URL=${PUBLIC_URL:-http://localhost:8080}
       - PAYMENT_API_URL=http://payments:8081

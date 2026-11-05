@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
@@ -65,14 +64,19 @@ func GetClothes(c *gin.Context) {
 	}
 
 	// Pagination
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "12"))
-	offset := (page - 1) * limit
+	page := newPage(c.Query("page"), c.Query("limit"), 12, 48)
 
 	var totalItems int64
-	query.Model(&models.Clothes{}).Count(&totalItems)
+	if err := query.Model(&models.Clothes{}).Count(&totalItems).Error; err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось загрузить каталог"})
+		return
+	}
+	page.SetTotal(totalItems)
 
-	query.Preload("Variants").Offset(offset).Limit(limit).Find(&clothes)
+	if err := query.Preload("Variants").Offset(page.Offset()).Limit(page.Size).Find(&clothes).Error; err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось загрузить каталог"})
+		return
+	}
 
 	isLoggedIn, _ := c.Get("isLoggedIn")
 	username, _ := c.Get("username")
@@ -81,9 +85,9 @@ func GetClothes(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "clothes.html", gin.H{
 		"clothes":    clothes,
-		"page":       page,
-		"limit":      limit,
-		"offset":     offset,
+		"page":       page.Number,
+		"limit":      page.Size,
+		"pager":      page,
 		"category":   category,
 		"brand":      brand,
 		"size":       size,
@@ -103,7 +107,7 @@ func GetClothesByID(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := database.DB.Preload("Variants").First(&item, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Clothing item not found"})
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
 		return
 	}
 

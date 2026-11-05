@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"planeta_qosshy/database"
@@ -15,7 +14,8 @@ import (
 func AuthRequired(c *gin.Context) {
 	session, err := GetSession(c.Request)
 	if err != nil {
-		fmt.Println("Error retrieving session:", err)
+		// Usually an old cookie signed with a previous COOKIE_SECRET — not worth an error.
+		log.WithError(err).Warn("cannot decode session cookie")
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
 		return

@@ -131,13 +131,13 @@
       {{end}}
     </div>
     <div class="pagination">
-      {{if gt .page 1}}
-      <a href="/clothes?page={{sub .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
+      {{if .pager.HasPrev}}
+      <a href="/clothes?page={{.pager.Prev}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
         class="btn btn-ghost">← Назад</a>
       {{end}}
-      <span>Страница {{.page}} из {{ceil (div .totalItems .limit)}}</span>
-      {{if lt (mul .page .limit) .totalItems}}
-      <a href="/clothes?page={{add .page 1}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
+      <span>Страница {{.page}} из {{.pager.TotalPages}}</span>
+      {{if .pager.HasNext}}
+      <a href="/clothes?page={{.pager.Next}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
         class="btn btn-ghost">Вперёд →</a>
       {{end}}
     </div>

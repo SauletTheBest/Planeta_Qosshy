@@ -1,13 +1,17 @@
 package controllers
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"strings"
+
 	"planeta_qosshy/database"
 	"planeta_qosshy/models"
 	"planeta_qosshy/util"
-	"fmt"
+
 	"github.com/gin-gonic/gin"
-	"net/http"
-	_ "reflect"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Profile(c *gin.Context) {
@@ -34,11 +38,11 @@ func Profile(c *gin.Context) {
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
-		"user":             user,
-		"purchases":        purchases,
-		"sessionUserID":    sessionUserID,
-		"chatID":           chatID,
-		"chatActive":       chatStatus == "active",
+		"user":          user,
+		"purchases":     purchases,
+		"sessionUserID": sessionUserID,
+		"chatID":        chatID,
+		"chatActive":    chatStatus == "active",
 	})
 }
 
@@ -67,56 +71,89 @@ func UpdateProfilePage(c *gin.Context) {
 }
 
 func UpdateProfile(c *gin.Context) {
-	sessionUserID := c.GetUint("userID")
-	if sessionUserID == 0 {
-		c.HTML(http.StatusUnauthorized, "error.html", gin.H{"error": "Unauthorized access"})
+	var user models.User
+	if err := database.DB.First(&user, c.GetUint("userID")).Error; err != nil {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
 		return
 	}
 
-	var input struct {
-		Username string `form:"username"`
-		Email    string `form:"email"`
-		Password string `form:"password"`
+	username := strings.TrimSpace(c.PostForm("username"))
+	email := util.NormalizeEmail(c.PostForm("email"))
+	newPassword := c.PostForm("password")
+	currentPassword := c.PostForm("current_password")
+
+	// Show the form again with the typed values and the reason (instead of a bare error page).
+	fail := func(status int, msg string) {
+		shown := user
+		shown.Username, shown.Email, shown.Password = username, email, ""
+		c.HTML(status, "edit_user.html", gin.H{"user": shown, "error": msg})
 	}
 
-	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": err.Error()})
+	if username == "" || email == "" {
+		fail(http.StatusBadRequest, "Имя пользователя и email обязательны.")
 		return
 	}
-	if input.Username == "" || input.Email == "" {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Имя пользователя и Email обязательны для заполнения"})
+	if msg := util.ValidateUsername(username); msg != "" {
+		fail(http.StatusBadRequest, msg)
+		return
+	}
+	if !util.IsValidEmail(email) {
+		fail(http.StatusBadRequest, "Неверный формат email.")
 		return
 	}
 
-	if !util.IsValidEmail(input.Email) {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Неверный формат Email"})
-		return
+	emailChanged := email != user.Email
+
+	// A new email or password = a new owner of the account. Ask for the current password,
+	// so someone at your unlocked computer can't quietly take the account over.
+	if emailChanged || newPassword != "" {
+		if currentPassword == "" ||
+			bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(currentPassword)) != nil {
+			fail(http.StatusForbidden, "Чтобы сменить email или пароль, введите текущий пароль.")
+			return
+		}
 	}
 
 	updates := map[string]interface{}{
-		"username": input.Username,
-		"email":    input.Email,
+		"username": username,
+		"email":    email,
 	}
 
-	if input.Password != "" {
-		if msg := util.ValidatePassword(input.Password); msg != "" {
-			c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": msg})
+	if newPassword != "" {
+		if msg := util.ValidatePassword(newPassword); msg != "" {
+			fail(http.StatusBadRequest, msg)
 			return
 		}
-		updates["password"] = util.HashPassword(input.Password)
+		updates["password"] = util.HashPassword(newPassword)
 	}
 
-	result := database.DB.Model(&models.User{}).Where("id = ?", sessionUserID).Updates(updates)
+	// The new address has not been proven to belong to this person yet.
+	var token string
+	if emailChanged {
+		var err error
+		if token, err = generateToken(); err != nil {
+			fail(http.StatusInternalServerError, "Не удалось обновить профиль.")
+			return
+		}
+		updates["verified"] = false
+		updates["verification_token"] = token
+	}
 
-	if result.Error != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось обновить профиль"})
+	if err := database.DB.Model(&models.User{}).Where("id = ?", user.ID).Updates(updates).Error; err != nil {
+		if msg, ok := duplicateUserMessage(err); ok {
+			fail(http.StatusConflict, msg)
+			return
+		}
+		fail(http.StatusInternalServerError, "Не удалось обновить профиль.")
 		return
 	}
-	if result.RowsAffected == 0 {
 
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "User not found or no changes made"})
-		return
+	if emailChanged {
+		if err := util.SendVerificationEmail(email, token); err != nil {
+			log.Println("profile: could not send verification email:", err)
+		}
 	}
 
-	c.Redirect(http.StatusFound, "/profile")
+	// 303 See Other: after a POST the browser must load /profile with GET.
+	c.Redirect(http.StatusSeeOther, "/profile")
 }

@@ -1,7 +1,9 @@
 package util
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -21,17 +23,48 @@ func smtpConfig() (host string, port int, user, pass string) {
 	return
 }
 
-func SendEmail(to, subject, body string) error {
+// ErrSMTPNotConfigured is returned when SMTP_HOST or SMTP_USER is empty.
+var ErrSMTPNotConfigured = errors.New("SMTP is not configured (SMTP_HOST / SMTP_USER)")
+
+// Attachment is a file kept in memory: nothing is written to the server's disk.
+type Attachment struct {
+	Name string
+	Data []byte
+}
+
+// Email is one plain-text letter.
+type Email struct {
+	To          string
+	ReplyTo     string // "Reply" in the mail app goes here instead of back to us
+	Subject     string
+	Body        string
+	Attachments []Attachment
+}
+
+func SendEmail(e Email) error {
 	host, port, user, pass := smtpConfig()
+	if host == "" || user == "" {
+		return ErrSMTPNotConfigured
+	}
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", user)
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", subject)
-	m.SetBody("text/plain", body)
+	m.SetHeader("To", e.To)
+	if e.ReplyTo != "" {
+		m.SetHeader("Reply-To", e.ReplyTo)
+	}
+	m.SetHeader("Subject", e.Subject) // gomail encodes it, so "\r\n" can't inject extra headers
+	m.SetBody("text/plain", e.Body)
+
+	for _, a := range e.Attachments {
+		data := a.Data // a copy for the closure below
+		m.Attach(a.Name, gomail.SetCopyFunc(func(w io.Writer) error {
+			_, err := w.Write(data)
+			return err
+		}))
+	}
 
 	d := gomail.NewDialer(host, port, user, pass)
-
 	if err := d.DialAndSend(m); err != nil {
 		log.Println("Email send error:", err)
 		return err
@@ -41,6 +74,9 @@ func SendEmail(to, subject, body string) error {
 
 func SendVerificationEmail(email, token string) error {
 	host, port, user, pass := smtpConfig()
+	if host == "" || user == "" {
+		return ErrSMTPNotConfigured
+	}
 	verificationAddress := os.Getenv("VERIFICATION_ADDRESS")
 
 	mail := gomail.NewMessage()
