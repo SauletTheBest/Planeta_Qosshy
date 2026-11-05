@@ -466,3 +466,31 @@ textarea { resize:vertical; }
 }
 
 
+
+/* ===== Admin: orders, users, dashboard (phase 4) ===== */
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.78rem; font-weight:700; white-space:nowrap; }
+.badge-pending   { background:#fff6e0; color:#a06a00; }
+.badge-paid      { background:#e8f1ff; color:#2c4da0; }
+.badge-shipped   { background:#efe8ff; color:#5b3cc4; }
+.badge-delivered { background:#edfaf3; color:#1e7e50; }
+.badge-cancelled { background:#f2f2f2; color:#777; }
+.badge-refund    { background:#fdf0ef; color:#c0392b; }
+.badge-pay-pending   { background:#fff6e0; color:#a06a00; }
+.badge-pay-succeeded { background:#edfaf3; color:#1e7e50; }
+.badge-pay-failed    { background:#f2f2f2; color:#777; }
+.badge-pay-refunded  { background:#efe8ff; color:#5b3cc4; }
+.admin-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.admin-tabs a { padding:6px 12px; border-radius:20px; background:#f4f4f4; font-size:.85rem; color:#555; }
+.admin-tabs a.active { background:#111; color:#fff; }
+.admin-search { display:flex; gap:8px; }
+.admin-search input { padding:8px 12px; border:1px solid #ddd; border-radius:6px; min-width:240px; }
+.admin-columns { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:24px; }
+.admin-action { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+.admin-action input[type=text] { flex:1; min-width:180px; padding:8px 12px; border:1px solid #ddd; border-radius:6px; }
+.admin-actions-cell { display:flex; gap:6px; flex-wrap:wrap; }
+.panel { background:#fff; border-radius:8px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,.05); margin-bottom:24px; }
+.timeline { list-style:none; padding:0; margin:0; }
+.timeline li { padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:.9rem; }
+.empty-row { text-align:center; color:#888; padding:24px !important; }
+a.stat-card { display:block; color:inherit; transition:box-shadow .15s; }
+a.stat-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.1); }

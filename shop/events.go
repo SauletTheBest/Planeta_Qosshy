@@ -49,6 +49,16 @@ func ApplyPaymentEvent(db *gorm.DB, ev payments.Event, now time.Time) error {
 			}
 			return tx.Model(&p).Updates(map[string]any{
 				"status": models.PaymentFailed, "failure_reason": ev.FailureReason, "card_last4": ev.CardLast4}).Error
+		case payments.EventRefunded:
+			// Usually we asked for it ourselves (RefundPayment) and already marked it;
+			// then nothing changes. If the refund was made at the bank directly, record it.
+			if p.Status == models.PaymentRefunded {
+				return nil
+			}
+			if p.Status != models.PaymentSucceeded {
+				return ErrEventMismatch // money that was never taken can't be given back
+			}
+			return markRefunded(tx, p, nil, now)
 		}
 		return fmt.Errorf("unknown event type %q", ev.Type)
 	})
@@ -74,31 +84,48 @@ func applySuccess(tx *gorm.DB, p models.Payment, ev payments.Event, now time.Tim
 		return err
 	}
 
+	// Before: these cases were only a "REFUND NEEDED" line in the log. Now the payment is
+	// marked, and the admin panel shows it in the refunds list until the money is back.
+	refundNeeded := func(why string) error {
+		log.Printf("REFUND NEEDED: order %d, payment %d: %s", order.ID, p.ID, why)
+		return markRefundNeeded(tx, p, nil, why, now)
+	}
+
 	switch order.Status {
 	case models.OrderPending:
-		return markPaid(tx, order.ID, now)
+		return markPaid(tx, order.ID, ev.CardLast4, now)
 	case models.OrderCancelled:
+		byAdmin, err := cancelledByAdmin(tx, order.ID)
+		if err != nil {
+			return err
+		}
+		if byAdmin {
+			// An admin decided to cancel; a payment from a bank page that was still open
+			// must not bring the order back.
+			return refundNeeded("оплачен после отмены администратором")
+		}
 		// Paid after the reservation expired and the stock went back on sale: take it again.
 		// A nested Transaction is a SAVEPOINT: if the stock is gone, only this part is undone.
-		err := tx.Transaction(func(sp *gorm.DB) error { return reserveItems(sp, order.Items) })
+		err = tx.Transaction(func(sp *gorm.DB) error { return reserveItems(sp, order.Items) })
 		if err == nil {
-			return markPaid(tx, order.ID, now)
+			return markPaid(tx, order.ID, ev.CardLast4, now)
 		}
 		if !errors.Is(err, ErrOutOfStock) {
 			return err
 		}
-		log.Printf("REFUND NEEDED: order %d was paid (payment %d) after its reservation expired and the item is sold out", order.ID, p.ID)
-		return nil
+		return refundNeeded("оплачен после окончания резерва, товар уже распродан")
 	default:
-		log.Printf("REFUND NEEDED: order %d is already %s, payment %d paid it again", order.ID, order.Status, p.ID)
-		return nil
+		return refundNeeded(fmt.Sprintf("заказ уже в статусе «%s», это повторная оплата", order.Status.Label()))
 	}
 }
 
-func markPaid(tx *gorm.DB, orderID uint, now time.Time) error {
-	return tx.Model(&models.Order{}).Where("id = ?", orderID).Updates(map[string]any{
+func markPaid(tx *gorm.DB, orderID uint, cardLast4 string, now time.Time) error {
+	if err := tx.Model(&models.Order{}).Where("id = ?", orderID).Updates(map[string]any{
 		"status":     models.OrderPaid,
 		"paid_at":    now,
 		"expires_at": nil, // no reservation to release anymore
-	}).Error
+	}).Error; err != nil {
+		return err
+	}
+	return addEvent(tx, orderID, models.EventPaid, nil, "карта •••• "+cardLast4)
 }

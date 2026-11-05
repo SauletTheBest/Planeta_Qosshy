@@ -43,9 +43,12 @@ func CancelExpiredOrders(db *gorm.DB, now time.Time) (int, error) {
 				return err
 			}
 			done = true
-			return tx.Model(&models.Payment{}).
+			if err := tx.Model(&models.Payment{}).
 				Where("order_id = ? AND status = ?", id, models.PaymentPending).
-				Updates(map[string]any{"status": models.PaymentFailed, "failure_reason": "expired"}).Error
+				Updates(map[string]any{"status": models.PaymentFailed, "failure_reason": "expired"}).Error; err != nil {
+				return err
+			}
+			return addEvent(tx, id, models.EventExpired, nil, "товар вернулся в продажу")
 		})
 		if err != nil {
 			return cancelled, err

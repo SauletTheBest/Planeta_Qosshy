@@ -16,6 +16,7 @@ const (
 
 	EventSucceeded = "payment.succeeded"
 	EventFailed    = "payment.failed"
+	EventRefunded  = "payment.refunded"
 
 	// DefaultTolerance: a signed webhook older than this is refused, so a captured
 	// request can't be replayed days later.

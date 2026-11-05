@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заказы — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+<body>
+{{template "admin_header"}}
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Заказы</h1>
+    <form method="GET" action="/admin/orders" class="admin-search">
+      <input type="hidden" name="status" value="{{.status}}">
+      <input type="text" name="q" value="{{.q}}" placeholder="№ заказа, email или имя">
+      <button type="submit" class="btn btn-outline">Найти</button>
+    </form>
+  </div>
+  {{template "admin_nav" "orders"}}
+  {{template "flash" .}}
+
+  <div class="admin-tabs">
+    {{range .tabs}}
+      <a href="/admin/orders?status={{.Key}}" {{if eq .Key $.status}}class="active"{{end}}>{{.Label}} <b>{{.Count}}</b></a>
+    {{end}}
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>№</th><th>Создан</th><th>Покупатель</th><th>Товары</th><th>Сумма</th><th>Статус</th><th></th></tr>
+    </thead>
+    <tbody>
+    {{range .orders}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td>{{datetime .CreatedAt}}</td>
+        <td>{{with .User}}{{.Username}}<br><small style="color:#888;">{{.Email}}</small>{{end}}</td>
+        <td>
+          {{range $i, $it := .Items}}{{if $i}}, {{end}}{{$it.Title}}{{if $it.Size}} ({{$it.Size}}){{end}}{{if gt $it.Quantity 1}} ×{{$it.Quantity}}{{end}}{{end}}
+        </td>
+        <td>{{.TotalTiyn}} ₸</td>
+        <td>
+          <span class="badge badge-{{.Status}}">{{.Status.Label}}</span>
+          {{range .Payments}}{{if .NeedsRefund}}<span class="badge badge-refund">нужен возврат</span>{{end}}{{end}}
+        </td>
+        <td><a href="/admin/orders/{{.ID}}" class="btn btn-ghost">Открыть</a></td>
+      </tr>
+    {{else}}
+      <tr><td colspan="7" class="empty-row">Заказов не найдено</td></tr>
+    {{end}}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    {{if .pager.HasPrev}}<a class="btn btn-ghost" href="/admin/orders?status={{.status}}&q={{.q}}&page={{.pager.Prev}}">← Назад</a>{{end}}
+    <span>Страница {{.pager.Number}} из {{.pager.TotalPages}}</span>
+    {{if .pager.HasNext}}<a class="btn btn-ghost" href="/admin/orders?status={{.status}}&q={{.q}}&page={{.pager.Next}}">Вперёд →</a>{{end}}
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
+</body>
+</html>

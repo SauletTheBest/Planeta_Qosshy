@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пользователи — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+<body>
+{{template "admin_header"}}
+<div class="page-content">
+  <div class="admin-header">
+    <h1>Пользователи</h1>
+    <form method="GET" action="/admin/users" class="admin-search">
+      <input type="text" name="q" value="{{.q}}" placeholder="email или имя">
+      <button type="submit" class="btn btn-outline">Найти</button>
+    </form>
+  </div>
+  {{template "admin_nav" "users"}}
+  {{template "flash" .}}
+
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>Имя</th><th>Email</th><th>Роль</th><th>Заказов</th><th>Оплачено</th><th>Регистрация</th><th>Статус</th><th>Действия</th></tr>
+    </thead>
+    <tbody>
+    {{range .users}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Username}}</td>
+        <td>{{.Email}}{{if not .Verified}} <span class="badge badge-pending">не подтверждён</span>{{end}}</td>
+        <td>{{if .IsAdmin}}<span class="badge badge-paid">админ</span>{{else}}покупатель{{end}}</td>
+        <td><a href="/admin/orders?q={{.Email}}">{{.OrderCount}}</a></td>
+        <td>{{.SpentTiyn}} ₸</td>
+        <td>{{datetime .CreatedAt}}</td>
+        <td>{{if .IsBlocked}}<span class="badge badge-refund">заблокирован</span>{{else}}активен{{end}}</td>
+        <td class="admin-actions-cell">
+          {{if ne .ID $.me}}
+            <form method="POST" action="/admin/users/{{.ID}}/role"
+                  onsubmit="return confirm('{{if .IsAdmin}}Снять роль администратора?{{else}}Дать полный доступ к админке?{{end}}');">
+              <input type="hidden" name="role" value="{{if .IsAdmin}}user{{else}}admin{{end}}">
+              <button type="submit" class="btn btn-ghost">{{if .IsAdmin}}Снять админа{{else}}Сделать админом{{end}}</button>
+            </form>
+            {{if not .IsAdmin}}
+            <form method="POST" action="/admin/users/{{.ID}}/block">
+              <input type="hidden" name="action" value="{{if .IsBlocked}}unblock{{else}}block{{end}}">
+              <button type="submit" class="btn {{if .IsBlocked}}btn-outline{{else}}btn-danger{{end}}">{{if .IsBlocked}}Разблокировать{{else}}Заблокировать{{end}}</button>
+            </form>
+            {{end}}
+          {{else}}
+            <small style="color:#888;">это вы</small>
+          {{end}}
+        </td>
+      </tr>
+    {{else}}
+      <tr><td colspan="9" class="empty-row">Никого не найдено</td></tr>
+    {{end}}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    {{if .pager.HasPrev}}<a class="btn btn-ghost" href="/admin/users?q={{.q}}&page={{.pager.Prev}}">← Назад</a>{{end}}
+    <span>Страница {{.pager.Number}} из {{.pager.TotalPages}}</span>
+    {{if .pager.HasNext}}<a class="btn btn-ghost" href="/admin/users?q={{.q}}&page={{.pager.Next}}">Вперёд →</a>{{end}}
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заказ №{{.order.ID}} — Админ Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+<body>
+{{template "admin_header"}}
+<div class="page-content">
+  {{with .order}}
+  <div class="admin-header">
+    <h1>Заказ №{{.ID}} <span class="badge badge-{{.Status}}" style="vertical-align:middle;">{{.Status.Label}}</span></h1>
+    <a href="/admin/orders" class="btn btn-outline">← Все заказы</a>
+  </div>
+  {{end}}
+  {{template "admin_nav" "orders"}}
+  {{template "flash" .}}
+
+  <div class="admin-columns">
+    <div class="panel">
+      <h3>Покупатель</h3>
+      {{with .order.User}}
+        <p style="margin:8px 0;"><strong>{{.Username}}</strong> · {{.Email}}</p>
+        <a href="/admin/orders?q={{.Email}}">Все заказы покупателя</a>
+      {{end}}
+      <p style="margin-top:12px;color:#666;font-size:.9rem;">
+        Создан: {{datetime .order.CreatedAt}}<br>
+        Оплачен: {{datetime .order.PaidAt}}
+        {{if .order.ExpiresAt}}<br>Резерв до: {{datetime .order.ExpiresAt}}{{end}}
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Действия</h3>
+      {{range .next}}
+        {{if eq . "cancelled"}}
+          <form method="POST" action="/admin/orders/{{$.order.ID}}/status" class="admin-action"
+                onsubmit="return confirm('Отменить заказ?{{if eq $.order.Status "paid"}} Деньги будут возвращены покупателю.{{end}}');">
+            <input type="hidden" name="to" value="cancelled">
+            <input type="text" name="reason" placeholder="Причина отмены (увидит история)" maxlength="200" required>
+            <button type="submit" class="btn btn-danger">Отменить{{if eq $.order.Status "paid"}} и вернуть деньги{{end}}</button>
+          </form>
+        {{else}}
+          <form method="POST" action="/admin/orders/{{$.order.ID}}/status" class="admin-action">
+            <input type="hidden" name="to" value="{{.}}">
+            <button type="submit" class="btn btn-primary">
+              {{if eq . "shipped"}}Отметить отправленным{{else if eq . "delivered"}}Отметить доставленным{{else}}{{.Label}}{{end}}
+            </button>
+          </form>
+        {{end}}
+      {{else}}
+        <p style="color:#888;">Статус «{{.order.Status.Label}}» — окончательный, действий нет.</p>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-bottom:12px;">Товары</h3>
+    <table class="data-table">
+      <thead><tr><th>Товар</th><th>Размер</th><th>Цена</th><th>Кол-во</th><th>Сумма</th></tr></thead>
+      <tbody>
+      {{range .order.Items}}
+        <tr>
+          <td>{{if .ClothesID}}<a href="/clothes/{{.ClothesID}}" target="_blank">{{.Title}}</a>{{else}}{{.Title}} <small style="color:#888;">(товар удалён)</small>{{end}}</td>
+          <td>{{.Size}}</td>
+          <td>{{.UnitPriceTiyn}} ₸</td>
+          <td>{{.Quantity}}</td>
+          <td>{{.LineTotal}} ₸</td>
+        </tr>
+      {{end}}
+        <tr><td colspan="4" style="text-align:right;font-weight:700;">Итого</td><td style="font-weight:700;">{{.order.TotalTiyn}} ₸</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-bottom:12px;">Платежи</h3>
+    <table class="data-table">
+      <thead><tr><th>№</th><th>Создан</th><th>Сумма</th><th>Статус</th><th>Карта</th><th>Подробности</th><th></th></tr></thead>
+      <tbody>
+      {{range .order.Payments}}
+        <tr>
+          <td>{{.ID}}</td>
+          <td>{{datetime .CreatedAt}}</td>
+          <td>{{.AmountTiyn}} ₸</td>
+          <td>
+            <span class="badge badge-pay-{{.Status}}">{{.Status.Label}}</span>
+            {{if .NeedsRefund}}<span class="badge badge-refund">нужен возврат</span>{{end}}
+          </td>
+          <td>{{if .CardLast4}}•••• {{.CardLast4}}{{end}}</td>
+          <td style="font-size:.85rem;color:#666;">
+            {{if eq .Status "failed"}}{{.FailureText}}{{end}}
+            {{if .RefundedAt}}возвращён {{datetime .RefundedAt}}{{end}}
+          </td>
+          <td>
+            {{if .ReceiptURL}}<a href="{{.ReceiptURL}}" target="_blank">Чек</a>{{end}}
+            {{if .NeedsRefund}}
+              <form method="POST" action="/admin/orders/{{$.order.ID}}/refund" class="admin-action"
+                    onsubmit="return confirm('Вернуть покупателю деньги по этому платежу?');">
+                <input type="hidden" name="payment_id" value="{{.ID}}">
+                <button type="submit" class="btn btn-danger">Вернуть деньги</button>
+              </form>
+            {{end}}
+          </td>
+        </tr>
+      {{else}}
+        <tr><td colspan="7" class="empty-row">Оплат не было</td></tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-bottom:12px;">История</h3>
+    <ul class="timeline">
+    {{range .order.Events}}
+      <li>
+        <strong>{{.Label}}</strong> · {{datetime .CreatedAt}} ·
+        {{with .Actor}}{{.Username}}{{else}}система{{end}}
+        {{if .Note}}<br><span style="color:#777;">{{.Note}}</span>{{end}}
+      </li>
+    {{else}}
+      <li style="color:#888;">Событий нет: заказ создан до того, как появилась история.</li>
+    {{end}}
+    </ul>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>
+</footer>
+</body>
+</html>

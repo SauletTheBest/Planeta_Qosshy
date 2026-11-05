@@ -40,6 +40,8 @@ services:
       - SMTP_PASS=${SMTP_PASS:-}
       - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
       - TRUSTED_PROXIES=${TRUSTED_PROXIES:-}
+      - TRUSTED_ORIGINS=${TRUSTED_ORIGINS:-}
+      - SHOP_TIMEZONE=${SHOP_TIMEZONE:-Asia/Almaty}
       # Containers reach each other by service name ("payments"), browsers use localhost.
       - PUBLIC_URL=${PUBLIC_URL:-http://localhost:8080}
       - PAYMENT_API_URL=http://payments:8081

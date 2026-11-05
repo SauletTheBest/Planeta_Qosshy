@@ -43,8 +43,19 @@ type Order struct {
 	CreatedAt time.Time   `gorm:"autoCreateTime"`
 	UpdatedAt time.Time   `gorm:"autoUpdateTime"`
 
-	Items    []OrderItem `gorm:"foreignKey:OrderID"`
-	Payments []Payment   `gorm:"foreignKey:OrderID"` // load newest first to use LastPayment
+	Items    []OrderItem  `gorm:"foreignKey:OrderID"`
+	Payments []Payment    `gorm:"foreignKey:OrderID"` // load newest first to use LastPayment
+	Events   []OrderEvent `gorm:"foreignKey:OrderID"`
+	User     *User        `gorm:"foreignKey:UserID"` // for the admin pages
+}
+
+// ItemCount is the number of units in the order (2 × M + 1 × L = 3).
+func (o Order) ItemCount() int {
+	n := 0
+	for _, it := range o.Items {
+		n += it.Quantity
+	}
+	return n
 }
 
 // LastPayment is the newest attempt, if Payments were loaded newest first.
@@ -77,4 +88,9 @@ type OrderItem struct {
 	Quantity      int        `gorm:"not null"`
 
 	Clothes *Clothes `gorm:"foreignKey:ClothesID"` // only for the picture; may be nil
+}
+
+// LineTotal is price × quantity for one line of the order.
+func (it OrderItem) LineTotal() money.Tiyn {
+	return it.UnitPriceTiyn * money.Tiyn(it.Quantity)
 }

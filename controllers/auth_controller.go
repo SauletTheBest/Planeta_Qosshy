@@ -140,6 +140,11 @@ func Login(c *gin.Context) {
 		fail(http.StatusUnauthorized, "Неверный email или пароль.")
 		return
 	}
+	// Checked only AFTER the password: otherwise anyone could find out which emails are blocked.
+	if user.IsBlocked() {
+		fail(http.StatusForbidden, "Аккаунт заблокирован. Напишите нам: support@planetaqosshy.kz")
+		return
+	}
 
 	// Only the user ID goes into the cookie; the role is always re-read from the DB by AuthRequired.
 	session, _ := middleware.GetSession(c.Request)

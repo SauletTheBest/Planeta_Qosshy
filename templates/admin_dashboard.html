@@ -8,45 +8,90 @@
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/admin/">Админ</a>
-    <a href="/clothes">Сайт</a>
-  </nav>
-  <div class="header-actions">
-    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
-    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-  </div>
-</header>
+{{template "admin_header"}}
 <div class="page-content">
   <div class="admin-header">
     <h1>Панель управления</h1>
     <a href="/clothes" class="btn btn-outline">← На сайт</a>
   </div>
-  <nav class="admin-nav">
-    <a href="/admin/" class="active">Главная</a>
-    <a href="/admin/clothes">Товары</a>
-    <a href="/admin/clothes/new">Добавить товар</a>
-    <a href="/admin/chats">Чаты поддержки</a>
-  </nav>
+  {{template "admin_nav" "home"}}
+  {{template "flash" .}}
+
+  {{with .s}}
+  {{if .RefundsNeeded}}
+  <div class="alert alert-error" style="margin-bottom:20px;">
+    ⚠️ Нужно вернуть деньги по {{.RefundsNeeded}} платеж(ам).
+    <a href="/admin/orders?status=refund" style="font-weight:700;text-decoration:underline;">Открыть список</a>
+  </div>
+  {{end}}
+
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-number">🧥</div>
-      <div class="stat-label">Товары</div>
-      <div style="margin-top:12px;"><a href="/admin/clothes" class="btn btn-outline">Управление</a></div>
+      <div class="stat-number">{{.RevenueToday}} ₸</div>
+      <div class="stat-label">Выручка сегодня</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">💬</div>
-      <div class="stat-label">Чаты</div>
-      <div style="margin-top:12px;"><a href="/admin/chats" class="btn btn-outline">Смотреть</a></div>
+      <div class="stat-number">{{.RevenueMonth}} ₸</div>
+      <div class="stat-label">Выручка за месяц</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">➕</div>
-      <div class="stat-label">Добавить товар</div>
-      <div style="margin-top:12px;"><a href="/admin/clothes/new" class="btn btn-primary">Создать</a></div>
+      <div class="stat-number">{{.PaidToday}}</div>
+      <div class="stat-label">Оплачено заказов сегодня</div>
+    </div>
+    <a class="stat-card" href="/admin/orders?status=paid">
+      <div class="stat-number">{{.ToShip}}</div>
+      <div class="stat-label">Ждут отправки</div>
+    </a>
+    <a class="stat-card" href="/admin/orders?status=pending">
+      <div class="stat-number">{{.Pending}}</div>
+      <div class="stat-label">Ждут оплаты</div>
+    </a>
+    <a class="stat-card" href="/admin/users">
+      <div class="stat-number">{{.Users}}</div>
+      <div class="stat-label">Пользователей</div>
+    </a>
+  </div>
+
+  <div class="admin-columns">
+    <div class="panel">
+      <h3 style="margin-bottom:12px;">Последние заказы</h3>
+      <table class="data-table">
+        <thead><tr><th>№</th><th>Дата</th><th>Покупатель</th><th>Сумма</th><th>Статус</th></tr></thead>
+        <tbody>
+        {{range .Recent}}
+          <tr>
+            <td><a href="/admin/orders/{{.ID}}">{{.ID}}</a></td>
+            <td>{{datetime .CreatedAt}}</td>
+            <td>{{with .User}}{{.Username}}{{end}}</td>
+            <td>{{.TotalTiyn}} ₸</td>
+            <td><span class="badge badge-{{.Status}}">{{.Status.Label}}</span></td>
+          </tr>
+        {{else}}
+          <tr><td colspan="5" class="empty-row">Заказов пока нет</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-bottom:12px;">Заканчиваются (2 шт. и меньше)</h3>
+      <table class="data-table">
+        <thead><tr><th>Товар</th><th>Размер</th><th>Остаток</th></tr></thead>
+        <tbody>
+        {{range .LowStock}}
+          <tr>
+            <td><a href="/admin/clothes/{{.ClothesID}}/edit">{{.Title}}</a></td>
+            <td>{{.Size}}</td>
+            <td>{{if eq .Stock 0}}<span class="badge badge-refund">нет</span>{{else}}{{.Stock}}{{end}}</td>
+          </tr>
+        {{else}}
+          <tr><td colspan="3" class="empty-row">Всё в наличии</td></tr>
+        {{end}}
+        </tbody>
+      </table>
     </div>
   </div>
+  {{end}}
 </div>
 <footer class="footer">
   <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Панель администратора.</p></div>

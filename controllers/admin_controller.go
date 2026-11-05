@@ -13,10 +13,6 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func AdminDashboard(c *gin.Context) {
-	c.HTML(http.StatusOK, "admin_dashboard.html", nil)
-}
-
 // AdminListClothes lists all inventory items for admin
 func AdminListClothes(c *gin.Context) {
 	var items []models.Clothes

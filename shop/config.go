@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	_ "time/tzdata" // time zone data inside the binary: Windows and slim Docker images may lack it
 )
 
 var (
@@ -19,9 +20,22 @@ var (
 	ExpiryInterval = time.Minute
 	// PublicURL is how buyers' browsers reach the shop (the bank sends them back here).
 	PublicURL = "http://localhost:8080"
+	// Location decides where "today" starts in the admin statistics. The server (or Docker)
+	// usually runs in UTC, where a Kazakhstan day starts at 19:00 the evening before.
+	Location = time.UTC
 )
 
 func MustConfigure() {
+	tz := os.Getenv("SHOP_TIMEZONE")
+	if tz == "" {
+		tz = "Asia/Almaty"
+	}
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		log.Fatalf("SHOP_TIMEZONE %q: %v", tz, err)
+	}
+	Location = loc
+
 	ReservationTTL = durationEnv("ORDER_RESERVATION_TTL", ReservationTTL)
 	ExpiryGrace = durationEnv("ORDER_EXPIRY_GRACE", ExpiryGrace)
 	ExpiryInterval = durationEnv("ORDER_EXPIRY_INTERVAL", ExpiryInterval)

@@ -7,10 +7,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -58,14 +60,62 @@ type CreateResponse struct {
 // CreatePayment opens a payment session at the bank. idempotencyKey makes a retry of the
 // same call (after a timeout, say) return the same session instead of creating a second one.
 func CreatePayment(ctx context.Context, req CreateRequest, idempotencyKey string) (CreateResponse, error) {
-	body, err := json.Marshal(req)
+	status, body, err := post(ctx, "/api/v1/payments", req, idempotencyKey)
 	if err != nil {
 		return CreateResponse{}, err
 	}
+	if status != http.StatusCreated && status != http.StatusOK {
+		return CreateResponse{}, fmt.Errorf("payment provider: HTTP %d: %s", status, body)
+	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, apiURL+"/api/v1/payments", bytes.NewReader(body))
+	var out CreateResponse
+	if err := json.Unmarshal(body, &out); err != nil || out.PaymentID == "" || out.PaymentURL == "" {
+		return CreateResponse{}, fmt.Errorf("payment provider: unexpected response: %v", err)
+	}
+	return out, nil
+}
+
+// ErrNotRefundable: the bank says this payment can't be refunded (it never succeeded).
+var ErrNotRefundable = errors.New("payment provider: this payment can't be refunded")
+
+type RefundResponse struct {
+	PaymentID string `json:"payment_id"`
+	Status    string `json:"status"` // "refunded"
+}
+
+// Refund asks the bank to give the whole amount of a successful payment back.
+// Asking twice is harmless: for an already refunded payment the bank just answers
+// "refunded" again and doesn't send the money a second time.
+func Refund(ctx context.Context, providerPaymentID string) (RefundResponse, error) {
+	path := "/api/v1/payments/" + url.PathEscape(providerPaymentID) + "/refund"
+	status, body, err := post(ctx, path, struct{}{}, "refund-"+providerPaymentID)
 	if err != nil {
-		return CreateResponse{}, err
+		return RefundResponse{}, err
+	}
+	switch status {
+	case http.StatusOK:
+	case http.StatusConflict:
+		return RefundResponse{}, ErrNotRefundable
+	default:
+		return RefundResponse{}, fmt.Errorf("payment provider: HTTP %d: %s", status, body)
+	}
+
+	var out RefundResponse
+	if err := json.Unmarshal(body, &out); err != nil || out.Status != "refunded" {
+		return RefundResponse{}, fmt.Errorf("payment provider: unexpected refund response %q", body)
+	}
+	return out, nil
+}
+
+// post sends one JSON request to the bank and returns the HTTP status and (up to 64 KB of) the body.
+func post(ctx context.Context, path string, payload any, idempotencyKey string) (int, []byte, error) {
+	reqBody, err := json.Marshal(payload)
+	if err != nil {
+		return 0, nil, err
+	}
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, apiURL+path, bytes.NewReader(reqBody))
+	if err != nil {
+		return 0, nil, err
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Authorization", "Bearer "+apiKey)
@@ -73,18 +123,13 @@ func CreatePayment(ctx context.Context, req CreateRequest, idempotencyKey string
 
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {
-		return CreateResponse{}, fmt.Errorf("payment provider unreachable: %w", err)
+		return 0, nil, fmt.Errorf("payment provider unreachable: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
-		msg, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
-		return CreateResponse{}, fmt.Errorf("payment provider: HTTP %d: %s", resp.StatusCode, msg)
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 64<<10))
+	if err != nil {
+		return 0, nil, fmt.Errorf("payment provider: reading the answer: %w", err)
 	}
-
-	var out CreateResponse
-	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil || out.PaymentID == "" || out.PaymentURL == "" {
-		return CreateResponse{}, fmt.Errorf("payment provider: unexpected response: %v", err)
-	}
-	return out, nil
+	return resp.StatusCode, body, nil
 }

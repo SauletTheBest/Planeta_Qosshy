@@ -1,12 +1,12 @@
 package tests
 
 import (
-	"html/template"
-	"math"
 	"net/http"
 	"net/http/httptest"
-	"planeta_qosshy/controllers"
 	"testing"
+
+	"planeta_qosshy/controllers"
+	"planeta_qosshy/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -17,13 +17,7 @@ func TestAdminNewClothes(t *testing.T) {
 
 	router := gin.Default()
 
-	router.SetFuncMap(template.FuncMap{
-		"add":  func(a, b int) int { return a + b },
-		"sub":  func(a, b int) int { return a - b },
-		"mul":  func(a, b int) int { return a * b },
-		"div":  func(a, b int) float64 { return float64(a / b) },
-		"ceil": func(a float64) int { return int(math.Ceil(a)) },
-	})
+	router.SetFuncMap(routes.TemplateFuncs) // the same helpers as the real server
 
 	router.LoadHTMLGlob("../templates/*.html") // "*" also matched the static/ folder and panicked
 

@@ -10,29 +10,13 @@
 </head>
 
 <body>
-  <header class="header">
-    <a href="/" class="logo">PLANETA QOSSHY</a>
-    <nav class="nav">
-      <a href="/admin/">Админ</a>
-      <a href="/clothes">Сайт</a>
-    </nav>
-    <div class="header-actions">
-      <span
-        style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
-      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-    </div>
-  </header>
+{{template "admin_header"}}
   <div class="page-content">
     <div class="admin-header">
       <h1>{{if .clothes}}Редактировать товар{{else}}Добавить новый товар{{end}}</h1>
       <a href="/admin/clothes" class="btn btn-ghost">← К списку</a>
     </div>
-    <nav class="admin-nav">
-      <a href="/admin/">Главная</a>
-      <a href="/admin/clothes">Товары</a>
-      <a href="/admin/clothes/new" class="active">Добавить товар</a>
-      <a href="/admin/chats">Чаты поддержки</a>
-    </nav>
+  {{template "admin_nav" "clothes"}}
     <div style="max-width:640px;">
       <div class="auth-card" style="max-width:100%;">
         {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}

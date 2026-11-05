@@ -8,17 +8,7 @@
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/admin/">Админ</a>
-    <a href="/clothes">Сайт</a>
-  </nav>
-  <div class="header-actions">
-    <span style="font-size:.82rem;color:#888;background:#f0f0f0;padding:4px 10px;border-radius:20px;">Администратор</span>
-    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-  </div>
-</header>
+{{template "admin_header"}}
 <div class="page-content">
   <div class="admin-header">
     <h1>Чат с покупателем {{if .username}}{{.username}} <span style="font-size:0.9rem;color:#777;">({{.email}})</span>{{else}}#{{.chatID}}{{end}}</h1>

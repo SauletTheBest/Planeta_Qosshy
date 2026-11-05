@@ -24,6 +24,7 @@
     <a href="/" class="logo-center">PLANETA QOSSHY</a>
     <h2>Добро пожаловать</h2>
     {{if .verified}}<div class="alert alert-success">✅ Email подтверждён! Теперь вы можете войти.</div>{{end}}
+    {{if .blocked}}<div class="alert alert-error">Аккаунт заблокирован администратором.</div>{{end}}
     {{if .error}}<div class="alert alert-error">{{.error}}</div>{{end}}
     <form action="/auth/login" method="POST">
       <div class="form-group">
