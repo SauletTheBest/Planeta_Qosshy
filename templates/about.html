@@ -35,7 +35,7 @@
     <a href="/">Главная</a>
     <a href="/clothes">Каталог</a>
     <a href="/about" class="active">О нас</a>
-    {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+    {{if .isLoggedIn}}<a href="/cart">Корзина</a><a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
   </nav>
   <div class="header-actions">
     {{if .isLoggedIn}}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина — Planeta Qosshy</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/image/earth.png" type="image/png">
+</head>
+<body>
+<header class="header">
+  <a href="/" class="logo">PLANETA QOSSHY</a>
+  <nav class="nav">
+    <a href="/">Главная</a>
+    <a href="/clothes">Каталог</a>
+    <a href="/cart" class="active">Корзина</a>
+    <a href="/orders">Мои заказы</a>
+    <a href="/profile">Профиль</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
+  </div>
+</header>
+<div class="page-content" style="max-width:900px;margin:30px auto;">
+  <h1 class="page-title">Корзина</h1>
+  {{template "flash" .}}
+
+  {{if .lines}}
+  <table class="data-table">
+    <thead><tr><th>Товар</th><th>Размер</th><th>Цена</th><th>Количество</th><th>Сумма</th><th></th></tr></thead>
+    <tbody>
+    {{range .lines}}
+      <tr>
+        <td>
+          <a href="/clothes/{{.ClothesID}}">{{.Title}}</a>
+          {{if not .Enough}}
+            <br><small style="color:#c0392b;">{{if eq .Stock 0}}закончился{{else}}осталось только {{.Stock}} шт.{{end}}</small>
+          {{end}}
+        </td>
+        <td>{{.Size}}</td>
+        <td>{{.Price}} ₸</td>
+        <td>
+          <form action="/cart/update" method="POST" class="admin-action" style="margin:0;">
+            <input type="hidden" name="variant_id" value="{{.VariantID}}">
+            <input type="number" name="quantity" value="{{.Quantity}}" min="0" max="{{$.maxQty}}" style="width:70px;padding:6px;border:1px solid #ddd;border-radius:6px;">
+            <button type="submit" class="btn btn-ghost" style="padding:6px 10px;">OK</button>
+          </form>
+        </td>
+        <td>{{.LineTotal}} ₸</td>
+        <td>
+          <form action="/cart/update" method="POST" style="margin:0;">
+            <input type="hidden" name="variant_id" value="{{.VariantID}}">
+            <input type="hidden" name="quantity" value="0">
+            <button type="submit" class="btn btn-ghost" title="Убрать">✕</button>
+          </form>
+        </td>
+      </tr>
+    {{end}}
+      <tr><td colspan="4" style="text-align:right;font-weight:700;">Итого</td><td colspan="2" style="font-weight:700;">{{.total}} ₸</td></tr>
+    </tbody>
+  </table>
+
+  <form action="/cart/checkout" method="POST" style="margin-top:20px;">
+    <button type="submit" class="btn btn-primary btn-block">Оформить заказ на {{.total}} ₸</button>
+  </form>
+  <p style="color:#777;font-size:.85rem;margin-top:10px;text-align:center;">
+    Товары будут зарезервированы на {{.reserveMins}} мин., пока вы оплачиваете заказ на странице банка.
+  </p>
+  {{else}}
+    <div class="panel" style="text-align:center;padding:40px;">
+      <p style="margin-bottom:16px;">В корзине пока ничего нет.</p>
+      <a href="/clothes" class="btn btn-primary">Перейти в каталог</a>
+    </div>
+  {{end}}
+</div>
+<footer class="footer">
+  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
+</footer>
+</body>
+</html>

@@ -37,13 +37,17 @@ func AuthRequired(c *gin.Context) {
 		return
 	}
 
-	// The user is read from the DB on every request, so a block works at once:
-	// the very next click after the admin pressed "block" ends up here.
-	if user.IsBlocked() {
+	// The user is read from the DB on every request, so a block (or a password change)
+	// works at once: the very next click of that session ends up here.
+	if user.IsBlocked() || !sessionStillValid(session, user) {
 		session.Values = map[interface{}]interface{}{}
 		session.Options.MaxAge = -1
 		_ = session.Save(c.Request, c.Writer)
-		c.Redirect(http.StatusFound, "/auth/login?blocked=1")
+		target := "/auth/login"
+		if user.IsBlocked() {
+			target += "?blocked=1"
+		}
+		c.Redirect(http.StatusFound, target)
 		c.Abort()
 		return
 	}
@@ -74,7 +78,7 @@ func OptionalAuth(c *gin.Context) {
 
 	var user models.User
 	database.DB.First(&user, userID)
-	if user.ID == 0 || user.IsBlocked() {
+	if user.ID == 0 || user.IsBlocked() || !sessionStillValid(session, user) {
 		c.Set("isLoggedIn", false)
 		c.Next()
 		return

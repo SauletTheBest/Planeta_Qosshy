@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"fmt"
+	"html"
 	"io"
 	"log"
 	"os"
@@ -102,4 +103,30 @@ func SendVerificationEmail(email, token string) error {
 
 	dialer := gomail.NewDialer(host, port, user, pass)
 	return dialer.DialAndSend(mail)
+}
+
+// SendPasswordResetEmail sends the "forgot password" link.
+func SendPasswordResetEmail(to, link string) error {
+	host, port, user, pass := smtpConfig()
+	if host == "" || user == "" {
+		return ErrSMTPNotConfigured
+	}
+	m := gomail.NewMessage()
+	m.SetHeader("From", user)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", "Смена пароля — Planeta Qosshy")
+	// html.EscapeString: the link goes into HTML, so it is escaped like any other data.
+	safe := html.EscapeString(link)
+	m.SetBody("text/html", fmt.Sprintf(`
+<html>
+<body style="font-family:sans-serif;padding:32px;color:#111;">
+  <h2>Смена пароля</h2>
+  <p>Кто-то (надеемся, вы) попросил сменить пароль на сайте <strong>Planeta Qosshy</strong>.</p>
+  <p><a href="%s" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">Задать новый пароль</a></p>
+  <p style="color:#777;font-size:13px;">Ссылка действует 1 час и только один раз.<br>
+  Если вы ничего не просили, просто удалите это письмо: пароль останется прежним.</p>
+  <p style="color:#999;font-size:12px;">%s</p>
+</body>
+</html>`, safe, safe))
+	return gomail.NewDialer(host, port, user, pass).DialAndSend(m)
 }

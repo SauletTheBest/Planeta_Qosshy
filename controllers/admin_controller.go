@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -51,6 +52,30 @@ const (
 	badSizesMsg = "Размеры указаны неверно: ожидается список вида «S:2, M:1»"
 )
 
+// readImage stores an uploaded photo, if the form has one, and puts its URL into the item.
+// Without a file the "image_url" text field is used as before.
+func readImage(c *gin.Context, item *models.Clothes) string {
+	fh, err := c.FormFile("image")
+	// No file field, or not a multipart form at all (a plain urlencoded POST): no photo.
+	if errors.Is(err, http.ErrMissingFile) || errors.Is(err, http.ErrNotMultipart) {
+		return ""
+	}
+	if err != nil {
+		return "Не удалось прочитать файл: " + err.Error()
+	}
+	url, err := saveProductImage(fh)
+	if err != nil {
+		return "Фото: " + err.Error()
+	}
+	item.ImageURL = url
+	return ""
+}
+
+// limitForm: a product form with one photo is at most a few MB; stop reading after 6.
+func limitForm(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 6<<20)
+}
+
 // readPriceAndSizes reads the two fields that need conversion: price in tenge → tiyn,
 // and the "S:2, M:1" summary → variants. Sizes go first, so on a price error the form
 // is shown again with the sizes the admin entered.
@@ -73,6 +98,7 @@ func readPriceAndSizes(c *gin.Context, item *models.Clothes) string {
 func AdminCreateClothes(c *gin.Context) {
 	const action = "/admin/clothes"
 	var input models.Clothes
+	limitForm(c)
 
 	if err := c.ShouldBind(&input); err != nil {
 		clothesFormError(c, http.StatusBadRequest, action, input, "Ошибка заполнения формы: "+err.Error())
@@ -82,10 +108,16 @@ func AdminCreateClothes(c *gin.Context) {
 		clothesFormError(c, http.StatusBadRequest, action, input, msg)
 		return
 	}
+	// The photo last: it is saved to disk, so only when everything else is valid.
+	if msg := readImage(c, &input); msg != "" {
+		clothesFormError(c, http.StatusBadRequest, action, input, msg)
+		return
+	}
 
 	// GORM inserts the product and then its Variants in one transaction.
 	// For every inserted variant the DB trigger adds its stock to clothes.stock.
 	if err := database.DB.Create(&input).Error; err != nil {
+		removeProductImage(input.ImageURL) // don't leave an orphan file behind
 		clothesFormError(c, http.StatusInternalServerError, action, input, "Не удалось создать товар в базе данных")
 		return
 	}
@@ -125,12 +157,18 @@ func AdminUpdateClothes(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
 		return
 	}
+	oldImage := item.ImageURL
+	limitForm(c)
 
 	if err := c.ShouldBind(&item); err != nil {
 		clothesFormError(c, http.StatusBadRequest, action, item, "Ошибка заполнения: "+err.Error())
 		return
 	}
 	if msg := readPriceAndSizes(c, &item); msg != "" {
+		clothesFormError(c, http.StatusBadRequest, action, item, msg)
+		return
+	}
+	if msg := readImage(c, &item); msg != "" {
 		clothesFormError(c, http.StatusBadRequest, action, item, msg)
 		return
 	}
@@ -144,8 +182,14 @@ func AdminUpdateClothes(c *gin.Context) {
 		return replaceVariants(tx, item.ID, item.Variants)
 	})
 	if err != nil {
+		if item.ImageURL != oldImage {
+			removeProductImage(item.ImageURL) // the new photo was not used after all
+		}
 		clothesFormError(c, http.StatusInternalServerError, action, item, "Не удалось сохранить изменения")
 		return
+	}
+	if item.ImageURL != oldImage {
+		removeProductImage(oldImage) // replaced: the old file is no longer referenced
 	}
 
 	c.Redirect(http.StatusFound, "/admin/clothes")
@@ -187,12 +231,16 @@ func AdminDeleteClothes(c *gin.Context) {
 		return
 	}
 
+	var item models.Clothes
+	database.DB.First(&item, itemID) // only to know its photo; a missing product is fine
+
 	// Orders are no longer deleted together with the product: order_items keep a copy of
 	// the title and price, and the DB sets their clothes_id to NULL (ON DELETE SET NULL).
 	if err := database.DB.Delete(&models.Clothes{}, itemID).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete clothing item"})
 		return
 	}
+	removeProductImage(item.ImageURL)
 
 	c.Redirect(http.StatusFound, "/admin/clothes")
 }

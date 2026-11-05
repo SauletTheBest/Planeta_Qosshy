@@ -48,6 +48,11 @@ services:
       - PAYMENT_API_KEY=${PAYMENT_API_KEY:?set PAYMENT_API_KEY in .env}
       - PAYMENT_WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
       - ORDER_RESERVATION_TTL=${ORDER_RESERVATION_TTL:-15m}
+      - UPLOAD_DIR=/app/uploads
+    volumes:
+      # Product photos from the admin panel live outside the container,
+      # so rebuilding the image doesn't delete them.
+      - uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -108,4 +113,5 @@ services:
 
 volumes:
   postgres_data:
-  kafka_data: 
+  kafka_data:
+  uploads:

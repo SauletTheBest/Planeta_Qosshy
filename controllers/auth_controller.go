@@ -1,11 +1,10 @@
 package controllers
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/middleware"
@@ -16,14 +15,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func generateToken() (string, error) {
-	bytes := make([]byte, 32)
-	_, err := rand.Read(bytes)
-	if err != nil {
-		return "", err
-	}
-	return base64.URLEncoding.EncodeToString(bytes), nil
-}
+// verificationTTL: how long an email confirmation link works.
+const verificationTTL = 24 * time.Hour
 
 // duplicateUserMessage turns a UNIQUE-index error on users into words for the form.
 // Constraint names differ between a fresh DB (users_email_key) and one first created
@@ -75,18 +68,21 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	token, err := generateToken()
+	// The raw token goes into the email, only its hash into the DB.
+	token, tokenHash, err := util.NewToken()
 	if err != nil {
 		fail(http.StatusInternalServerError, "Не удалось зарегистрироваться, попробуйте позже.")
 		return
 	}
+	now := time.Now()
 
 	user := models.User{
-		Username:          username,
-		Email:             email,
-		Password:          string(hashedPassword),
-		VerificationToken: token,
-		Verified:          false,
+		Username:           username,
+		Email:              email,
+		Password:           string(hashedPassword),
+		VerificationToken:  tokenHash,
+		VerificationSentAt: &now,
+		Verified:           false,
 	}
 
 	// No "SELECT first, then INSERT" any more: two sign-ups with the same email at the
@@ -146,11 +142,9 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Only the user ID goes into the cookie; the role is always re-read from the DB by AuthRequired.
-	session, _ := middleware.GetSession(c.Request)
-	session.Values["userID"] = user.ID
-
-	if err := session.Save(c.Request, c.Writer); err != nil {
+	// Only the user ID (and the login time) go into the cookie; the role is always
+	// re-read from the DB by AuthRequired.
+	if err := middleware.StartSession(c, user.ID, time.Now()); err != nil {
 		log.Println("session save error:", err)
 		fail(http.StatusInternalServerError, "Не удалось войти, попробуйте ещё раз.")
 		return

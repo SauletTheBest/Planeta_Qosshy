@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
+	"planeta_qosshy/shop"
 	"planeta_qosshy/util"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +28,11 @@ func Profile(c *gin.Context) {
 
 	// Every item the user has bought, newest first. The JOIN is needed because
 	// order_items has no user_id: ownership is known only through orders.
+	// Only paid orders count: an unpaid or cancelled one is not a purchase.
 	var purchases []models.OrderItem
 	if err := database.DB.Preload("Clothes").
 		Joins("JOIN orders ON orders.id = order_items.order_id").
-		Where("orders.user_id = ?", sessionUserID).
+		Where("orders.user_id = ? AND orders.status IN ?", sessionUserID, shop.EarnedStatuses).
 		Order("orders.created_at DESC").
 		Find(&purchases).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch purchase history"})
@@ -38,6 +42,7 @@ func Profile(c *gin.Context) {
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
+		"flash":         middleware.PopFlash(c),
 		"user":          user,
 		"purchases":     purchases,
 		"sessionUserID": sessionUserID,
@@ -119,24 +124,31 @@ func UpdateProfile(c *gin.Context) {
 		"email":    email,
 	}
 
+	// Whole seconds: the session cookie stores its start time in seconds too.
+	now := time.Now().Truncate(time.Second)
+
 	if newPassword != "" {
 		if msg := util.ValidatePassword(newPassword); msg != "" {
 			fail(http.StatusBadRequest, msg)
 			return
 		}
 		updates["password"] = util.HashPassword(newPassword)
+		// Log out every other device: if someone knew the old password, they are out now.
+		updates["sessions_valid_after"] = now
 	}
 
 	// The new address has not been proven to belong to this person yet.
 	var token string
 	if emailChanged {
+		var tokenHash string
 		var err error
-		if token, err = generateToken(); err != nil {
+		if token, tokenHash, err = util.NewToken(); err != nil {
 			fail(http.StatusInternalServerError, "Не удалось обновить профиль.")
 			return
 		}
 		updates["verified"] = false
-		updates["verification_token"] = token
+		updates["verification_token"] = tokenHash
+		updates["verification_sent_at"] = now
 	}
 
 	if err := database.DB.Model(&models.User{}).Where("id = ?", user.ID).Updates(updates).Error; err != nil {
@@ -148,6 +160,12 @@ func UpdateProfile(c *gin.Context) {
 		return
 	}
 
+	if newPassword != "" {
+		// ...but keep THIS browser logged in: a fresh session issued "now".
+		if err := middleware.StartSession(c, user.ID, now); err != nil {
+			log.Println("profile: session:", err)
+		}
+	}
 	if emailChanged {
 		if err := util.SendVerificationEmail(email, token); err != nil {
 			log.Println("profile: could not send verification email:", err)
@@ -156,4 +174,36 @@ func UpdateProfile(c *gin.Context) {
 
 	// 303 See Other: after a POST the browser must load /profile with GET.
 	c.Redirect(http.StatusSeeOther, "/profile")
+}
+
+// ResendVerification: POST /profile/verify — a new confirmation letter (the old link dies).
+func ResendVerification(c *gin.Context) {
+	var user models.User
+	if err := database.DB.First(&user, c.GetUint("userID")).Error; err != nil {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
+		return
+	}
+	back := func(kind, text string) {
+		middleware.SetFlash(c, kind, text)
+		c.Redirect(http.StatusSeeOther, "/profile")
+	}
+	if user.Verified {
+		back("info", "Email уже подтверждён.")
+		return
+	}
+
+	token, tokenHash, err := util.NewToken()
+	if err == nil {
+		err = database.DB.Model(&user).Updates(map[string]any{
+			"verification_token": tokenHash, "verification_sent_at": time.Now()}).Error
+	}
+	if err == nil {
+		err = util.SendVerificationEmail(user.Email, token)
+	}
+	if err != nil {
+		log.Println("resend verification:", err)
+		back("error", "Не удалось отправить письмо, попробуйте позже.")
+		return
+	}
+	back("success", "Письмо отправлено на "+user.Email+". Ссылка действует 24 часа.")
 }

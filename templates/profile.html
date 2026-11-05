@@ -13,7 +13,7 @@
   <nav class="nav">
     <a href="/">Главная</a>
     <a href="/clothes">Каталог</a>
-    <a href="/orders">Мои заказы</a>
+    <a href="/cart">Корзина</a><a href="/orders">Мои заказы</a>
     <a href="/profile" class="active">Профиль</a>
   </nav>
   <div class="header-actions">
@@ -24,6 +24,7 @@
   <h1 class="page-title">Мой профиль</h1>
 
   <div class="profile-card">
+    {{template "flash" .}}
     <h2>Данные аккаунта</h2>
     <div class="profile-row"><span class="key">Имя пользователя</span><span>{{.user.Username}}</span></div>
     <div class="profile-row"><span class="key">Email</span><span>{{.user.Email}}</span></div>
@@ -41,7 +42,13 @@
     </div>
     <div class="profile-row">
       <span class="key">Email подтверждён</span>
-      <span>{{if .user.Verified}}✅ Да{{else}}❌ Нет{{end}}</span>
+      <span>
+        {{if .user.Verified}}✅ Да{{else}}❌ Нет
+          <form action="/profile/verify" method="POST" style="display:inline;margin-left:8px;">
+            <button type="submit" class="btn btn-ghost" style="padding:4px 10px;font-size:.82rem;">Отправить письмо ещё раз</button>
+          </form>
+        {{end}}
+      </span>
     </div>
     <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/profile/edit" class="btn btn-outline">Редактировать профиль</a>

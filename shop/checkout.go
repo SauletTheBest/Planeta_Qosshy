@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"planeta_qosshy/models"
+	"planeta_qosshy/money"
 	"planeta_qosshy/payments"
 
 	"gorm.io/gorm"
@@ -20,35 +21,67 @@ var (
 	ErrPaymentStarting = errors.New("a payment for this order is being started right now")
 )
 
+// OutOfStockError says WHICH item ran out and how many are left, so the cart page can
+// say "Худи (M): осталось 1" instead of a vague "something is out of stock".
+// errors.Is(err, ErrOutOfStock) still works thanks to the Is method.
+type OutOfStockError struct {
+	Title string
+	Size  string
+	Left  int
+}
+
+func (e *OutOfStockError) Error() string {
+	return fmt.Sprintf("out of stock: %s (%s), %d left", e.Title, e.Size, e.Left)
+}
+func (e *OutOfStockError) Is(target error) bool { return target == ErrOutOfStock }
+
 // startingTimeout: a pending attempt without a bank page younger than this is assumed to be
 // another request still talking to the bank; an older one is treated as abandoned.
 const startingTimeout = 30 * time.Second
 
 // PlaceOrder reserves one unit of the chosen size and creates a pending order that holds it
-// until ExpiresAt. Nothing is paid yet: that happens at the bank (StartPayment).
+// until ExpiresAt ("buy now" on the product page). Nothing is paid yet: that happens at the
+// bank (StartPayment).
 func PlaceOrder(db *gorm.DB, userID uint, item models.Clothes, size string, now time.Time) (models.Order, error) {
+	items := []models.OrderItem{{
+		ClothesID:     &item.ID,
+		Title:         item.Title,
+		Size:          size,
+		UnitPriceTiyn: item.PriceTiyn,
+		Quantity:      1,
+	}}
+	var order models.Order
+	err := db.Transaction(func(tx *gorm.DB) error {
+		var err error
+		order, err = placeOrder(tx, userID, items, now)
+		return err
+	})
+	return order, err
+}
+
+// placeOrder reserves every line and creates the pending order, inside the caller's
+// transaction. If one line is out of stock the caller's transaction rolls back, so the
+// lines reserved before it are released too: all or nothing.
+func placeOrder(tx *gorm.DB, userID uint, items []models.OrderItem, now time.Time) (models.Order, error) {
+	var total money.Tiyn
+	for _, it := range items {
+		total += it.LineTotal()
+	}
 	expires := now.Add(ReservationTTL)
 	order := models.Order{
 		UserID:    userID,
 		Status:    models.OrderPending,
-		TotalTiyn: item.PriceTiyn,
+		TotalTiyn: total,
 		ExpiresAt: &expires,
-		Items: []models.OrderItem{{
-			ClothesID:     &item.ID,
-			Title:         item.Title,
-			Size:          size,
-			UnitPriceTiyn: item.PriceTiyn,
-			Quantity:      1,
-		}},
+		Items:     items,
 	}
-
-	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := reserveItems(tx, order.Items); err != nil {
-			return err
-		}
-		return tx.Create(&order).Error // the order, then its items
-	})
-	return order, err
+	if err := reserveItems(tx, order.Items); err != nil {
+		return models.Order{}, err
+	}
+	if err := tx.Create(&order).Error; err != nil { // the order, then its items
+		return models.Order{}, err
+	}
+	return order, nil
 }
 
 // StartPayment returns the bank page where the buyer pays the order. An attempt that is
@@ -141,7 +174,15 @@ func reserveItems(tx *gorm.DB, items []models.OrderItem) error {
 			return res.Error
 		}
 		if res.RowsAffected == 0 {
-			return ErrOutOfStock
+			// Read what is left, so the message can be precise (0 if the size is gone).
+			var left []int
+			tx.Model(&models.ClothesVariant{}).
+				Where("clothes_id = ? AND size = ?", *it.ClothesID, it.Size).Pluck("stock", &left)
+			e := &OutOfStockError{Title: it.Title, Size: it.Size}
+			if len(left) > 0 {
+				e.Left = left[0]
+			}
+			return e
 		}
 	}
 	return nil

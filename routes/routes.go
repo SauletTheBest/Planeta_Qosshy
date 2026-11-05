@@ -19,6 +19,8 @@ var (
 	loginLimit    = middleware.NewIPLimiter(12*time.Second, 5) // ~5 attempts per minute
 	registerLimit = middleware.NewIPLimiter(time.Minute, 3)
 	helpdeskLimit = middleware.NewIPLimiter(5*time.Minute, 3) // every message is an email to support
+	// Each request sends an email; also stops anyone from flooding a stranger's inbox.
+	emailLinkLimit = middleware.NewIPLimiter(5*time.Minute, 3)
 )
 
 // TemplateFuncs are the helper functions templates may call. Exported so tests load
@@ -48,6 +50,12 @@ func SetupRouter() *gin.Engine {
 
 	r.Static("/static", "./templates/static")
 	r.Static("/image", "./templates/image")
+	// Product photos uploaded in the admin panel. nosniff: the browser must trust the
+	// Content-Type (image/png) and never "guess" that a file is HTML or a script.
+	r.Group("/uploads", func(c *gin.Context) {
+		c.Header("X-Content-Type-Options", "nosniff")
+		c.Next()
+	}).Static("/", controllers.UploadDir())
 
 	r.SetFuncMap(TemplateFuncs)
 
@@ -83,8 +91,23 @@ func SetupRouter() *gin.Engine {
 			c.HTML(http.StatusOK, "login.html", gin.H{
 				"verified": c.Query("verified") == "1",
 				"blocked":  c.Query("blocked") == "1",
+				"reset":    c.Query("reset") == "1",
 			})
 		})
+		auth.GET("/forgot", controllers.ForgotPasswordPage)
+		auth.POST("/forgot", emailLinkLimit.Middleware(), controllers.ForgotPassword)
+		auth.GET("/reset", controllers.ResetPasswordPage)
+		auth.POST("/reset", loginLimit.Middleware(), controllers.ResetPassword)
+	}
+
+	// Shopping cart (logged-in users; the stock is taken only at checkout)
+	cart := r.Group("/cart")
+	cart.Use(middleware.AuthRequired)
+	{
+		cart.GET("/", controllers.CartPage)
+		cart.POST("/add", controllers.CartAdd)
+		cart.POST("/update", controllers.CartUpdate)
+		cart.POST("/checkout", controllers.CartCheckout)
 	}
 
 	// Public Clothes catalog routes (browsable without login)
@@ -163,6 +186,7 @@ func SetupRouter() *gin.Engine {
 		profile.GET("/edit", controllers.UpdateProfilePage)
 		// No :id in the URL: you can only ever edit yourself, the ID comes from the session.
 		profile.POST("/edit", controllers.UpdateProfile)
+		profile.POST("/verify", emailLinkLimit.Middleware(), controllers.ResendVerification)
 	}
 
 	return r

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"planeta_qosshy/database"
@@ -158,27 +159,24 @@ func readUpload(fh *multipart.FileHeader) ([]byte, error) {
 func VerifyEmail(c *gin.Context) {
 	token := c.Query("token")
 	if token == "" {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Verification token is missing"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "В ссылке нет кода подтверждения"})
 		return
 	}
 
+	// The DB keeps only the hash, so we hash what came in the link and look for that.
 	var user models.User
-	database.DB.Where("verification_token = ?", token).First(&user)
+	database.DB.Where("verification_token = ?", util.HashToken(token)).First(&user)
 	if user.ID == 0 {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid or expired verification link"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка недействительна. Отправьте новое письмо из профиля."})
+		return
+	}
+	if user.VerificationSentAt == nil || time.Since(*user.VerificationSentAt) > verificationTTL {
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка устарела (действует 24 часа). Отправьте новое письмо из профиля."})
 		return
 	}
 
-	if user.Verified {
-		// Already verified — just redirect to login
-		c.Redirect(http.StatusFound, "/auth/login")
-		return
-	}
+	// Only the two columns: Save(&user) would write back every field of the row.
+	database.DB.Model(&user).Updates(map[string]any{"verified": true, "verification_token": ""})
 
-	user.Verified = true
-	user.VerificationToken = "" // Clear token after use
-	database.DB.Save(&user)
-
-	// Redirect to login with a success message
 	c.Redirect(http.StatusFound, "/auth/login?verified=1")
 }

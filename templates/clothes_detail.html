@@ -13,7 +13,7 @@
   <nav class="nav">
     <a href="/">Главная</a>
     <a href="/clothes">Каталог</a>
-    {{if .isLoggedIn}}<a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
+    {{if .isLoggedIn}}<a href="/cart">Корзина</a><a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
   </nav>
   <div class="header-actions">
     {{if .isLoggedIn}}
@@ -99,8 +99,9 @@
 
           container.innerHTML = chipsHtml;
 
-          if (selectedSizeInput && firstAvailableSize) {
-            selectedSizeInput.value = firstAvailableSize;
+          // Both forms ("Купить" and "В корзину") send the chosen size.
+          if (firstAvailableSize) {
+            document.querySelectorAll('.size-input').forEach(i => i.value = firstAvailableSize);
           }
         })();
 
@@ -117,8 +118,7 @@
           btn.style.borderColor = '#111';
           btn.classList.add('active');
 
-          const input = document.getElementById('selected_size');
-          if (input) input.value = sizeName;
+          document.querySelectorAll('.size-input').forEach(i => i.value = sizeName);
         }
       </script>
       {{if .item.Description}}
@@ -127,8 +127,15 @@
       {{if gt .item.Stock 0}}
         {{if .isLoggedIn}}
           <form action="/payment/{{.item.ID}}" method="GET" style="margin:0;">
-            <input type="hidden" id="selected_size" name="size" value="">
+            <input type="hidden" id="selected_size" class="size-input" name="size" value="">
             <button type="submit" class="btn btn-primary btn-block">Купить — {{.item.PriceTiyn}} ₸</button>
+          </form>
+          <form action="/cart/add" method="POST" style="margin:10px 0 0;display:flex;gap:8px;">
+            <input type="hidden" name="clothes_id" value="{{.item.ID}}">
+            <input type="hidden" class="size-input" name="size" value="">
+            <input type="number" name="quantity" value="1" min="1" max="10" aria-label="Количество"
+                   style="width:72px;padding:10px;border:1px solid #ddd;border-radius:8px;">
+            <button type="submit" class="btn btn-outline" style="flex:1;">В корзину</button>
           </form>
         {{else}}
           <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>
