@@ -10,10 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// expiryRunTimeout: one pass of the job may take at most this long. Without a limit a
+// database that hangs (paused, overloaded, network gone) would hang the job forever.
+const expiryRunTimeout = 30 * time.Second
+
 // CancelExpiredOrders cancels pending orders whose reservation ended (plus ExpiryGrace)
 // and puts their items back on sale. Safe to run from several app instances at once:
 // each order is cancelled by whichever conditional UPDATE comes first, the rest do nothing.
-func CancelExpiredOrders(db *gorm.DB, now time.Time) (int, error) {
+//
+// Every query runs with ctx: when ctx is cancelled (shutdown, timeout) the query in
+// progress is aborted by the driver instead of waiting for the database to answer.
+func CancelExpiredOrders(ctx context.Context, db *gorm.DB, now time.Time) (int, error) {
+	db = db.WithContext(ctx)
 	var ids []uint
 	if err := db.Model(&models.Order{}).
 		Where("status = ? AND expires_at < ?", models.OrderPending, now.Add(-ExpiryGrace)).
@@ -69,7 +77,12 @@ func RunExpiryLoop(ctx context.Context, db *gorm.DB) {
 		case <-ctx.Done():
 			return
 		case now := <-ticker.C:
-			n, err := CancelExpiredOrders(db, now)
+			runCtx, cancel := context.WithTimeout(ctx, expiryRunTimeout)
+			n, err := CancelExpiredOrders(runCtx, db, now)
+			cancel()
+			if ctx.Err() != nil {
+				return // shutting down: the aborted query is expected, not an error to report
+			}
 			if err != nil {
 				log.Println("order expiry:", err)
 			} else if n > 0 {

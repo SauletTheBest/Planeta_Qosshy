@@ -11,6 +11,7 @@
 package shop
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -214,11 +215,11 @@ func TestExpiredOrderReturnsStock(t *testing.T) {
 	}
 
 	later := start.Add(ReservationTTL + ExpiryGrace + time.Second)
-	n, err := CancelExpiredOrders(db, later)
+	n, err := CancelExpiredOrders(context.Background(), db, later)
 	if err != nil || n != 1 {
 		t.Fatalf("cancelled %d (%v), want 1", n, err)
 	}
-	if n, _ := CancelExpiredOrders(db, later); n != 0 {
+	if n, _ := CancelExpiredOrders(context.Background(), db, later); n != 0 {
 		t.Fatalf("a second run cancelled %d more", n)
 	}
 	if s := stockOf(t, db, item.ID, "One size"); s != 1 {

@@ -70,14 +70,29 @@ func main() {
 	// Graceful shutdown: stop accepting new connections, let requests in progress finish
 	// (a buyer in the middle of checkout gets an answer, not a broken connection),
 	// stop the background job, close the DB pool.
-	log.Info("shutting down: finishing requests in progress (at most 15 s)")
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Warnf("shutdown: %v", err)
+	//
+	// Everything must fit into the time Docker gives (stop_grace_period, 10 s by default).
+	// Before, the budget was 15 s and the expiry job could wait for a hung database
+	// forever: Docker killed the process (exit code 137) and nobody knew why.
+	log.Info("shutting down: finishing requests in progress")
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			log.Warnf("shutdown: %v", err)
+		}
+		stop()      // in case the server stopped by itself: end the expiry loop too
+		jobs.Wait() // returns quickly: its queries are cancelled through ctx
+		database.Close()
+	}()
+	select {
+	case <-done:
+		log.Info("stopped")
+	case <-time.After(9 * time.Second):
+		// Leave a clear line in the log instead of being killed silently a second later.
+		log.Error("shutdown took longer than 9 s, exiting anyway")
+		os.Exit(1)
 	}
-	stop() // in case the server stopped by itself: end the expiry loop too
-	jobs.Wait()
-	database.Close()
-	log.Info("stopped")
 }

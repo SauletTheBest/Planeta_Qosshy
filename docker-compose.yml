@@ -10,8 +10,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: planeta_qosshy
     ports:
-      # 127.0.0.1 = reachable only from this computer, not from the whole network
-      - "127.0.0.1:5432:5432"
+      # 127.0.0.1 = reachable only from this computer, not from the whole network.
+      # POSTGRES_HOST_PORT: change it if 5432 is taken (e.g. by a PostgreSQL installed in
+      # Windows). The shop itself doesn't use this port: it reaches "postgres" inside Docker.
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -26,13 +28,17 @@ services:
       dockerfile: Dockerfile
     container_name: planeta_qosshy_api
     restart: always
+    # Docker waits this long after SIGTERM before killing; the app needs at most 9 s.
+    stop_grace_period: 15s
     ports:
-      - "8080:8080"
+      # SHOP_PORT: change it if 8080 is taken by another project on this computer
+      # (then also set PUBLIC_URL=http://localhost:<that port> in .env).
+      - "${SHOP_PORT:-8080}:8080"
     environment:
       - DATABASE_URL=host=postgres port=5432 user=postgres password=${POSTGRES_PASSWORD} dbname=planeta_qosshy sslmode=disable
       - COOKIE_SECRET=${COOKIE_SECRET:?set COOKIE_SECRET in .env}
       - COOKIE_SECURE=${COOKIE_SECURE:-false}
-      - VERIFICATION_ADDRESS=${VERIFICATION_ADDRESS:-http://localhost:8080}
+      - VERIFICATION_ADDRESS=${VERIFICATION_ADDRESS:-http://localhost:${SHOP_PORT:-8080}}
       - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
       - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER:-}
@@ -42,7 +48,7 @@ services:
       - TRUSTED_ORIGINS=${TRUSTED_ORIGINS:-}
       - SHOP_TIMEZONE=${SHOP_TIMEZONE:-Asia/Almaty}
       # Containers reach each other by service name ("payments"), browsers use localhost.
-      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:8080}
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:${SHOP_PORT:-8080}}
       - PAYMENT_API_URL=http://payments:8081
       - PAYMENT_API_KEY=${PAYMENT_API_KEY:?set PAYMENT_API_KEY in .env}
       - PAYMENT_WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
@@ -65,14 +71,15 @@ services:
       context: ../planeta_qosshy_microservice
     container_name: planeta_qosshy_payments
     restart: always
+    stop_grace_period: 15s
     ports:
-      - "127.0.0.1:8081:8081"   # the buyer's browser opens the payment page here
+      - "127.0.0.1:${BANK_PORT:-8081}:8081"   # the buyer's browser opens the payment page here
     environment:
-      - PUBLIC_URL=http://localhost:8081
+      - PUBLIC_URL=http://localhost:${BANK_PORT:-8081}
       - API_KEY=${PAYMENT_API_KEY:?set PAYMENT_API_KEY in .env}
       - WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
       - MERCHANT_WEBHOOK_URL=http://api:8080/payments/webhook
-      - MERCHANT_SITE_URL=${PUBLIC_URL:-http://localhost:8080}
+      - MERCHANT_SITE_URL=${PUBLIC_URL:-http://localhost:${SHOP_PORT:-8080}}
       - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
       - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER:-}
@@ -81,6 +88,16 @@ services:
       # Payments and PDF receipts survive a restart of the bank container.
       - bank_data:/app/data
       - receipts:/app/receipts
+
+  # Mail trap for development: every letter (confirmation, password reset, receipts,
+  # helpdesk) shows up at http://localhost:8025 and nothing is really sent.
+  # Starts only on request:  docker compose --profile dev up   (and SMTP_HOST=mailpit in .env)
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    container_name: planeta_qosshy_mailpit
+    profiles: ["dev"]
+    ports:
+      - "127.0.0.1:8025:8025"   # web UI; SMTP (1025) is reachable only inside Docker
 
   kafka:
     image: apache/kafka:latest
