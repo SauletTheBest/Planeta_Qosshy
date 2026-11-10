@@ -121,6 +121,10 @@ func GetClothesByID(c *gin.Context) {
 		"isLoggedIn": isLoggedIn,
 		"username":   username,
 		"isAdmin":    isAdmin,
+		// The size that is selected when the page opens. The server writes it into the
+		// forms itself: before, a script tried to, but it ran before the forms existed,
+		// so the page SHOWED a size while the forms sent none.
+		"defaultSize": sizeToShow(item, ""),
 	})
 }
 

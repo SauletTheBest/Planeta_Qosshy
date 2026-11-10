@@ -57,14 +57,15 @@
       <script>
         (function() {
           const rawSize = "{{.item.SizeSummary}}";
+          // Chosen by the SERVER and already written into the forms below.
+          // The script only highlights it; it can't fill the forms: they come after it.
+          const defaultSize = "{{.defaultSize}}";
           const container = document.getElementById('detailSizeChips');
-          const selectedSizeInput = document.getElementById('selected_size');
 
           if (!rawSize || !container) return;
 
           const parts = rawSize.split(',').map(s => s.trim()).filter(Boolean);
           let chipsHtml = '';
-          let firstAvailableSize = '';
 
           parts.forEach(p => {
             let sizeName = p;
@@ -77,8 +78,7 @@
             }
 
             if (qty > 0) {
-              if (!firstAvailableSize) firstAvailableSize = sizeName;
-              const isFirst = (firstAvailableSize === sizeName);
+              const isFirst = (sizeName === defaultSize);
               chipsHtml += `
                 <button type="button" class="size-chip-btn ${isFirst ? 'active' : ''}" 
                         data-size="${sizeName}" 
@@ -98,11 +98,6 @@
           });
 
           container.innerHTML = chipsHtml;
-
-          // Both forms ("Купить" and "В корзину") send the chosen size.
-          if (firstAvailableSize) {
-            document.querySelectorAll('.size-input').forEach(i => i.value = firstAvailableSize);
-          }
         })();
 
         function selectProductSize(btn, sizeName) {
@@ -118,6 +113,7 @@
           btn.style.borderColor = '#111';
           btn.classList.add('active');
 
+          // By the time anyone clicks, the forms exist: both of them get the new size.
           document.querySelectorAll('.size-input').forEach(i => i.value = sizeName);
         }
       </script>
@@ -126,16 +122,17 @@
       {{end}}
       {{if gt .item.Stock 0}}
         {{if .isLoggedIn}}
-          <form action="/payment/{{.item.ID}}" method="GET" style="margin:0;">
-            <input type="hidden" id="selected_size" class="size-input" name="size" value="">
-            <button type="submit" class="btn btn-primary btn-block">Купить — {{.item.PriceTiyn}} ₸</button>
-          </form>
-          <form action="/cart/add" method="POST" style="margin:10px 0 0;display:flex;gap:8px;">
+          <!-- The main action is the cart; "buy now" checks out just this one item. -->
+          <form action="/cart/add" method="POST" style="margin:0;display:flex;gap:8px;">
             <input type="hidden" name="clothes_id" value="{{.item.ID}}">
-            <input type="hidden" class="size-input" name="size" value="">
+            <input type="hidden" class="size-input" name="size" value="{{.defaultSize}}">
             <input type="number" name="quantity" value="1" min="1" max="10" aria-label="Количество"
                    style="width:72px;padding:10px;border:1px solid #ddd;border-radius:8px;">
-            <button type="submit" class="btn btn-outline" style="flex:1;">В корзину</button>
+            <button type="submit" class="btn btn-primary" style="flex:1;">В корзину — {{.item.PriceTiyn}} ₸</button>
+          </form>
+          <form action="/payment/{{.item.ID}}" method="GET" style="margin:10px 0 0;">
+            <input type="hidden" class="size-input" name="size" value="{{.defaultSize}}">
+            <button type="submit" class="btn btn-outline btn-block">Купить сейчас</button>
           </form>
         {{else}}
           <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>

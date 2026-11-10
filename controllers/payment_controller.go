@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -25,24 +24,26 @@ func PaymentPage(c *gin.Context) {
 	clothesID := c.Param("clothes_id")
 	userID := c.GetUint("userID")
 
+	// A browser gets a page, never raw JSON (and never the text of an internal error).
 	var item models.Clothes
 	if err := database.DB.Preload("Variants").First(&item, clothesID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Clothing item not found"})
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
+		return
+	}
+	size := sizeToShow(item, c.Query("size"))
+	if size == "" {
+		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "К сожалению, этот товар закончился"})
 		return
 	}
 
-	t, err := template.ParseFiles("templates/payment.html")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	t.Execute(c.Writer, gin.H{
+	// The shared template set loaded at startup, like every other page. Before, this page
+	// re-read the file from disk on every request (template.ParseFiles).
+	c.HTML(http.StatusOK, "payment.html", gin.H{
 		"userID":       userID,
 		"clothesID":    clothesID,
 		"amount":       item.PriceTiyn,
 		"item":         item,
-		"selectedSize": sizeToShow(item, c.Query("size")),
+		"selectedSize": size,
 		"reserveMins":  int(shop.ReservationTTL.Minutes()),
 	})
 }

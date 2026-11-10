@@ -10,15 +10,11 @@ import (
 )
 
 // The old BuyClothes handler was removed: it wasn't routed anywhere and "bought" items
-// without a payment, using the racy read-then-write stock update. Purchases go
-// through ProcessPayment only.
+// without a payment, using the racy read-then-write stock update. Purchases go through
+// the cart / checkout (shop.PlaceOrder, shop.CheckoutCart) and the bank.
 
 func GetUserOrders(c *gin.Context) {
-	userID := c.GetUint("userID")
-	if userID == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
+	userID := c.GetUint("userID") // AuthRequired already sent strangers to the login page
 
 	// Preload("Items.Clothes") loads the orders, then their items, then the products of
 	// those items: 3 queries in total, not 1 + N (one per order).

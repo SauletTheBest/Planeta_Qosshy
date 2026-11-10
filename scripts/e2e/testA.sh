@@ -78,7 +78,7 @@ check "short name: form kept + reason"      "$(echo "$r" | grep -c 'value="ab@ex
 printf 'username=Саулет&email=saulet@example.com&password=supersecret1' > "$RUN/cyr.txt"
 check "Cyrillic name of 6 letters is ok"    "$(code 10.0.1.6 --data-binary @"$(cygpath -m "$RUN/cyr.txt")" -H 'Content-Type: application/x-www-form-urlencoded' $S/auth/register)" 200
 check "  ...stored as real Cyrillic"        "$(q "SELECT username FROM users WHERE email='saulet@example.com'")" "Саулет"
-check "verification letter sent"            "$(mp alice@example.com subject)" "Verify Your Email — Planeta Qosshy"
+check "verification letter sent"            "$(mp alice@example.com subject)" "Подтвердите email — Planeta Qosshy"
 cx 10.0.2.1 -o /dev/null -c "$RUN/alice.ck" -d 'email=ALICE@EXAMPLE.COM&password=supersecret1' $S/auth/login
 check "login with other case works"         "$(curl -s -o /dev/null -w '%{http_code}' -b "$RUN/alice.ck" $S/profile/)" 200
 
@@ -117,7 +117,7 @@ check "wrong current password: 403"         "$(curl -s $A -o /dev/null -w '%{htt
 check "  ...email not changed"              "$(q "SELECT count(*) FROM users WHERE email='new@example.com'")" 0
 check "email change with password: 303"     "$(curl -s $A -o /dev/null -w '%{http_code}' -d 'username=alice2&email=New@Example.com&current_password=supersecret1' $S/profile/edit)" 303
 check "  ...new email unverified, token"    "$(q "SELECT email||' '||verified||' '||(length(verification_token)>20) FROM users WHERE username='alice2'")" "new@example.com false true"
-check "  ...letter sent to the new email"   "$(mp new@example.com subject)" "Verify Your Email — Planeta Qosshy"
+check "  ...letter sent to the new email"   "$(mp new@example.com subject)" "Подтвердите email — Planeta Qosshy"
 r=$(curl -s $A -w '\n%{http_code}' -d 'username=alice2&email=bob@example.com&current_password=supersecret1' $S/profile/edit)
 check "someone else's email: 409"           "$(echo "$r" | tail -1) $(echo "$r" | grep -c 'уже зарегистрирован')" "409 1"
 check "password change: 303"                "$(curl -s $A -o /dev/null -w '%{http_code}' -d 'username=alice2&email=new@example.com&password=supersecret9&current_password=supersecret1' $S/profile/edit)" 303

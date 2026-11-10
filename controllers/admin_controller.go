@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 	"planeta_qosshy/money"
 
@@ -25,6 +26,7 @@ func AdminListClothes(c *gin.Context) {
 	c.HTML(http.StatusOK, "ADMIN_clothes_list.html", gin.H{
 		"clothes": items,
 		"items":   items,
+		"flash":   middleware.PopFlash(c), // e.g. "Товар удалён" after the redirect
 	})
 }
 
@@ -227,7 +229,7 @@ func replaceVariants(tx *gorm.DB, clothesID uint, variants []models.ClothesVaria
 func AdminDeleteClothes(c *gin.Context) {
 	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid item ID"})
+		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Неверный номер товара"})
 		return
 	}
 
@@ -237,10 +239,11 @@ func AdminDeleteClothes(c *gin.Context) {
 	// Orders are no longer deleted together with the product: order_items keep a copy of
 	// the title and price, and the DB sets their clothes_id to NULL (ON DELETE SET NULL).
 	if err := database.DB.Delete(&models.Clothes{}, itemID).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete clothing item"})
+		adminFail(c, err)
 		return
 	}
 	removeProductImage(item.ImageURL)
 
-	c.Redirect(http.StatusFound, "/admin/clothes")
+	middleware.SetFlash(c, "success", "Товар «"+item.Title+"» удалён. Старые заказы с ним сохранились.")
+	c.Redirect(http.StatusSeeOther, "/admin/clothes")
 }

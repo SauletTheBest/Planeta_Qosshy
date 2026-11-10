@@ -63,6 +63,12 @@ func SetupRouter() *gin.Engine {
 	r.GET("/healthz", controllers.Healthz)
 	r.GET("/readyz", controllers.Readyz)
 
+	// Any address no route matches: a page in the site's style instead of Gin's plain
+	// "404 page not found" text.
+	r.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Такой страницы нет. Возможно, ссылка устарела."})
+	})
+
 	r.LoadHTMLGlob("templates/*.html")
 
 	// Homepage with optional auth context & DB products

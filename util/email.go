@@ -83,21 +83,19 @@ func SendVerificationEmail(email, token string) error {
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", user)
 	mail.SetHeader("To", email)
-	mail.SetHeader("Subject", "Verify Your Email — Planeta Qosshy")
+	// In Russian, like the rest of the site (it used to be the only English letter).
+	mail.SetHeader("Subject", "Подтвердите email — Planeta Qosshy")
 
-	link := fmt.Sprintf("%s/auth/verify?token=%s", verificationAddress, token)
+	link := html.EscapeString(fmt.Sprintf("%s/auth/verify?token=%s", verificationAddress, token))
 	mail.SetBody("text/html", fmt.Sprintf(`
 <html>
-<body style="font-family:sans-serif;background:#0f172a;color:#f8fafc;padding:40px;">
-  <h1 style="color:#6366f1;">Verify Your Email</h1>
-  <p>Thanks for signing up at <strong>Planeta Qosshy</strong>!</p>
-  <p>Click the button below to verify your email address:</p>
-  <a href="%s" style="display:inline-block;background:#6366f1;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
-    Verify Email
-  </a>
-  <p style="margin-top:20px;color:#94a3b8;font-size:12px;">
-    Or copy this link: %s
-  </p>
+<body style="font-family:sans-serif;padding:32px;color:#111;">
+  <h2>Подтвердите email</h2>
+  <p>Спасибо за регистрацию в <strong>Planeta Qosshy</strong>!</p>
+  <p>Нажмите кнопку, чтобы подтвердить, что этот адрес ваш:</p>
+  <p><a href="%s" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">Подтвердить email</a></p>
+  <p style="color:#777;font-size:13px;">Ссылка действует 24 часа. Если вы не регистрировались у нас, просто удалите письмо.</p>
+  <p style="color:#999;font-size:12px;">%s</p>
 </body>
 </html>`, link, link))
 

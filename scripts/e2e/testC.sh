@@ -140,7 +140,7 @@ q "UPDATE password_resets SET expires_at = now() - interval '1 minute' WHERE use
 check "expired link refused"                "$(code "$(mp bob@example.com link)")" 400
 q "UPDATE users SET blocked_at = now() WHERE email='carol@example.com'" >/dev/null
 cx 10.3.9.7 -o /dev/null -d 'email=carol@example.com' $S/auth/forgot; sleep 1
-check "blocked user gets no reset letter"   "$(mp carol@example.com subject)" "Verify Your Email — Planeta Qosshy"
+check "blocked user gets no reset letter"   "$(mp carol@example.com subject)" "Подтвердите email — Planeta Qosshy"
 q "UPDATE users SET blocked_at = NULL WHERE email='carol@example.com'" >/dev/null
 
 echo "== 3. password change in the profile: this browser stays, others are out"
