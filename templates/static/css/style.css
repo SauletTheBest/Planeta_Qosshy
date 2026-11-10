@@ -225,7 +225,7 @@ textarea { resize:vertical; }
 
 /* Responsive */
 @media(max-width:900px){.detail-layout,.payment-layout{grid-template-columns:1fr}.hero-content h1{font-size:36px}}
-@media(max-width:640px){.auth-card{padding:32px 20px}.header{flex-wrap:wrap;gap:8px}.nav{display:none}.message-card{padding:36px 20px}.hero-content h1{font-size:28px}.hero{height:55vh}}
+@media(max-width:640px){.auth-card{padding:32px 20px}.header{flex-wrap:wrap;gap:8px}.message-card{padding:36px 20px}.hero-content h1{font-size:28px}.hero{height:55vh}}
 
 /* Floating Chat Widget */
 .chat-widget-btn {
@@ -494,3 +494,16 @@ textarea { resize:vertical; }
 .empty-row { text-align:center; color:#888; padding:24px !important; }
 a.stat-card { display:block; color:inherit; transition:box-shadow .15s; }
 a.stat-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.1); }
+
+/* ===== Phone fixes ===== */
+@media (max-width: 640px) {
+  /* The menu used to be hidden here (display:none) with nothing instead: on a phone
+     there was no way to reach the catalog, the cart or "Мои заказы". Now it is a row
+     under the logo that scrolls sideways if the links don't fit. */
+  .nav { order: 3; width: 100%; overflow-x: auto; white-space: nowrap; gap: 2px;
+         -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { padding: 6px 10px; font-size: .85rem; flex: 0 0 auto; }
+  /* The "Есть вопросы?" bubble covered prices and buttons; the round chat button stays. */
+  .chat-widget-tooltip { display: none !important; }
+}
