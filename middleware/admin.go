@@ -10,7 +10,7 @@ import (
 // loaded from the DB, never a role stored in the cookie, so a demoted admin loses access at once.
 func RequireAdmin(c *gin.Context) {
 	if c.GetString("role") != "admin" {
-		c.HTML(http.StatusForbidden, "error.html", gin.H{"error": "Access denied"})
+		Page(c, http.StatusForbidden, "error.html", gin.H{"error": "Access denied"})
 		c.Abort()
 		return
 	}

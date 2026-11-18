@@ -20,10 +20,10 @@ func CartPage(c *gin.Context) {
 	lines, total, err := shop.LoadCart(database.DB, c.GetUint("userID"))
 	if err != nil {
 		log.Println("cart:", err)
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось открыть корзину"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось открыть корзину"})
 		return
 	}
-	c.HTML(http.StatusOK, "cart.html", gin.H{
+	middleware.Page(c, http.StatusOK, "cart.html", gin.H{
 		"lines":       lines,
 		"total":       total,
 		"reserveMins": int(shop.ReservationTTL.Minutes()),

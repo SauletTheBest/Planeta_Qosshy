@@ -42,7 +42,7 @@ func Register(c *gin.Context) {
 
 	// Show the form again with what the user typed (never the password) and the reason.
 	fail := func(status int, msg string) {
-		c.HTML(status, "register.html", gin.H{"error": msg, "username": username, "email": email})
+		middleware.Page(c, status, "register.html", gin.H{"error": msg, "username": username, "email": email})
 	}
 
 	if username == "" || email == "" || password == "" {
@@ -100,14 +100,14 @@ func Register(c *gin.Context) {
 	// Try to send verification email — non-fatal if SMTP fails
 	if err := util.SendVerificationEmail(user.Email, token); err != nil {
 		log.Println("Warning: could not send verification email:", err)
-		c.HTML(http.StatusOK, "verify.html", gin.H{
+		middleware.Page(c, http.StatusOK, "verify.html", gin.H{
 			"email":   user.Email,
 			"warning": "Аккаунт создан, но письмо с подтверждением отправить не удалось. Напишите в поддержку.",
 		})
 		return
 	}
 
-	c.HTML(http.StatusOK, "verify.html", gin.H{
+	middleware.Page(c, http.StatusOK, "verify.html", gin.H{
 		"email": user.Email,
 	})
 }
@@ -117,7 +117,7 @@ func Login(c *gin.Context) {
 	password := c.PostForm("password")
 
 	fail := func(status int, msg string) {
-		c.HTML(status, "login.html", gin.H{"error": msg, "email": email})
+		middleware.Page(c, status, "login.html", gin.H{"error": msg, "email": email})
 	}
 
 	if email == "" || password == "" {

@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"planeta_qosshy/database"
-	"planeta_qosshy/models"
 	"net/http"
+	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
+	"planeta_qosshy/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -45,7 +46,7 @@ func AdminChat(c *gin.Context) {
 	var chat models.Chat
 
 	if err := database.DB.Where("id = ?", chatID).First(&chat).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
 
@@ -68,7 +69,7 @@ func AdminCloseChat(c *gin.Context) {
 	var chat models.Chat
 
 	if err := database.DB.Where("id = ?", chatID).First(&chat).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
 
@@ -76,7 +77,7 @@ func AdminCloseChat(c *gin.Context) {
 	chat.ClosedAt = time.Now()
 
 	if err := database.DB.Save(&chat).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to update chat status"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to update chat status"})
 		return
 	}
 
@@ -85,7 +86,7 @@ func AdminCloseChat(c *gin.Context) {
 
 func AdminDeleteChat(c *gin.Context) {
 	chatID := c.Param("chatID")
-	
+
 	// Delete messages first
 	database.DB.Where("chat_id = ?", chatID).Delete(&models.Message{})
 	// Delete chat record
@@ -108,7 +109,7 @@ func AdminSendMessage(c *gin.Context) {
 
 	var chat models.Chat
 	if err := database.DB.Where("id = ?", chatID).First(&chat).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
 

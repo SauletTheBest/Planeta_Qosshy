@@ -79,7 +79,7 @@ func (l *IPLimiter) Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if !l.Allow(c.ClientIP(), time.Now()) {
 			c.Header("Retry-After", retry) // seconds; browsers and bots can wait this long
-			c.HTML(http.StatusTooManyRequests, "error.html", gin.H{
+			Page(c, http.StatusTooManyRequests, "error.html", gin.H{
 				"error": "Слишком много попыток. Подождите немного и попробуйте снова.",
 			})
 			c.Abort()

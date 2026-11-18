@@ -10,110 +10,81 @@
 </head>
 
 <body>
-  <header class="header">
-    <a href="/" class="logo">PLANETA QOSSHY</a>
-    <nav class="nav">
-      <a href="/">Главная</a>
-      <a href="/clothes" class="active">Каталог</a>
-      {{if .isLoggedIn}}<a href="/cart">Корзина</a><a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
-    </nav>
-    <div class="header-actions">
-      {{if .isLoggedIn}}
-      {{if .isAdmin}}<a href="/admin/" class="btn btn-outline">Админка</a>{{end}}
-      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
-      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-      {{else}}
-      <a href="/auth/login" class="btn btn-outline">Войти</a>
-      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
-      {{end}}
-    </div>
-  </header>
+{{template "site_header" .}}
   <div class="page-content">
     <h1 class="page-title">Каталог одежды</h1>
-    <form method="GET" action="/clothes" class="filter-bar">
-      <div class="form-group">
-        <label for="category">Категория</label>
-        <select id="category" name="category">
-          <option value="">Все категории</option>
-          <option value="Футболки" {{if eq .category "Футболки" }}selected{{end}}>Футболки</option>
-          <option value="Худи" {{if eq .category "Худи" }}selected{{end}}>Худи и Свитшоты</option>
-          <option value="Куртки" {{if eq .category "Куртки" }}selected{{end}}>Куртки и Пальто</option>
-          <option value="Брюки" {{if eq .category "Брюки" }}selected{{end}}>Брюки и Джинсы</option>
-          <option value="Платья" {{if eq .category "Платья" }}selected{{end}}>Платья и Юбки</option>
-          <option value="Шорты" {{if eq .category "Шорты" }}selected{{end}}>Шорты</option>
-          <option value="Спортивные костюмы" {{if eq .category "Спортивные костюмы" }}selected{{end}}>Спортивные костюмы
-          </option>
-          <option value="Свитера" {{if eq .category "Свитера" }}selected{{end}}>Свитера и Кофты</option>
-          <option value="Обувь" {{if eq .category "Обувь" }}selected{{end}}>Обувь</option>
-          <option value="Аксессуары" {{if eq .category "Аксессуары" }}selected{{end}}>Аксессуары</option>
-          <option value="Головные уборы" {{if eq .category "Головные уборы" }}selected{{end}}>Головные уборы</option>
-          <option value="Белье и Носки" {{if eq .category "Белье и Носки" }}selected{{end}}>Белье и Носки</option>
-        </select>
+    <form method="GET" action="/clothes" class="catalog-form">
+      <div class="search-row">
+        <input type="search" name="q" value="{{.q}}" placeholder="Поиск: худи, джинсы, Planeta…" aria-label="Поиск по каталогу">
+        <button type="submit" class="btn btn-primary">Найти</button>
       </div>
-      <div class="form-group">
-        <label for="brand">Бренд</label>
-        <input type="text" id="brand" name="brand" value="{{.brand}}" placeholder="Например, Planeta">
-      </div>
-     <div class="form-group">
-  <label for="size">Размер</label>
-  <select id="size" name="size">
-    <option value="">Все размеры</option>
-    <optgroup label="Одежда">
-      <option value="XS"  {{if eq .size "XS"}}selected{{end}}>XS</option>
-      <option value="S"   {{if eq .size "S"}}selected{{end}}>S</option>
-      <option value="M"   {{if eq .size "M"}}selected{{end}}>M</option>
-      <option value="L"   {{if eq .size "L"}}selected{{end}}>L</option>
-      <option value="XL"  {{if eq .size "XL"}}selected{{end}}>XL</option>
-      <option value="XXL" {{if eq .size "XXL"}}selected{{end}}>XXL</option>
-      <option value="3XL" {{if eq .size "3XL"}}selected{{end}}>3XL</option>
-    </optgroup>
-    <optgroup label="Обувь">
-      <option value="36" {{if eq .size "36"}}selected{{end}}>36</option>
-      <option value="37" {{if eq .size "37"}}selected{{end}}>37</option>
-      <option value="38" {{if eq .size "38"}}selected{{end}}>38</option>
-      <option value="39" {{if eq .size "39"}}selected{{end}}>39</option>
-      <option value="40" {{if eq .size "40"}}selected{{end}}>40</option>
-      <option value="41" {{if eq .size "41"}}selected{{end}}>41</option>
-      <option value="42" {{if eq .size "42"}}selected{{end}}>42</option>
-      <option value="43" {{if eq .size "43"}}selected{{end}}>43</option>
-      <option value="44" {{if eq .size "44"}}selected{{end}}>44</option>
-      <option value="45" {{if eq .size "45"}}selected{{end}}>45</option>
-    </optgroup>
-  </select>
-</div>
-      <div class="form-group">
-        <label for="min_price">Цена от (₸)</label>
-        <input type="number" id="min_price" name="min_price" value="{{.min_price}}" placeholder="от">
-      </div>
-      <div class="form-group">
-        <label for="max_price">Цена до (₸)</label>
-        <input type="number" id="max_price" name="max_price" value="{{.max_price}}" placeholder="до">
-      </div>
-      <div class="form-group">
-        <label for="sort">Сортировка</label>
-        <select id="sort" name="sort">
-          <option value="">По умолчанию</option>
-          <option value="price_asc" {{if eq .sort "price_asc" }}selected{{end}}>Сначала дешевле</option>
-          <option value="price_desc" {{if eq .sort "price_desc" }}selected{{end}}>Сначала дороже</option>
-          <option value="newest" {{if eq .sort "newest" }}selected{{end}}>Новинки</option>
-        </select>
-      </div>
-      <div style="display:flex;gap:8px;align-self:flex-end;">
-        <button type="submit" class="btn btn-primary" style="border-radius:10px;padding:11px 22px;">Найти</button>
-        <a href="/clothes" class="btn btn-ghost" style="border-radius:10px;padding:11px 16px;">Сбросить</a>
-      </div>
+      <!-- <details> folds without any JavaScript. Opened by the server when a filter is in use. -->
+      <details class="filter-panel" id="filterPanel" {{if .filtersUsed}}open{{end}}>
+        <summary>Фильтры{{if .filtersUsed}} · включены{{end}}</summary>
+        <div class="filter-bar">
+          <div class="form-group">
+            <label for="category">Категория</label>
+            <select id="category" name="category">
+              <option value="">Все категории</option>
+              {{range .options.Categories}}<option value="{{.}}" {{if eq . $.category}}selected{{end}}>{{.}}</option>{{end}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="brand">Бренд</label>
+            <select id="brand" name="brand">
+              <option value="">Все бренды</option>
+              {{range .options.Brands}}<option value="{{.}}" {{if eq . $.brand}}selected{{end}}>{{.}}</option>{{end}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="size">Размер</label>
+            <select id="size" name="size">
+              <option value="">Все размеры</option>
+              {{range .options.Sizes}}<option value="{{.}}" {{if eq . $.size}}selected{{end}}>{{.}}</option>{{end}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="min_price">Цена от (₸)</label>
+            <input type="number" id="min_price" name="min_price" value="{{.min_price}}" placeholder="от" inputmode="numeric">
+          </div>
+          <div class="form-group">
+            <label for="max_price">Цена до (₸)</label>
+            <input type="number" id="max_price" name="max_price" value="{{.max_price}}" placeholder="до" inputmode="numeric">
+          </div>
+          <div class="form-group">
+            <label for="sort">Сортировка</label>
+            <select id="sort" name="sort">
+              <option value="">По умолчанию</option>
+              <option value="price_asc" {{if eq .sort "price_asc"}}selected{{end}}>Сначала дешевле</option>
+              <option value="price_desc" {{if eq .sort "price_desc"}}selected{{end}}>Сначала дороже</option>
+              <option value="newest" {{if eq .sort "newest"}}selected{{end}}>Новинки</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Показать</button>
+            <a href="/clothes" class="btn btn-ghost">Сбросить</a>
+          </div>
+        </div>
+      </details>
     </form>
+    <p class="found">Найдено: <strong>{{.totalItems}}</strong>{{if .q}} по запросу «{{.q}}»{{end}}</p>
+    <script>
+      // Wide screen: filters open from the start. Phone: folded (they took the whole first screen).
+      if (window.matchMedia('(min-width: 641px)').matches) document.getElementById('filterPanel').open = true;
+    </script>
     <div class="product-grid">
       {{range .clothes}}
       <div class="product-card">
+        <a href="/clothes/{{.ID}}" class="product-card-link" aria-label="{{.Title}}">
         {{if .ImageURL}}
-        <img class="product-card-img" src="{{.ImageURL}}" alt="{{.Title}}">
+        <img class="product-card-img" src="{{.ImageURL}}" alt="{{.Title}}" loading="lazy">
         {{else}}
         <div class="product-card-placeholder">🧥</div>
         {{end}}
+        </a>
         <div class="product-card-body">
           <p class="brand">{{.Brand}}</p>
-          <h3>{{.Title}}</h3>
+          <h3><a href="/clothes/{{.ID}}" class="product-title-link">{{.Title}}</a></h3>
           <div class="meta">
             <span class="tag">{{.Category}}</span>
             <span class="tag clean-size-tag" data-raw-size="{{.SizeSummary}}">{{.AvailableSizes}}</span>
@@ -132,63 +103,17 @@
     </div>
     <div class="pagination">
       {{if .pager.HasPrev}}
-      <a href="/clothes?page={{.pager.Prev}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
+      <a href="/clothes?page={{.pager.Prev}}&limit={{.limit}}&q={{.q}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
         class="btn btn-ghost">← Назад</a>
       {{end}}
       <span>Страница {{.page}} из {{.pager.TotalPages}}</span>
       {{if .pager.HasNext}}
-      <a href="/clothes?page={{.pager.Next}}&limit={{.limit}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
+      <a href="/clothes?page={{.pager.Next}}&limit={{.limit}}&q={{.q}}&category={{.category}}&brand={{.brand}}&size={{.size}}&min_price={{.min_price}}&max_price={{.max_price}}&sort={{.sort}}"
         class="btn btn-ghost">Вперёд →</a>
       {{end}}
     </div>
   </div>
-  <footer class="footer">
-    <div class="footer-content">
-      <div>
-        <h3>PLANETA QOSSHY</h3>
-        <p>Стиль и комфорт на каждый день.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Навигация</h4>
-        <a href="/">Главная</a>
-        <a href="/clothes">Каталог</a>
-        <a href="/about">О нас</a>
-        <a href="/helpdesk">Служба Поддержки</a>
-      </div>
-      <div class="footer-links">
-        <h4>Аккаунт</h4>
-        {{if .isLoggedIn}}
-        <a href="/orders">Мои заказы</a>
-        <a href="/profile">Профиль</a>
-        <a href="/auth/logout">Выйти</a>
-        {{else}}
-        <a href="/auth/login">Войти</a>
-        <a href="/auth/register">Регистрация</a>
-        {{end}}
-      </div>
-      <div class="footer-links">
-        <h4>Контакты</h4>
-        <p>support@planetaqosshy.kz</p>
-        <p>+7 (777) 888-80-80</p>
-        <p>Улица Республики, 77</p>
-        <div class="social-links" style="margin-top:12px;">
-          <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis"
-            target="_blank">
-            <img src="/static/image/2gis.png" alt="2GIS">
-          </a>
-          <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
-            <img src="/static/image/instagram.png" alt="Instagram">
-          </a>
-          <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
-            <img src="/static/image/whatsapp.png" alt="WhatsApp">
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p>
-    </div>
-  </footer>
+{{template "site_footer" .}}
 
   <!-- Floating Chat Widget -->
   <div id="chatWidgetContainer">

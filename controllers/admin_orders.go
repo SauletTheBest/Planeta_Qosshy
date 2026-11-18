@@ -124,7 +124,7 @@ func orderTabs() ([]orderTab, error) {
 func AdminOrder(c *gin.Context) {
 	id, ok := parseID(c.Param("id"))
 	if !ok {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
 		return
 	}
 	var order models.Order
@@ -134,7 +134,7 @@ func AdminOrder(c *gin.Context) {
 		Preload("Events.Actor").
 		First(&order, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
 		return
 	}
 	if err != nil {
@@ -152,7 +152,7 @@ func AdminOrder(c *gin.Context) {
 func AdminOrderStatus(c *gin.Context) {
 	id, ok := parseID(c.Param("id"))
 	if !ok {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
 		return
 	}
 	to := models.OrderStatus(c.PostForm("to"))
@@ -215,14 +215,14 @@ func AdminRefund(c *gin.Context) {
 	paymentID, ok2 := parseID(c.PostForm("payment_id"))
 	back := fmt.Sprintf("/admin/orders/%d", orderID)
 	if !ok1 || !ok2 {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Платёж не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Платёж не найден"})
 		return
 	}
 	// The payment must belong to the order in the URL: otherwise a form with someone
 	// else's payment_id would refund a different order than the page showed.
 	var p models.Payment
 	if err := database.DB.Where("id = ? AND order_id = ?", paymentID, orderID).First(&p).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Платёж не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Платёж не найден"})
 		return
 	}
 
@@ -255,5 +255,5 @@ func refund(c *gin.Context, paymentID, adminID uint) error {
 // adminFail logs the real error and shows a generic page: SQL details are not for the screen.
 func adminFail(c *gin.Context, err error) {
 	middleware.Log().WithError(err).WithField("path", c.Request.URL.Path).Error("admin page failed")
-	c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Что-то пошло не так, подробности в логе сервера."})
+	middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Что-то пошло не так, подробности в логе сервера."})
 }

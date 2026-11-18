@@ -10,18 +10,7 @@
 </head>
 
 <body>
-  <header class="header">
-    <a href="/" class="logo">PLANETA QOSSHY</a>
-    <nav class="nav">
-      <a href="/">Главная</a>
-      <a href="/clothes">Каталог</a>
-      <a href="/cart">Корзина</a><a href="/orders">Мои заказы</a>
-      <a href="/profile" class="active">Профиль</a>
-    </nav>
-    <div class="header-actions">
-      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-    </div>
-  </header>
+{{template "site_header" .}}
   <div class="page-content" style="max-width:600px;margin:30px auto;">
     <h1 class="page-title" style="margin-bottom:24px;">Редактирование профиля</h1>
 
@@ -74,11 +63,7 @@
       </div>
     </form>
   </div>
-  <footer class="footer">
-    <div class="footer-bottom">
-      <p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p>
-    </div>
-  </footer>
+{{template "site_footer" .}}
 </body>
 
 </html>

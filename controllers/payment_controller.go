@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 	"planeta_qosshy/payments"
 	"planeta_qosshy/shop"
@@ -27,18 +28,18 @@ func PaymentPage(c *gin.Context) {
 	// A browser gets a page, never raw JSON (and never the text of an internal error).
 	var item models.Clothes
 	if err := database.DB.Preload("Variants").First(&item, clothesID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
 		return
 	}
 	size := sizeToShow(item, c.Query("size"))
 	if size == "" {
-		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "К сожалению, этот товар закончился"})
+		middleware.Page(c, http.StatusConflict, "error.html", gin.H{"error": "К сожалению, этот товар закончился"})
 		return
 	}
 
 	// The shared template set loaded at startup, like every other page. Before, this page
 	// re-read the file from disk on every request (template.ParseFiles).
-	c.HTML(http.StatusOK, "payment.html", gin.H{
+	middleware.Page(c, http.StatusOK, "payment.html", gin.H{
 		"userID":       userID,
 		"clothesID":    clothesID,
 		"amount":       item.PriceTiyn,
@@ -55,29 +56,29 @@ func Checkout(c *gin.Context) {
 		Size string `form:"size"`
 	}
 	if err := c.ShouldBind(&request); err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid request parameters"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Invalid request parameters"})
 		return
 	}
 
 	var item models.Clothes
 	if err := database.DB.Preload("Variants").First(&item, c.Param("clothes_id")).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Товар не найден"})
 		return
 	}
 	size, ok := sizeToBuy(item, request.Size)
 	if !ok {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Выберите размер"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Выберите размер"})
 		return
 	}
 
 	order, err := shop.PlaceOrder(database.DB, c.GetUint("userID"), item, size, time.Now())
 	if errors.Is(err, shop.ErrOutOfStock) {
-		c.HTML(http.StatusConflict, "error.html", gin.H{"error": "К сожалению, этот размер закончился"})
+		middleware.Page(c, http.StatusConflict, "error.html", gin.H{"error": "К сожалению, этот размер закончился"})
 		return
 	}
 	if err != nil {
 		log.Println("checkout:", err)
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось оформить заказ, попробуйте ещё раз"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось оформить заказ, попробуйте ещё раз"})
 		return
 	}
 
@@ -88,7 +89,7 @@ func Checkout(c *gin.Context) {
 func RetryPayment(c *gin.Context) {
 	var order models.Order
 	if err := database.DB.Where("id = ? AND user_id = ?", c.Param("id"), c.GetUint("userID")).First(&order).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
 		return
 	}
 	redirectToBank(c, order.ID)
@@ -119,12 +120,12 @@ func OrderResult(c *gin.Context) {
 		Where("id = ? AND user_id = ?", c.Param("id"), c.GetUint("userID")).
 		First(&order).Error
 	if err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Заказ не найден"})
 		return
 	}
 
 	last := order.LastPayment()
-	c.HTML(http.StatusOK, "order_result.html", gin.H{
+	middleware.Page(c, http.StatusOK, "order_result.html", gin.H{
 		"order":   order,
 		"payment": last,
 		"paid":    order.SucceededPayment(),

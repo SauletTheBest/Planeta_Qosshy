@@ -44,7 +44,7 @@ func CrossOriginGuard() gin.HandlerFunc {
 			log.WithField("origin", c.GetHeader("Origin")).
 				WithField("sec_fetch_site", c.GetHeader("Sec-Fetch-Site")).
 				Warn("cross-origin request blocked")
-			c.HTML(http.StatusForbidden, "error.html", gin.H{
+			Page(c, http.StatusForbidden, "error.html", gin.H{
 				"error": "Запрос отклонён: форма была отправлена с другого сайта.",
 			})
 			c.Abort()

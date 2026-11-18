@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 	"planeta_qosshy/shop"
 	"planeta_qosshy/util"
@@ -24,20 +25,20 @@ var errBadResetLink = errors.New("invalid, used or expired reset link")
 const badResetLinkMsg = "Ссылка для смены пароля недействительна, уже использована или устарела. Запросите новую."
 
 func ForgotPasswordPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "forgot_password.html", gin.H{})
+	middleware.Page(c, http.StatusOK, "forgot_password.html", gin.H{})
 }
 
 // ForgotPassword: POST /auth/forgot  email=...
 func ForgotPassword(c *gin.Context) {
 	email := util.NormalizeEmail(c.PostForm("email"))
 	if !util.IsValidEmail(email) {
-		c.HTML(http.StatusBadRequest, "forgot_password.html", gin.H{"error": "Неверный формат email.", "email": email})
+		middleware.Page(c, http.StatusBadRequest, "forgot_password.html", gin.H{"error": "Неверный формат email.", "email": email})
 		return
 	}
 	// The SAME answer whether the account exists or not. Otherwise this form would tell
 	// a stranger which emails are registered here ("user enumeration").
 	sent := func() {
-		c.HTML(http.StatusOK, "forgot_password.html", gin.H{"sent": true, "email": email})
+		middleware.Page(c, http.StatusOK, "forgot_password.html", gin.H{"sent": true, "email": email})
 	}
 
 	var user models.User
@@ -82,10 +83,10 @@ func ForgotPassword(c *gin.Context) {
 func ResetPasswordPage(c *gin.Context) {
 	raw := c.Query("token")
 	if _, err := findReset(database.DB, raw, time.Now()); err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": badResetLinkMsg})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": badResetLinkMsg})
 		return
 	}
-	c.HTML(http.StatusOK, "reset_password.html", gin.H{"token": raw})
+	middleware.Page(c, http.StatusOK, "reset_password.html", gin.H{"token": raw})
 }
 
 // ResetPassword: POST /auth/reset  token, password, password2
@@ -93,7 +94,7 @@ func ResetPassword(c *gin.Context) {
 	raw := c.PostForm("token")
 	password, password2 := c.PostForm("password"), c.PostForm("password2")
 	fail := func(status int, msg string) {
-		c.HTML(status, "reset_password.html", gin.H{"token": raw, "error": msg})
+		middleware.Page(c, status, "reset_password.html", gin.H{"token": raw, "error": msg})
 	}
 	if msg := util.ValidatePassword(password); msg != "" {
 		fail(http.StatusBadRequest, msg)
@@ -124,7 +125,7 @@ func ResetPassword(c *gin.Context) {
 		}).Error
 	})
 	if errors.Is(err, errBadResetLink) {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": badResetLinkMsg})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": badResetLinkMsg})
 		return
 	}
 	if err != nil {

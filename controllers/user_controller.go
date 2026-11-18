@@ -22,7 +22,7 @@ func Profile(c *gin.Context) {
 	sessionUserID := c.GetUint("userID")
 
 	if err := database.DB.First(&user, sessionUserID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "User not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "User not found"})
 		return
 	}
 
@@ -35,13 +35,13 @@ func Profile(c *gin.Context) {
 		Where("orders.user_id = ? AND orders.status IN ?", sessionUserID, shop.EarnedStatuses).
 		Order("orders.created_at DESC").
 		Find(&purchases).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch purchase history"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch purchase history"})
 		return
 	}
 
 	chatID, chatStatus := GetChatStatus(fmt.Sprintf("%d", sessionUserID))
 
-	c.HTML(http.StatusOK, "profile.html", gin.H{
+	middleware.Page(c, http.StatusOK, "profile.html", gin.H{
 		"flash":         middleware.PopFlash(c),
 		"user":          user,
 		"purchases":     purchases,
@@ -68,17 +68,17 @@ func UpdateProfilePage(c *gin.Context) {
 	sessionUserID := c.GetUint("userID")
 
 	if err := database.DB.First(&user, sessionUserID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "User not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "User not found"})
 		return
 	}
 	user.Password = ""
-	c.HTML(http.StatusOK, "edit_user.html", gin.H{"user": user})
+	middleware.Page(c, http.StatusOK, "edit_user.html", gin.H{"user": user})
 }
 
 func UpdateProfile(c *gin.Context) {
 	var user models.User
 	if err := database.DB.First(&user, c.GetUint("userID")).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
 		return
 	}
 
@@ -91,7 +91,7 @@ func UpdateProfile(c *gin.Context) {
 	fail := func(status int, msg string) {
 		shown := user
 		shown.Username, shown.Email, shown.Password = username, email, ""
-		c.HTML(status, "edit_user.html", gin.H{"user": shown, "error": msg})
+		middleware.Page(c, status, "edit_user.html", gin.H{"user": shown, "error": msg})
 	}
 
 	if username == "" || email == "" {
@@ -180,7 +180,7 @@ func UpdateProfile(c *gin.Context) {
 func ResendVerification(c *gin.Context) {
 	var user models.User
 	if err := database.DB.First(&user, c.GetUint("userID")).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Пользователь не найден"})
 		return
 	}
 	back := func(kind, text string) {

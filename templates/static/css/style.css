@@ -507,3 +507,88 @@ a.stat-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.1); }
   /* The "Есть вопросы?" bubble covered prices and buttons; the round chat button stays. */
   .chat-widget-tooltip { display: none !important; }
 }
+
+/* ===== Shared header parts (templates/_site_parts.html) ===== */
+.inline-form { display: inline; margin: 0; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.footer-links .link-button { display: block; color: #aaa; margin-top: 8px; font-size: 13px; }  /* same as .footer-links a */
+.footer-links .link-button:hover { color: #fff; }
+.nav-count { display: inline-block; min-width: 20px; padding: 1px 6px; border-radius: 10px; background: #111; color: #fff;
+             font-size: .72rem; font-weight: 700; text-align: center; line-height: 18px; }
+.flash-wrap { max-width: 1200px; margin: 16px auto 0; padding: 0 5%; }
+
+/* ===== Catalog: search, foldable filters, cards ===== */
+.catalog-form { margin-bottom: 12px; }
+.search-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.search-row input { flex: 1; min-width: 0; padding: 11px 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; background: #fff; }
+.filter-panel { background: #fff; border: 1px solid #e8e8e8; border-radius: 16px; margin-bottom: 8px; }
+.filter-panel > summary { cursor: pointer; padding: 14px 20px; font-weight: 700; list-style: none; }
+.filter-panel > summary::-webkit-details-marker { display: none; }
+.filter-panel > summary::after { content: "▾"; float: right; transition: transform .15s; }
+.filter-panel[open] > summary::after { transform: rotate(180deg); }
+.filter-panel .filter-bar { border: 0; box-shadow: none; margin: 0; padding-top: 0; }
+.filter-actions { display: flex; gap: 8px; align-self: flex-end; }
+.found { color: #777; font-size: .9rem; margin: 4px 0 16px; }
+.product-card-link { display: block; }
+.product-title-link { color: inherit; text-decoration: none; }
+.product-title-link:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  /* Two cards per row: before, one card took half the screen. */
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .product-card-body { padding: 10px 12px 12px; }
+  .product-card-body h3 { font-size: .9rem; line-height: 1.3; }
+  .product-card-body .meta { display: none; }        /* category/sizes/colour tags: on the product page */
+  .product-card-body .btn-block { display: none; }   /* the whole card is a link now */
+  .product-card-body .price { margin: 6px 0 0; font-size: 1rem; }
+  .product-card-img { height: auto; aspect-ratio: 4 / 5; }  /* the same shape at any width */
+  .page-content { padding: 24px 16px; }
+  .filter-bar { padding: 0 16px 16px; gap: 12px; }
+  .filter-bar .form-group { min-width: calc(50% - 6px); }
+}
+
+/* ===== Product page: sizes are real radio buttons (work without JavaScript) ===== */
+.buy-form { margin: 0 0 20px; }
+.size-picker { border: 0; padding: 0; margin: 0 0 14px; }
+.size-picker legend { font-size: .9rem; font-weight: 700; color: #444; margin-bottom: 8px; }
+.size-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.size-option { position: relative; display: inline-flex; flex-direction: column; align-items: center; cursor: pointer; }
+/* The real radio is invisible but still there: keyboard and screen readers use it. */
+.size-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.size-option .size-name { min-width: 48px; padding: 9px 14px; border: 1.5px solid #ddd; border-radius: 10px;
+                          background: #fff; font-weight: 700; font-size: .9rem; text-align: center; transition: all .15s; }
+.size-option input:checked + .size-name { background: #111; color: #fff; border-color: #111; }
+.size-option input:focus-visible + .size-name { outline: 3px solid #6aa0ff; outline-offset: 2px; }
+.size-option.is-out { cursor: not-allowed; }
+.size-option.is-out .size-name { color: #aaa; background: #f5f5f5; border-style: dashed; text-decoration: line-through; }
+.size-left { font-size: .7rem; color: #c0392b; margin-top: 3px; }
+.detail-color { font-size: .9rem; color: #555; margin: 0 0 16px; }
+.buy-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.qty-input { width: 72px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+.buy-main { flex: 1; }
+
+/* ===== Cart: −/+ stepper, phone layout ===== */
+.qty-stepper { display: inline-flex; align-items: center; gap: 4px; margin: 0; }
+.qty-stepper button { width: 32px; height: 32px; border: 1px solid #ddd; border-radius: 8px; background: #fff;
+                      font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.qty-stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.qty-stepper span { min-width: 28px; text-align: center; font-weight: 700; }
+
+/* Product page: the quantity box was stretched by the general "input { width:100% }" */
+.buy-row .qty-input { width: 72px; flex: 0 0 72px; }
+/* "осталось N" as a small badge on the corner, so every size button keeps its width */
+.size-option .size-left { position: absolute; top: -9px; right: -8px; background: #c0392b; color: #fff;
+                          font-size: .62rem; font-weight: 700; padding: 1px 5px; border-radius: 8px;
+                          margin: 0; text-transform: none; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  /* The cart table didn't fit a phone: sums and the remove button were off-screen. */
+  .cart-table thead { display: none; }
+  .cart-table, .cart-table tbody, .cart-table tr, .cart-table td { display: block; width: 100%; }
+  .cart-table tr { position: relative; padding: 14px 44px 14px 0; border-bottom: 1px solid #eee; }
+  .cart-table td { border: 0; padding: 3px 14px; }
+  .cart-table td[data-label]::before { content: attr(data-label) ": "; color: #888; font-size: .82rem; }
+  .cart-table .cart-title { font-weight: 700; padding-bottom: 6px; }
+  .cart-table .cart-remove { position: absolute; top: 8px; right: 0; width: auto; padding: 0; }
+  .cart-table .cart-total td { text-align: left !important; display: inline-block; width: auto; }
+}

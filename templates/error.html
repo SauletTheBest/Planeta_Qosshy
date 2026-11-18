@@ -8,13 +8,7 @@
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/">Главная</a>
-    <a href="/clothes">Каталог</a>
-  </nav>
-</header>
+{{template "site_header" .}}
 <div class="message-page">
   <div class="message-card">
     <div class="icon">❌</div>
@@ -23,8 +17,6 @@
     <a href="/clothes" class="btn btn-primary">Вернуться в каталог</a>
   </div>
 </div>
-<footer class="footer">
-  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
-</footer>
+{{template "site_footer" .}}
 </body>
 </html>

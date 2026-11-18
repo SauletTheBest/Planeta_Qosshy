@@ -50,21 +50,29 @@ func init() {
 	}
 }
 
+// sizeLess is the display order of sizes: XS, S, M … then shoe sizes, then the rest A–Z.
+func sizeLess(a, b string) bool {
+	ra, aKnown := sizeOrder[a]
+	rb, bKnown := sizeOrder[b]
+	switch {
+	case aKnown && bKnown:
+		return ra < rb
+	case aKnown != bKnown:
+		return aKnown
+	}
+	return a < b
+}
+
 // SortedVariants returns the variants in display order (XS, S, M … then shoe sizes).
 func (c Clothes) SortedVariants() []ClothesVariant {
 	vs := append([]ClothesVariant(nil), c.Variants...) // copy: don't reorder the caller's slice
-	sort.SliceStable(vs, func(i, j int) bool {
-		ri, iKnown := sizeOrder[vs[i].Size]
-		rj, jKnown := sizeOrder[vs[j].Size]
-		switch {
-		case iKnown && jKnown:
-			return ri < rj
-		case iKnown != jKnown:
-			return iKnown
-		}
-		return vs[i].Size < vs[j].Size
-	})
+	sort.SliceStable(vs, func(i, j int) bool { return sizeLess(vs[i].Size, vs[j].Size) })
 	return vs
+}
+
+// SortSizes puts size names in the same display order (for the catalog filter).
+func SortSizes(sizes []string) {
+	sort.SliceStable(sizes, func(i, j int) bool { return sizeLess(sizes[i], sizes[j]) })
 }
 
 // SizeSummary is the "S:2, M:0" text the admin form and the size chips work with.

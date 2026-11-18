@@ -13,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 	"planeta_qosshy/util"
 
@@ -52,7 +53,7 @@ func renderHelpdesk(c *gin.Context, status int, data gin.H) {
 	var user models.User
 	database.DB.First(&user, c.GetUint("userID"))
 	data["email"] = user.Email
-	c.HTML(status, "helpdesk.html", data)
+	middleware.Page(c, status, "helpdesk.html", data)
 }
 
 func HelpdeskController(c *gin.Context) {
@@ -159,7 +160,7 @@ func readUpload(fh *multipart.FileHeader) ([]byte, error) {
 func VerifyEmail(c *gin.Context) {
 	token := c.Query("token")
 	if token == "" {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "В ссылке нет кода подтверждения"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "В ссылке нет кода подтверждения"})
 		return
 	}
 
@@ -167,11 +168,11 @@ func VerifyEmail(c *gin.Context) {
 	var user models.User
 	database.DB.Where("verification_token = ?", util.HashToken(token)).First(&user)
 	if user.ID == 0 {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка недействительна. Отправьте новое письмо из профиля."})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка недействительна. Отправьте новое письмо из профиля."})
 		return
 	}
 	if user.VerificationSentAt == nil || time.Since(*user.VerificationSentAt) > verificationTTL {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка устарела (действует 24 часа). Отправьте новое письмо из профиля."})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Ссылка устарела (действует 24 часа). Отправьте новое письмо из профиля."})
 		return
 	}
 

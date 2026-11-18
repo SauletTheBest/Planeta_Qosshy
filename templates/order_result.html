@@ -9,18 +9,7 @@
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/">Главная</a>
-    <a href="/clothes">Каталог</a>
-    <a href="/cart">Корзина</a><a href="/orders" class="active">Мои заказы</a>
-    <a href="/profile">Профиль</a>
-  </nav>
-  <div class="header-actions">
-    <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-  </div>
-</header>
+{{template "site_header" .}}
 <div class="page-content" style="max-width:720px;">
   <h1 class="page-title">Заказ №{{.order.ID}}</h1>
 

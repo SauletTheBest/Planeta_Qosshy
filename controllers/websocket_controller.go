@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"planeta_qosshy/database"
-	"planeta_qosshy/models"
 	"fmt"
 	"log"
 	"net/http"
+	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
+	"planeta_qosshy/models"
 	"strconv"
 	"strings"
 	"sync"
@@ -159,7 +160,7 @@ func StartChat(c *gin.Context) {
 	}
 
 	if err := database.DB.Create(&newChat).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to start chat"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to start chat"})
 		return
 	}
 
@@ -170,14 +171,14 @@ func ChatPage(c *gin.Context) {
 	// Same 404 for "doesn't exist", "not yours" and "closed": we don't reveal which chat IDs exist.
 	chat, ok := accessibleChat(c.Param("chatID"), c.GetUint("userID"), c.GetString("role") == "admin")
 	if !ok {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
 
 	var messages []models.Message
 	database.DB.Where("chat_id = ?", strconv.Itoa(chat.ID)).Order("created_at ASC").Find(&messages)
 
-	c.HTML(http.StatusOK, "chat.html", gin.H{
+	middleware.Page(c, http.StatusOK, "chat.html", gin.H{
 		"chatID":   chat.ID,
 		"messages": messages,
 	})
@@ -186,13 +187,13 @@ func ChatPage(c *gin.Context) {
 func SendMessage(c *gin.Context) {
 	chat, ok := accessibleChat(c.Param("chatID"), c.GetUint("userID"), c.GetString("role") == "admin")
 	if !ok {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Chat not found"})
 		return
 	}
 
 	content := strings.TrimSpace(c.PostForm("message"))
 	if content == "" || utf8.RuneCountInString(content) > maxMessageLen {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Message is empty or too long"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Message is empty or too long"})
 		return
 	}
 
@@ -202,7 +203,7 @@ func SendMessage(c *gin.Context) {
 		Content:  content,
 	}
 	if err := database.DB.Create(&message).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to send message"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to send message"})
 		return
 	}
 

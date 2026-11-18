@@ -4,28 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{.item.Title}} — Planeta Qosshy</title>
+  <!-- Link preview in WhatsApp / Telegram / Instagram: photo, name and price. -->
+  <meta name="description" content="{{.item.Title}}, {{.item.PriceTiyn}} ₸. {{.item.Description}}">
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="Planeta Qosshy">
+  <meta property="og:title" content="{{.item.Title}} — {{.item.PriceTiyn}} ₸">
+  <meta property="og:description" content="{{.item.Description}}">
+  <meta property="og:url" content="{{.publicURL}}/clothes/{{.item.ID}}">
+  {{if .ogImage}}<meta property="og:image" content="{{.ogImage}}">{{end}}
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="icon" href="/static/image/earth.png" type="image/png">
 </head>
 <body>
-<header class="header">
-  <a href="/" class="logo">PLANETA QOSSHY</a>
-  <nav class="nav">
-    <a href="/">Главная</a>
-    <a href="/clothes">Каталог</a>
-    {{if .isLoggedIn}}<a href="/cart">Корзина</a><a href="/orders">Мои заказы</a><a href="/profile">Профиль</a>{{end}}
-  </nav>
-  <div class="header-actions">
-    {{if .isLoggedIn}}
-      {{if .isAdmin}}<a href="/admin/" class="btn btn-outline">Админка</a>{{end}}
-      <span style="font-size:.88rem;color:#888;">Привет, {{.username}}</span>
-      <a href="/auth/logout" class="btn btn-ghost">Выйти</a>
-    {{else}}
-      <a href="/auth/login" class="btn btn-outline">Войти</a>
-      <a href="/auth/register" class="btn btn-primary">Регистрация</a>
-    {{end}}
-  </div>
-</header>
+{{template "site_header" .}}
 <div class="page-content">
   <p style="margin-bottom:24px;font-size:.88rem;color:#999;">
     <a href="/clothes" style="color:#999;">← Назад в каталог</a>
@@ -42,103 +33,41 @@
       <p class="brand">{{.item.Brand}} &mdash; {{.item.Category}}</p>
       <h1>{{.item.Title}}</h1>
       <p class="price">{{.item.PriceTiyn}} ₸</p>
-      <div class="detail-tags" style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;">
-        <div style="width:100%;">
-          <span style="font-size:0.9rem;color:#444;font-weight:700;display:block;margin-bottom:8px;">Размеры в наличии:</span>
-          <div id="detailSizeChips" style="display:flex;flex-wrap:wrap;gap:8px;">
-            <!-- Сюда вставляются размеры и их остатки -->
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.88rem;">
-          <span class="tag" style="background:#f4f4f4;padding:6px 12px;border-radius:6px;">🎨 Цвет: <strong>{{.item.Color}}</strong></span>
-          <span class="tag" style="background:#f4f4f4;padding:6px 12px;border-radius:6px;">📦 Всего на складе: <strong>{{.item.Stock}} шт.</strong></span>
-        </div>
-      </div>
-      <script>
-        (function() {
-          const rawSize = "{{.item.SizeSummary}}";
-          // Chosen by the SERVER and already written into the forms below.
-          // The script only highlights it; it can't fill the forms: they come after it.
-          const defaultSize = "{{.defaultSize}}";
-          const container = document.getElementById('detailSizeChips');
-
-          if (!rawSize || !container) return;
-
-          const parts = rawSize.split(',').map(s => s.trim()).filter(Boolean);
-          let chipsHtml = '';
-
-          parts.forEach(p => {
-            let sizeName = p;
-            let qty = 1;
-
-            if (p.includes(':')) {
-              const pair = p.split(':');
-              sizeName = pair[0].trim();
-              qty = parseInt(pair[1]) || 0;
-            }
-
-            if (qty > 0) {
-              const isFirst = (sizeName === defaultSize);
-              chipsHtml += `
-                <button type="button" class="size-chip-btn ${isFirst ? 'active' : ''}" 
-                        data-size="${sizeName}" 
-                        onclick="selectProductSize(this, '${sizeName}')" 
-                        style="padding:8px 16px;border-radius:10px;border:1.5px solid ${isFirst ? '#111' : '#ddd'};background:${isFirst ? '#111' : '#fff'};color:${isFirst ? '#fff' : '#111'};font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.15s ease;">
-                  ${sizeName}
-                </button>
-              `;
-            } else {
-              chipsHtml += `
-                <button type="button" disabled 
-                        style="padding:8px 16px;border-radius:10px;border:1px dashed #ccc;background:#f5f5f5;color:#aaa;font-weight:600;font-size:0.9rem;cursor:not-allowed;">
-                  <s>${sizeName}</s>
-                </button>
-              `;
-            }
-          });
-
-          container.innerHTML = chipsHtml;
-        })();
-
-        function selectProductSize(btn, sizeName) {
-          document.querySelectorAll('.size-chip-btn').forEach(b => {
-            b.style.background = '#fff';
-            b.style.color = '#111';
-            b.style.borderColor = '#ddd';
-            b.classList.remove('active');
-          });
-
-          btn.style.background = '#111';
-          btn.style.color = '#fff';
-          btn.style.borderColor = '#111';
-          btn.classList.add('active');
-
-          // By the time anyone clicks, the forms exist: both of them get the new size.
-          document.querySelectorAll('.size-input').forEach(i => i.value = sizeName);
-        }
-      </script>
-      {{if .item.Description}}
-      <p class="desc">{{.item.Description}}</p>
-      {{end}}
       {{if gt .item.Stock 0}}
+      <!-- ONE form for both actions. The size is a plain radio button of this form, so
+           whatever is selected is what gets sent: no script fills hidden fields any more. -->
+      <form action="/cart/add" method="POST" class="buy-form">
+        <input type="hidden" name="clothes_id" value="{{.item.ID}}">
+        <fieldset class="size-picker">
+          <legend>Размер</legend>
+          <div class="size-options">
+          {{range .item.SortedVariants}}
+            <label class="size-option{{if eq .Stock 0}} is-out{{end}}">
+              <input type="radio" name="size" value="{{.Size}}" required
+                     {{if eq .Stock 0}}disabled{{end}} {{if eq .Size $.defaultSize}}checked{{end}}>
+              <span class="size-name">{{.Size}}</span>
+              {{if and (gt .Stock 0) (le .Stock 3)}}<span class="size-left" title="осталось {{.Stock}} шт.">{{.Stock}} шт</span>{{end}}
+            </label>
+          {{end}}
+          </div>
+        </fieldset>
+        <p class="detail-color">Цвет: <strong>{{.item.Color}}</strong></p>
         {{if .isLoggedIn}}
-          <!-- The main action is the cart; "buy now" checks out just this one item. -->
-          <form action="/cart/add" method="POST" style="margin:0;display:flex;gap:8px;">
-            <input type="hidden" name="clothes_id" value="{{.item.ID}}">
-            <input type="hidden" class="size-input" name="size" value="{{.defaultSize}}">
-            <input type="number" name="quantity" value="1" min="1" max="10" aria-label="Количество"
-                   style="width:72px;padding:10px;border:1px solid #ddd;border-radius:8px;">
-            <button type="submit" class="btn btn-primary" style="flex:1;">В корзину — {{.item.PriceTiyn}} ₸</button>
-          </form>
-          <form action="/payment/{{.item.ID}}" method="GET" style="margin:10px 0 0;">
-            <input type="hidden" class="size-input" name="size" value="{{.defaultSize}}">
-            <button type="submit" class="btn btn-outline btn-block">Купить сейчас</button>
-          </form>
+        <div class="buy-row">
+          <input type="number" name="quantity" value="1" min="1" max="10" aria-label="Количество" class="qty-input">
+          <button type="submit" class="btn btn-primary buy-main">В корзину</button>
+        </div>
+        <!-- The same form sent to another address (formaction): the chosen size goes along. -->
+        <button type="submit" formaction="/payment/{{.item.ID}}" formmethod="GET" class="btn btn-outline btn-block buy-now">Купить сейчас</button>
         {{else}}
-          <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>
+        <a href="/auth/login" class="btn btn-outline btn-block">Войдите, чтобы купить</a>
         {{end}}
+      </form>
       {{else}}
         <div class="alert alert-error">⚠️ Товар временно отсутствует на складе.</div>
+      {{end}}
+      {{if .item.Description}}
+      <p class="desc">{{.item.Description}}</p>
       {{end}}
       <div style="margin-top:12px;">
         <a href="/helpdesk" class="btn btn-ghost btn-block">Есть вопрос? Написать в поддержку</a>
@@ -146,49 +75,7 @@
     </div>
   </div>
 </div>
-<footer class="footer">
-  <div class="footer-content">
-    <div>
-      <h3>PLANETA QOSSHY</h3>
-      <p>Стиль и комфорт на каждый день.</p>
-    </div>
-    <div class="footer-links">
-      <h4>Навигация</h4>
-      <a href="/">Главная</a>
-      <a href="/clothes">Каталог</a>
-      <a href="/about">О нас</a>
-    </div>
-    <div class="footer-links">
-      <h4>Аккаунт</h4>
-      {{if .isLoggedIn}}
-        <a href="/orders">Мои заказы</a>
-        <a href="/profile">Профиль</a>
-        <a href="/auth/logout">Выйти</a>
-      {{else}}
-        <a href="/auth/login">Войти</a>
-        <a href="/auth/register">Регистрация</a>
-      {{end}}
-    </div>
-    <div class="footer-links">
-      <h4>Контакты</h4>
-      <p>support@planetaqosshy.kz</p>
-      <p>+7 (777) 888-80-80</p>
-      <p>Улица Республики, 77</p>
-      <div class="social-links" style="margin-top:12px;">
-        <a href="https://2gis.kz/kosshy/search/planeta_kosshi/firm/70000001057209942" class="social-btn gis" target="_blank">
-          <img src="/static/image/2gis.png" alt="2GIS">
-        </a>
-        <a href="https://www.instagram.com/planeta_kosshi" class="social-btn instagram" target="_blank">
-          <img src="/static/image/instagram.png" alt="Instagram">
-        </a>
-        <a href="https://api.whatsapp.com/send/?phone=77476367914" class="social-btn whatsapp" target="_blank">
-          <img src="/static/image/whatsapp.png" alt="WhatsApp">
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom"><p>&copy; 2026 PLANETA QOSSHY. Все права защищены.</p></div>
-</footer>
+{{template "site_footer" .}}
 
 <!-- Floating Chat Widget -->
 <div id="chatWidgetContainer">

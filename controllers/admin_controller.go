@@ -19,7 +19,7 @@ import (
 func AdminListClothes(c *gin.Context) {
 	var items []models.Clothes
 	if err := database.DB.Preload("Variants").Order("id").Find(&items).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch clothing items"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Failed to fetch clothing items"})
 		return
 	}
 
@@ -133,7 +133,7 @@ func AdminEditClothes(c *gin.Context) {
 	itemID := c.Param("id")
 
 	if err := database.DB.Preload("Variants").First(&item, itemID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
 		return
 	}
 
@@ -148,7 +148,7 @@ func AdminEditClothes(c *gin.Context) {
 func AdminUpdateClothes(c *gin.Context) {
 	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Invalid item ID"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Invalid item ID"})
 		return
 	}
 
@@ -156,7 +156,7 @@ func AdminUpdateClothes(c *gin.Context) {
 
 	var item models.Clothes
 	if err := database.DB.First(&item, itemID).Error; err != nil {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Clothing item not found"})
 		return
 	}
 	oldImage := item.ImageURL
@@ -229,7 +229,7 @@ func replaceVariants(tx *gorm.DB, clothesID uint, variants []models.ClothesVaria
 func AdminDeleteClothes(c *gin.Context) {
 	itemID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Неверный номер товара"})
+		middleware.Page(c, http.StatusBadRequest, "error.html", gin.H{"error": "Неверный номер товара"})
 		return
 	}
 

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"planeta_qosshy/database"
+	"planeta_qosshy/middleware"
 	"planeta_qosshy/models"
 
 	"github.com/gin-gonic/gin"
@@ -23,11 +24,11 @@ func GetUserOrders(c *gin.Context) {
 		Where("user_id = ?", userID).
 		Order("created_at DESC").
 		Find(&orders).Error; err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось загрузить заказы"})
+		middleware.Page(c, http.StatusInternalServerError, "error.html", gin.H{"error": "Не удалось загрузить заказы"})
 		return
 	}
 
-	c.HTML(http.StatusOK, "orders.html", gin.H{
+	middleware.Page(c, http.StatusOK, "orders.html", gin.H{
 		"orders": orders,
 	})
 }

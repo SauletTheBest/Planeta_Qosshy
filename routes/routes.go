@@ -65,8 +65,8 @@ func SetupRouter() *gin.Engine {
 
 	// Any address no route matches: a page in the site's style instead of Gin's plain
 	// "404 page not found" text.
-	r.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusNotFound, "error.html", gin.H{"error": "Такой страницы нет. Возможно, ссылка устарела."})
+	r.NoRoute(middleware.OptionalAuth, func(c *gin.Context) { // OptionalAuth: the header knows who you are
+		middleware.Page(c, http.StatusNotFound, "error.html", gin.H{"error": "Такой страницы нет. Возможно, ссылка устарела."})
 	})
 
 	r.LoadHTMLGlob("templates/*.html")
@@ -93,12 +93,13 @@ func SetupRouter() *gin.Engine {
 	{
 		auth.POST("/register", registerLimit.Middleware(), controllers.Register)
 		auth.POST("/login", loginLimit.Middleware(), controllers.Login)
+		// POST only: a GET /auth/logout could be fired by any other site (even an <img>)
+		// and log the visitor out. A POST from another site is stopped by the CSRF guard.
 		auth.POST("/logout", controllers.Logout)
-		auth.GET("/logout", controllers.Logout)
 		auth.GET("/verify", controllers.VerifyEmail)
-		auth.GET("/register", func(c *gin.Context) { c.HTML(http.StatusOK, "register.html", gin.H{}) })
+		auth.GET("/register", func(c *gin.Context) { middleware.Page(c, http.StatusOK, "register.html", gin.H{}) })
 		auth.GET("/login", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "login.html", gin.H{
+			middleware.Page(c, http.StatusOK, "login.html", gin.H{
 				"verified": c.Query("verified") == "1",
 				"blocked":  c.Query("blocked") == "1",
 				"reset":    c.Query("reset") == "1",
