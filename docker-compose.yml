@@ -54,6 +54,9 @@ services:
       - PAYMENT_WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:?set PAYMENT_WEBHOOK_SECRET in .env}
       - ORDER_RESERVATION_TTL=${ORDER_RESERVATION_TTL:-15m}
       - UPLOAD_DIR=/app/uploads
+      # Order events go to Kafka through the outbox. The shop does NOT wait for Kafka at
+      # startup: while it is down, events pile up in outbox_events and go out later.
+      - KAFKA_BROKERS=kafka:29092
     volumes:
       # Product photos from the admin panel live outside the container,
       # so rebuilding the image doesn't delete them.
@@ -99,37 +102,123 @@ services:
     ports:
       - "127.0.0.1:8025:8025"   # web UI; SMTP (1025) is reachable only inside Docker
 
+  # Kafka: one broker in KRaft mode (it is its own controller, no ZooKeeper).
+  # The shop writes order events to it (see outbox/), the notifier reads them.
   kafka:
-    image: apache/kafka:latest
+    image: apache/kafka:3.9.0
     container_name: planeta_qosshy_kafka
-    restart: always
+    restart: unless-stopped
     ports:
-      - "9092:9092"
+      # For programs started on this computer (go run, kcat). Containers use kafka:29092.
+      - "127.0.0.1:${KAFKA_HOST_PORT:-9092}:9092"
     environment:
+      CLUSTER_ID: planeta-qosshy-kafka-1
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      # Two doors for clients + one for the controller. A client first connects to any
+      # door, then Kafka tells it the ADVERTISED address to use from now on, so each door
+      # must advertise an address that works from where its clients are:
+      #   INTERNAL  kafka:29092     — other containers (api, notifier, kafka-ui)
+      #   EXTERNAL  localhost:9092  — this computer (published port above)
+      # ":29092" (empty host) = listen on every interface. Not "0.0.0.0": Kafka derives the
+      # controller's advertised address from here and refuses the meta-address 0.0.0.0.
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:${KAFKA_HOST_PORT:-9092}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      # Data goes to the volume below. Without this the image writes to
+      # /tmp/kraft-combined-logs inside the container and everything is lost on re-create.
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      # Topics are created on purpose (kafka-init), never by a typo in a topic name.
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      # One broker = one copy of everything (a real cluster has 3 brokers and factor 3).
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # Java takes as much memory as it is allowed to; 256 MB is plenty for a dev stand.
+      # Kafka's own tools (kafka-topics.sh…) read this too: run them inside this container
+      # with  docker exec -e KAFKA_HEAP_OPTS=-Xmx96m …  or they compete with the broker.
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx256m"
+    mem_limit: 1g
     volumes:
       - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      # "Is the client port open?" — cheap; a kafka-*.sh tool would start a whole JVM.
+      test: ["CMD-SHELL", "nc -z localhost 29092"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka_ui
-    ports:
-      - "8085:8080" 
+  # Creates the topics once and exits. Running it again is harmless (--if-not-exists).
+  #   3 partitions: up to 3 notifier copies could read in parallel; events of one order
+  #   always land in the same partition (message key = order id), so they stay in order.
+  #   retention 7 days: Kafka is a log, not a database — old messages are deleted.
+  kafka-init:
+    image: apache/kafka:3.9.0
+    container_name: planeta_qosshy_kafka_init
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        for i in $$(seq 1 30); do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists \
+            --topic shop.order-events --partitions 3 --replication-factor 1 \
+            --config retention.ms=604800000 && exit 0
+          echo "kafka is not ready yet ($$i/30)"; sleep 2
+        done
+        exit 1
     environment:
-      KAFKA_CLUSTERS_0_NAME: local-cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_HEAP_OPTS: "-Xmx128m"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
+
+  # Reads order events from Kafka and emails the customer (cmd/notifier).
+  # The same image as the shop, another program in it.
+  notifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: planeta_qosshy_notifier
+    restart: unless-stopped
+    command: ["./notifier"]
+    healthcheck:
+      disable: true   # the image's check asks the shop's /healthz; the notifier has no web port
+    environment:
+      - DATABASE_URL=host=postgres port=5432 user=postgres password=${POSTGRES_PASSWORD} dbname=planeta_qosshy sslmode=disable
+      - KAFKA_BROKERS=kafka:29092
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:${SHOP_PORT:-8080}}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+    mem_limit: 128m
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy   # the shop runs the migrations (the notifier's table)
+
+  # Web UI for Kafka: topics, partitions, messages, consumer groups and their lag.
+  # http://localhost:8085 — starts with the "dev" profile, like mailpit.
+  kafka-ui:
+    image: kafbat/kafka-ui:v1.2.0
+    container_name: planeta_qosshy_kafka_ui
+    profiles: ["dev"]
+    ports:
+      - "127.0.0.1:8085:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: planeta-qosshy
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      JAVA_OPTS: "-Xmx256m"
+    mem_limit: 512m
+    depends_on:
+      kafka:
+        condition: service_healthy
 
 volumes:
   postgres_data:

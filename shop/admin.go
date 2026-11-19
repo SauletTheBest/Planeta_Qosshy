@@ -44,10 +44,15 @@ func CanChange(from, to models.OrderStatus) bool {
 	return false
 }
 
-// addEvent writes one line of the order's history inside the caller's transaction,
-// so the history can never disagree with what really happened.
+// addEvent writes one line of the order's history AND the matching Kafka event (into the
+// outbox), both inside the caller's transaction: the history, the event and the change
+// itself are saved together or not at all.
 func addEvent(tx *gorm.DB, orderID uint, action string, actorID *uint, note string) error {
-	return tx.Create(&models.OrderEvent{OrderID: orderID, Action: action, ActorID: actorID, Note: note}).Error
+	h := models.OrderEvent{OrderID: orderID, Action: action, ActorID: actorID, Note: note}
+	if err := tx.Create(&h).Error; err != nil {
+		return err
+	}
+	return enqueueOrderEvent(tx, h)
 }
 
 // lockOrder reads an order with SELECT ... FOR UPDATE: two admins pressing buttons on
@@ -161,7 +166,10 @@ func RefundPayment(ctx context.Context, db *gorm.DB, paymentID uint, actorID *ui
 	// Outside any transaction, the same rule as in StartPayment.
 	if _, err := payments.Refund(ctx, *p.ProviderPaymentID); err != nil {
 		// Remember the failure in the order history; the payment stays in the refunds list.
-		_ = addEvent(db, p.OrderID, models.EventRefundFailed, actorID, err.Error())
+		// A transaction: the history line and its outbox event are saved together.
+		_ = db.Transaction(func(tx *gorm.DB) error {
+			return addEvent(tx, p.OrderID, models.EventRefundFailed, actorID, err.Error())
+		})
 		return err
 	}
 	return db.Transaction(func(tx *gorm.DB) error { return markRefunded(tx, p, actorID, now) })

@@ -45,6 +45,7 @@ The platform supports user authentication with email verification, clothes catal
 | **Sessions** | [Gorilla Sessions](https://github.com/gorilla/sessions) | Signed cookie with the user ID and the login time only |
 | **Real-time chat** | [Gorilla WebSocket](https://github.com/gorilla/websocket) | Live support chat |
 | **Email** | [Gomail v2](https://gopkg.in/gomail.v2) | Email confirmation, password reset, helpdesk |
+| **Events** | Apache Kafka 3.9 (KRaft) + [kafka-go](https://github.com/segmentio/kafka-go) | Order events through a transactional outbox; the `notifier` service emails customers |
 | **Security** | bcrypt, `http.CrossOriginProtection`, per-IP rate limits | Passwords, CSRF, brute force |
 | **Logging** | [Logrus](https://github.com/sirupsen/logrus) | One JSON line per request to stdout, with `X-Request-ID` |
 | **Containers** | Docker & Docker Compose | Non-root images with health checks |
@@ -52,14 +53,14 @@ The platform supports user authentication with email verification, clothes catal
 
 ---
 
-### 🧩 Two services
+### 🧩 Services
 
 ```text
- Browser ──────────► Planeta Qosshy (shop, :8080) ──────► PostgreSQL
-    │                     │        ▲
-    │   POST /api/v1/payments      │  signed webhook
-    │   (API key, Idempotency-Key) │  POST /payments/webhook  (HMAC-SHA256)
-    │                     ▼        │
+ Browser ──────────► Planeta Qosshy (shop, :8080) ──────► PostgreSQL ◄─────────┐
+    │                     │        ▲          │ outbox relay                   │ processed
+    │   POST /api/v1/payments      │          ▼                                │ events
+    │   (API key, Idempotency-Key) │      Kafka: shop.order-events ──► notifier ──► SMTP
+    │                     ▼        │  signed webhook                       (customer emails)
     └──── card form ──► Qosshy Pay (test bank, :8081)
 ```
 
@@ -82,8 +83,12 @@ Planeta_Qosshy/
 ├── shop/               # Business rules, no HTTP: orders, stock, payments, refunds, cart, stats
 │   └── integration_test.go  # races and transactions against a real PostgreSQL
 ├── payments/           # Everything about the payment provider: API client, webhook signature
+├── events/             # The Kafka message contract (OrderEvent), shared by writers and readers
+├── outbox/             # Transactional outbox: Enqueue in the caller's transaction, relay → Kafka
+├── notify/             # Order event → customer email, duplicate guard
+├── cmd/notifier/       # The notifier service (its own process, same Docker image)
 ├── money/              # Money as int64 tiyn (1 ₸ = 100 tiyn) — never float
-├── migrations/         # 000001…000008 *.up.sql / *.down.sql, embedded with go:embed
+├── migrations/         # 000001…000009 *.up.sql / *.down.sql, embedded with go:embed
 ├── database/           # Connection pool, migrations runner, error helpers
 ├── middleware/         # Auth, admin role, CSRF guard, per-IP rate limit, JSON logger, flash messages
 ├── models/             # GORM models: User, Clothes(+Variants), Order(+Items, Payments, Events), Cart...
@@ -91,6 +96,7 @@ Planeta_Qosshy/
 ├── templates/          # Server-side HTML (shared admin parts in _admin_parts.html)
 ├── util/               # Email, validation, random tokens
 ├── scripts/e2e/        # End-to-end checks: real shop + real bank + temp DB, 184 checks
+├── scripts/kafka-demo/ # Kafka explained (RU) + e2e on a throw-away compose copy, 32 checks
 └── .github/workflows/  # CI
 ```
 
@@ -180,6 +186,22 @@ sequenceDiagram
 
 ---
 
+### 📨 Order events (Kafka)
+
+Every change of an order (paid, shipped, delivered, cancelled, expired, refunded) is written
+to `order_events` (the history in the admin panel) **and** to `outbox_events`, in the same
+transaction as the change itself. A relay in the shop publishes the outbox to the Kafka topic
+`shop.order-events` (key = order id, so the events of one order stay in order), and the
+`notifier` service reads it as the consumer group `notifier` and emails the customer.
+
+* Kafka down → the shop keeps working, events wait in `outbox_events` and go out later.
+* `notifier` down → events wait in Kafka; it continues from its committed offset.
+* A message delivered twice → no second email (`notifier_processed_events`).
+
+The why and the how, with experiments to try: [scripts/kafka-demo/README.md](scripts/kafka-demo/README.md).
+
+---
+
 ### 🐳 Running with Docker Compose (recommended)
 
 Both repositories must sit next to each other:
@@ -204,6 +226,12 @@ PlanetaQosshy/
    docker compose logs -f api
    ```
    Open <http://localhost:8080>. Migrations run automatically at startup.
+   Kafka, the one-shot `kafka-init` (creates the topic) and `notifier` start too.
+
+   For development add the **dev** profile: `docker compose --profile dev up --build -d`
+   also starts **Mailpit** (every email at <http://localhost:8025>, set `SMTP_HOST=mailpit`,
+   `SMTP_PORT=1025` in `.env`) and **kafka-ui** (topics, messages, consumer lag at
+   <http://localhost:8085>).
 
 3. **Make yourself an admin** (after registering on the site):
    ```bash
@@ -247,6 +275,8 @@ All of them are listed with comments in [`.env.example`](.env.example). The main
 | `SHOP_TIMEZONE` | | Where "today" starts in the statistics (default `Asia/Almaty`) |
 | `TRUSTED_PROXIES` / `TRUSTED_ORIGINS` | | IPs of a reverse proxy; extra site addresses for forms |
 | `UPLOAD_DIR` | | Product photos (default `uploads`) |
+| `KAFKA_BROKERS` | | Kafka for order events (compose: `kafka:29092`). Empty = events wait in `outbox_events` |
+| `KAFKA_HOST_PORT` | | Kafka's port on this computer (default 9092) |
 | `DB_MAX_OPEN_CONNS` | | Connection pool size (default 20) |
 | `PORT`, `LOG_FILE`, `GIN_MODE` | | Port (8080), optional log file, `release` in Docker |
 
@@ -279,8 +309,9 @@ The bank runs separately: see its repository.
 | What | Command | Needs |
 | :--- | :--- | :--- |
 | Unit tests | `go test ./...` | nothing |
-| Integration tests (real PostgreSQL: oversell race, cart all-or-nothing, expiry, webhook idempotency) | `TEST_DATABASE_URL="host=… dbname=… " go test -tags=integration -race ./...` | a **throw-away** database — the tests empty it |
+| Integration tests (real PostgreSQL: oversell race, cart all-or-nothing, expiry, webhook idempotency, outbox, notifier) | `TEST_DATABASE_URL="host=… dbname=… " go test -tags=integration -race ./...` | a **throw-away** database — the tests empty it |
 | End-to-end, 184 checks | `scripts/e2e/build.sh` then `bash scripts/e2e/testA.sh` (B, C) | Windows + Git Bash + Docker, see [scripts/e2e/README.md](scripts/e2e/README.md) |
+| Kafka end-to-end, 32 checks (outbox, offsets, Kafka/notifier outages, no duplicate emails) | `bash scripts/kafka-demo/e2e.sh` | Git Bash + Docker; runs on a throw-away compose copy |
 
 CI (`.github/workflows/ci.yml`) runs vet, the unit and integration tests with the race
 detector, and builds the Docker image on every pull request.

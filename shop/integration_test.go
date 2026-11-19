@@ -47,7 +47,9 @@ func testDB(t *testing.T) *gorm.DB {
 		t.Fatal(err)
 	}
 	// CASCADE empties every table that points at users or clothes (orders, payments, carts...).
-	if err := db.Exec("TRUNCATE users, clothes RESTART IDENTITY CASCADE").Error; err != nil {
+	// The Kafka tables point at nothing, so they are listed by name.
+	if err := db.Exec(`TRUNCATE users, clothes, outbox_events, notifier_processed_events
+	                   RESTART IDENTITY CASCADE`).Error; err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {

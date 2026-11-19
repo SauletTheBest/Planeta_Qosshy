@@ -1,8 +1,9 @@
 # Reads the newest letter for an address from the Mailpit test mail server.
-# usage: python mp.py <to-address> [field]   field = subject | replyto | files | text | link
-import json, re, sys, urllib.request
+# usage: python mp.py <to-address> [field]   field = subject | subjects | replyto | files | text | link | count
+# MAILPIT_API overrides the address (the Kafka e2e uses a second Mailpit on another port).
+import json, os, re, sys, urllib.request
 
-API = "http://127.0.0.1:8025/api/v1"
+API = os.environ.get("MAILPIT_API", "http://127.0.0.1:8025/api/v1")
 to, field = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else "subject")
 
 def get(path):
@@ -15,7 +16,9 @@ if not msgs:
     print("NONE")
     sys.exit()
 m = get("/message/" + msgs[0]["ID"])  # newest first
-if field == "subject":
+if field == "subjects":  # every letter to this address, oldest first
+    print(" | ".join(x["Subject"] for x in reversed(msgs)))
+elif field == "subject":
     print(m["Subject"])
 elif field == "replyto":
     print(",".join(a["Address"] for a in m["ReplyTo"]))

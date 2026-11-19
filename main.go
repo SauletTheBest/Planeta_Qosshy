@@ -12,9 +12,11 @@ import (
 
 	"planeta_qosshy/database"
 	"planeta_qosshy/middleware"
+	"planeta_qosshy/outbox"
 	"planeta_qosshy/payments"
 	"planeta_qosshy/routes"
 	"planeta_qosshy/shop"
+	"planeta_qosshy/util"
 )
 
 func main() {
@@ -36,6 +38,22 @@ func main() {
 		defer jobs.Done()
 		shop.RunExpiryLoop(ctx, database.DB)
 	}()
+
+	// Background job 2: the outbox relay publishes order events to Kafka.
+	// Without KAFKA_BROKERS the shop works as before; the events wait in outbox_events
+	// and are sent as soon as the shop is started with Kafka.
+	if brokers := util.SplitList(os.Getenv("KAFKA_BROKERS")); len(brokers) > 0 {
+		pub := outbox.NewKafkaPublisher(brokers)
+		jobs.Add(1)
+		go func() {
+			defer jobs.Done()
+			defer pub.Close()
+			outbox.RunRelay(ctx, database.DB, pub, log)
+		}()
+		log.Infof("outbox relay: publishing to Kafka at %v", brokers)
+	} else {
+		log.Warn("KAFKA_BROKERS is not set: order events wait in outbox_events")
+	}
 
 	port := os.Getenv("PORT")
 	if port == "" {

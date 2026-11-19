@@ -13,8 +13,11 @@ RUN go mod download
 # Copy application source code
 COPY . .
 
-# Build a static binary (migrations are embedded into it with go:embed)
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o main .
+# Build static binaries (migrations are embedded into the shop with go:embed):
+#   main     — the shop
+#   notifier — reads order events from Kafka and emails customers (cmd/notifier)
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o main . \
+ && CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o notifier ./cmd/notifier
 
 # Stage 2: Minimal runtime image
 FROM alpine:3.19
@@ -26,7 +29,7 @@ WORKDIR /app
 RUN apk add --no-cache ca-certificates tzdata \
  && adduser -D -H -s /sbin/nologin -u 10001 app
 
-COPY --from=builder /app/main .
+COPY --from=builder /app/main /app/notifier ./
 COPY --from=builder /app/templates ./templates
 
 # Product photos (a volume in docker-compose). Created here so the empty volume
